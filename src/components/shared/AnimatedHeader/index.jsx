@@ -4,9 +4,11 @@ import Button from './Button';
 import Nav from './Nav';
 import { Link } from 'react-router-dom';
 import styles from './style.module.scss';
+import { useStudentAuth } from '../../../contexts/StudentAuthContext';
 
 export default function Header({ school = 'eugenia' }) {
     const [isActive, setIsActive] = useState(false);
+    const { student, logout } = useStudentAuth();
     const schoolPath = school === 'eugenia' ? '/eugenia-school' : '/albert-school';
 
     const menu = {
@@ -35,6 +37,14 @@ export default function Header({ school = 'eugenia' }) {
         { title: "Étudiant", href: `${schoolPath}/student/profile` },
         { title: "Soumettre", href: `${schoolPath}/submit` }
     ];
+
+    if (student) {
+        links.push({
+            title: "Déconnexion",
+            href: "#",
+            action: logout
+        });
+    }
 
     const footerLinks = [];
 

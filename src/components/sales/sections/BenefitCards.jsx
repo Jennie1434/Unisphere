@@ -11,7 +11,7 @@ export default function BenefitCards() {
     const containerRef = useRef(null);
 
     return (
-        <section ref={containerRef} className="py-32 bg-[#F7F7F5]">
+        <section id="universities" ref={containerRef} className="py-32 bg-[#F7F7F5]">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                     {benefits.map((benefit, i) => (
