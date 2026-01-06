@@ -1,0 +1,91 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    /* Reduced from 2em - much tighter spacing */
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+    overflow: visible;
+}
+
+.wrapper {
+    position: relative;
+    display: block;
+    padding: 0.5em 0;
+    /* Reduced from 1.5em */
+    transform-style: preserve-3d;
+    overflow: visible;
+    min-height: 2em;
+}
+
+.textContainer {
+    position: relative;
+    display: block;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+    transform-origin: center center;
+    overflow: visible;
+}
+
+.primary,
+.secondary {
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    font-size: 5vw;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    backface-visibility: hidden;
+}
+
+.primary {
+    display: block;
+    color: #000000;
+    transition: opacity 0.5s ease;
+}
+
+.secondary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #10B981;
+    transform-origin: center bottom;
+    transform: rotateX(-90deg) translateZ(-0.5em);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.wrapper:hover .textContainer {
+    transform: rotateX(90deg);
+}
+
+.wrapper:hover .primary {
+    opacity: 0;
+}
+
+.wrapper:hover .secondary {
+    opacity: 1;
+}
+
+@media (min-width: 1024px) {
+    .wrapper {
+        min-height: 6rem;
+        padding: 0.5em 0;
+        /* Reduced */
+    }
+
+    .primary,
+    .secondary {
+        font-size: 4rem;
+        line-height: 1.2;
+    }
+
+    .secondary {
+        transform: rotateX(-90deg) translateZ(-2rem);
+    }
+}
