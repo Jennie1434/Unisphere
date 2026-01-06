@@ -141,8 +141,8 @@ function calculateLevel(points: number): { level: number; progress: number; next
   // Calculer la progression (0-100)
   const currentLevelMin = levelThresholds.find(t => t.level === currentLevel)?.min || 0;
   const currentLevelMax = levelThresholds.find(t => t.level === currentLevel)?.max || nextLevelPoints;
-  const progress = currentLevelMax > currentLevelMin 
-    ? ((points - currentLevelMin) / (currentLevelMax - currentLevelMin)) * 100 
+  const progress = currentLevelMax > currentLevelMin
+    ? ((points - currentLevelMin) / (currentLevelMax - currentLevelMin)) * 100
     : 0;
 
   return {
@@ -447,7 +447,7 @@ async function getMonthlyLeaderboard(env: Env): Promise<Response> {
 async function getStudentStats(env: Env, email: string): Promise<Response> {
   try {
     await ensureLeaderboardGamificationColumns(env);
-    
+
     // Récupérer les infos de l'étudiant
     const student = await env.DB.prepare(
       'SELECT id, first_name, last_name, email, classe, total_points, actions_count, last_update, level, level_progress, current_streak, longest_streak, badges, last_action_date FROM leaderboard WHERE email = ?'
@@ -491,7 +491,7 @@ async function getStudentStats(env: Env, email: string): Promise<Response> {
 
     // Calculer les stats de niveau
     const levelInfo = calculateLevel(student.total_points || 0);
-    
+
     // Calculer le streak
     const streak = await calculateStreak(env, email.toLowerCase());
 
@@ -628,7 +628,7 @@ async function getGoogleAccessToken(env: Env): Promise<string | null> {
     // Check if token is expired (with 5 min buffer)
     const now = Date.now();
     const expiresAt = token.expires_at ? new Date(token.expires_at).getTime() : 0;
-    
+
     if (expiresAt && now < expiresAt - 300000) {
       // Token still valid
       return token.access_token;
@@ -641,14 +641,14 @@ async function getGoogleAccessToken(env: Env): Promise<string | null> {
     }
 
     console.log('   🔄 Refreshing Google OAuth token...');
-    
+
     // Get credentials from DB (like n8n) or env fallback
     const credentials = await getGoogleOAuthCredentials(env);
     if (!credentials) {
       console.error('   ❌ No Google OAuth credentials configured');
       return null;
     }
-    
+
     const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -688,7 +688,7 @@ async function getGoogleAccessToken(env: Env): Promise<string | null> {
 async function readGoogleSheetWithOAuth(env: Env, sheetId: string, range: string): Promise<any[][]> {
   try {
     const accessToken = await getGoogleAccessToken(env);
-    
+
     if (!accessToken) {
       throw new Error('No Google OAuth token available. Please connect Google account in admin.');
     }
@@ -696,7 +696,7 @@ async function readGoogleSheetWithOAuth(env: Env, sheetId: string, range: string
     // Extract sheet name from range
     let sheetName = '';
     let actualRange = range;
-    
+
     if (range.includes('!')) {
       const parts = range.split('!');
       sheetName = parts[0];
@@ -705,13 +705,13 @@ async function readGoogleSheetWithOAuth(env: Env, sheetId: string, range: string
 
     // Build Google Sheets API v4 URL
     let apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/`;
-    
+
     if (sheetName) {
       apiUrl += `${encodeURIComponent(sheetName)}!${encodeURIComponent(actualRange)}`;
     } else {
       apiUrl += encodeURIComponent(actualRange);
     }
-    
+
     apiUrl += '?valueRenderOption=UNFORMATTED_VALUE';
 
     console.log(`   🔗 Google Sheets API v4: ${apiUrl}`);
@@ -744,59 +744,59 @@ async function readGoogleSheetWithOAuth(env: Env, sheetId: string, range: string
 async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]> {
   try {
     console.log(`   📥 Fetching Google Sheet: ${sheetId}, range: ${range}`);
-    
+
     // Extract sheet name from range if provided (e.g., "Sheet1!A1:D10" or "Salon!A2:G24")
     let sheetName = '';
     let actualRange = range;
-    
+
     if (range.includes('!')) {
       const parts = range.split('!');
       sheetName = parts[0];
       actualRange = parts[1];
     }
-    
+
     // Method 1: Try Google Visualization API (gviz/tq)
     let url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&range=${encodeURIComponent(actualRange)}`;
     if (sheetName) {
       url += `&sheet=${encodeURIComponent(sheetName)}`;
     }
-    
+
     console.log(`   🔗 URL: ${url}`);
-    
+
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; Cloudflare Worker)'
       }
     });
-    
+
     const text = await response.text();
     console.log(`   📄 Response length: ${text.length} chars`);
     console.log(`   📄 Response preview (first 200 chars): ${text.substring(0, 200)}`);
-    
+
     // Check if response is HTML/JavaScript instead of JSON
     if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html') || text.includes('google.visualization')) {
       console.log('   ⚠️ Received HTML/JavaScript instead of JSON, trying alternative method...');
-      
+
       // Method 2: Try CSV export (simpler, more reliable for public sheets)
       // Note: CSV export uses gid (numeric tab ID) from URL, not sheet name
       // From URL: gid=1383674800 means tab ID is 1383674800
       // For now, try without gid first (gets first sheet), or allow gid in future
       let csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-      
+
       console.log(`   🔗 Trying CSV export (first sheet): ${csvUrl}`);
       let csvResponse;
       let csvText;
-      
+
       try {
         csvResponse = await fetch(csvUrl);
-        
+
         if (!csvResponse.ok) {
           throw new Error(`CSV export failed: ${csvResponse.status} ${csvResponse.statusText}`);
         }
-        
+
         csvText = await csvResponse.text();
         console.log(`   📄 CSV response length: ${csvText.length} chars`);
-        
+
         // Check if we got HTML instead of CSV (sheet might not be public)
         if (csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html') || csvText.length < 100) {
           throw new Error('Received HTML or empty response - sheet might not be public');
@@ -805,21 +805,21 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
         console.error(`   ❌ CSV export error: ${csvError.message}`);
         throw new Error(`Failed to read Google Sheet as CSV. Make sure the sheet is public (View-only). Error: ${csvError.message}`);
       }
-      
+
       // Parse CSV to rows
       const rows: any[][] = [];
       const lines = csvText.split('\n');
-      
+
       for (const line of lines) {
         if (line.trim()) {
           // Simple CSV parsing (handles quoted fields)
           const row: any[] = [];
           let currentField = '';
           let insideQuotes = false;
-          
+
           for (let i = 0; i < line.length; i++) {
             const char = line[i];
-            
+
             if (char === '"') {
               insideQuotes = !insideQuotes;
             } else if (char === ',' && !insideQuotes) {
@@ -829,14 +829,14 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
               currentField += char;
             }
           }
-          
+
           // Add last field
           row.push(currentField.trim());
-          
+
           rows.push(row);
         }
       }
-      
+
       // Apply range filter if specified (e.g., "A2:G24" means skip row 1, only columns A-G)
       let filteredRows = rows;
       if (actualRange && actualRange !== 'A:Z' && actualRange.match(/^[A-Z]+\d+:[A-Z]+\d+$/)) {
@@ -847,7 +847,7 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
           const startRow = parseInt(rangeMatch[2]) - 1; // Convert to 0-based
           const endCol = rangeMatch[3];
           const endRow = parseInt(rangeMatch[4]) - 1;
-          
+
           // Parse column letters to indices
           const parseCol = (col: string): number => {
             let result = 0;
@@ -856,22 +856,22 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
             }
             return result - 1;
           };
-          
+
           const startColIdx = parseCol(startCol);
           const endColIdx = parseCol(endCol);
-          
+
           filteredRows = rows.slice(startRow, endRow + 1).map(row => row.slice(startColIdx, endColIdx + 1));
           console.log(`   ✂️ Applied range filter ${actualRange}: ${rows.length} -> ${filteredRows.length} rows`);
         }
       }
-      
+
       console.log(`   ✅ Parsed ${filteredRows.length} rows from CSV`);
       return filteredRows;
     }
-    
+
     // Parse Google's weird format: remove "/*O_o*/\n" prefix and ";" suffix
     let jsonText = text.trim();
-    
+
     // Remove various prefixes
     if (jsonText.startsWith('/*O_o*/\\n')) {
       jsonText = jsonText.substring(9);
@@ -884,12 +884,12 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
         jsonText = jsonText.substring(endComment + 2).trim();
       }
     }
-    
+
     // Remove trailing semicolon
     if (jsonText.endsWith(';')) {
       jsonText = jsonText.slice(0, -1).trim();
     }
-    
+
     // Try to parse JSON
     let data;
     try {
@@ -899,7 +899,7 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
       console.error('   📄 Problematic text (first 500 chars):', jsonText.substring(0, 500));
       throw new Error(`Invalid JSON response from Google Sheets. The sheet might not be public or the format changed. Error: ${parseError.message}`);
     }
-    
+
     // Extract rows
     const rows: any[][] = [];
     if (data.table && data.table.rows) {
@@ -913,7 +913,7 @@ async function readGoogleSheet(sheetId: string, range: string): Promise<any[][]>
         rows.push(rowData);
       });
     }
-    
+
     console.log(`   ✅ Parsed ${rows.length} rows from JSON`);
     return rows;
   } catch (error: any) {
@@ -945,10 +945,10 @@ function getStudentIdentifier(user: any, studentIdType: string): string {
  */
 function matchesFieldValue(formValue: any, sheetValue: any, rule: string): boolean {
   if (!formValue || sheetValue === null || sheetValue === undefined) return false;
-  
+
   const formStr = String(formValue).toLowerCase().trim();
   const sheetStr = String(sheetValue).toLowerCase().trim();
-  
+
   switch (rule) {
     case 'exact':
       return formStr === sheetStr;
@@ -957,13 +957,13 @@ function matchesFieldValue(formValue: any, sheetValue: any, rule: string): boole
     case 'date':
       // Compare dates (handle Excel serial numbers and different formats)
       console.log(`      📅 Date matching: form="${formValue}" (${typeof formValue}), sheet="${sheetValue}" (${typeof sheetValue})`);
-      
+
       let formDate: Date;
       let sheetDate: Date;
-      
+
       // Parse form value (usually ISO string like "2025-09-21")
       formDate = new Date(formValue);
-      
+
       // Parse sheet value - could be Excel serial number (integer) or date string
       if (typeof sheetValue === 'number') {
         // Check if it's an Excel serial number (typically > 1 and < 1000000 for reasonable dates)
@@ -976,20 +976,20 @@ function matchesFieldValue(formValue: any, sheetValue: any, rule: string): boole
           // BUT: Excel treats 1900 as a leap year (bug), so day 60 = Feb 29, 1900 (which didn't exist)
           // For dates >= 61, Excel's internal count is off by 1 day
           // Correct formula: Dec 30, 1899 + (N-1) days, then add 1 day if N >= 61
-          
+
           // Calculate base date: Dec 30, 1899 + (N-1) days
           const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Dec 30, 1899, 00:00:00 UTC
           sheetDate = new Date(excelEpoch.getTime() + (sheetValue - 1) * 24 * 60 * 60 * 1000);
-          
+
           // Excel's 1900 leap year bug compensation: for days >= 61, add 1 day
           if (sheetValue >= 61) {
             sheetDate = new Date(sheetDate.getTime() + 24 * 60 * 60 * 1000);
           }
-          
+
           // Parse the UTC date components to create a local date (avoids timezone shifts)
           // This ensures we compare dates correctly regardless of timezone
           sheetDate = new Date(Date.UTC(sheetDate.getUTCFullYear(), sheetDate.getUTCMonth(), sheetDate.getUTCDate()));
-          
+
           console.log(`      📅 Converted Excel ${sheetValue} to date: ${sheetDate.toISOString()} (${sheetDate.toDateString()})`);
         } else {
           // Not an Excel date, try parsing as regular date
@@ -999,24 +999,24 @@ function matchesFieldValue(formValue: any, sheetValue: any, rule: string): boole
         // Try parsing as date string
         sheetDate = new Date(sheetValue);
       }
-      
+
       // Compare only the date part (ignore time)
       const formIsValid = !isNaN(formDate.getTime());
       const sheetIsValid = !isNaN(sheetDate.getTime());
-      
+
       if (!formIsValid) {
         console.log(`      ⚠️ Form date parsing failed: "${formValue}" -> Invalid Date`);
         return false;
       }
-      
+
       if (!sheetIsValid) {
         console.log(`      ⚠️ Sheet date parsing failed: "${sheetValue}" -> Invalid Date`);
         return false;
       }
-      
+
       console.log(`      📅 Form date: ${formDate.toISOString()} (${formDate.toDateString()})`);
       console.log(`      📅 Sheet date: ${sheetDate.toISOString()} (${sheetDate.toDateString()})`);
-      
+
       const match = formDate.toDateString() === sheetDate.toDateString();
       if (match) {
         console.log(`      ✅ Date match successful!`);
@@ -1037,7 +1037,7 @@ function matchesFieldValue(formValue: any, sheetValue: any, rule: string): boole
 async function checkAutomationsAndValidate(env: Env, actionId: string, email: string, actionType: string, formData: any): Promise<boolean> {
   try {
     console.log(`🔍 Checking automations for action ${actionId}, type: ${actionType}, email: ${email}`);
-    
+
     // Parse formData if it's a string
     let parsedFormData = formData;
     if (typeof formData === 'string') {
@@ -1047,19 +1047,19 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
         parsedFormData = formData;
       }
     }
-    
+
     console.log('📝 Form data:', JSON.stringify(parsedFormData, null, 2));
-    
+
     // Get user from leaderboard
     const user = await env.DB.prepare(
       'SELECT first_name, last_name, email FROM leaderboard WHERE email = ?'
     ).bind(email).first() as any;
-    
+
     if (!user) {
       console.log(`❌ User not found in leaderboard: ${email}`);
       return false; // User not found, cannot auto-validate
     }
-    
+
     // Normalize user object to have both snake_case and camelCase
     const normalizedUser = {
       firstName: user.first_name || '',
@@ -1068,30 +1068,30 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
       first_name: user.first_name || '',
       last_name: user.last_name || ''
     };
-    
+
     console.log('✅ User found:', normalizedUser);
-    
+
     // Get active automations for this action type
     const { results: automations } = await env.DB.prepare(
       `SELECT * FROM automations 
        WHERE action_type_id = ? AND enabled = 1`
     ).bind(actionType).all();
-    
+
     if (!automations || automations.length === 0) {
       console.log(`❌ No active automations found for action type: ${actionType}`);
       return false; // No automations configured
     }
-    
+
     console.log(`✅ Found ${automations.length} active automation(s) for ${actionType}`);
-    
+
     // Get action type to know points
     const actionTypeData = await env.DB.prepare(
       'SELECT points FROM action_types WHERE id = ?'
     ).bind(actionType).first() as any;
-    
+
     const points = actionTypeData?.points || 0;
     console.log(`💰 Points for this action type: ${points}`);
-    
+
     // Try each automation until one matches
     for (const auto of automations) {
       try {
@@ -1102,7 +1102,7 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
         console.log(`   Student ID columns: ${auto.student_id_columns}`);
         console.log(`   Form field to match: ${auto.form_field_to_match}`);
         console.log(`   Form field columns: ${auto.form_field_columns}`);
-        
+
         // Read Google Sheet - try OAuth first, fallback to public API
         let rows: any[][] = [];
         try {
@@ -1116,13 +1116,13 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
             throw publicError;
           }
         }
-        
+
         console.log(`   📊 Read ${rows.length} rows from Google Sheet`);
         if (rows.length === 0) {
           console.log(`   ⚠️ No rows found in sheet, skipping`);
           continue;
         }
-        
+
         // Parse column indices (convert "D" to 3, "A" to 0, etc.)
         const parseColumn = (col: string): number => {
           const colUpper = col.trim().toUpperCase();
@@ -1133,14 +1133,14 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
           }
           return result - 1;
         };
-        
+
         // Parse student_id_columns (can be string "D" or "D,E,F" or JSON array)
         let studentIdColsStr = auto.student_id_columns;
         if (!studentIdColsStr) {
           console.log(`   ❌ student_id_columns is empty, skipping`);
           continue;
         }
-        
+
         // Try to parse as JSON, if fails, treat as string
         let studentIdColsParsed: string[];
         try {
@@ -1150,14 +1150,14 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
           // Not JSON, treat as comma-separated string
           studentIdColsParsed = studentIdColsStr.split(',').map(c => c.trim()).filter(c => c.length > 0);
         }
-        
+
         // Parse form_field_columns
         let formFieldColsStr = auto.form_field_columns;
         if (!formFieldColsStr) {
           console.log(`   ❌ form_field_columns is empty, skipping`);
           continue;
         }
-        
+
         let formFieldColsParsed: string[];
         try {
           const parsed = JSON.parse(formFieldColsStr);
@@ -1165,42 +1165,42 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
         } catch {
           formFieldColsParsed = formFieldColsStr.split(',').map(c => c.trim()).filter(c => c.length > 0);
         }
-        
+
         const studentIdCols = studentIdColsParsed.map(c => parseColumn(c)).filter(c => c >= 0);
         const formFieldCols = formFieldColsParsed.map(c => parseColumn(c)).filter(c => c >= 0);
-        
+
         console.log(`   📍 Parsed student ID columns: ${studentIdColsParsed} -> indices [${studentIdCols.join(', ')}]`);
         console.log(`   📍 Parsed form field columns: ${formFieldColsParsed} -> indices [${formFieldCols.join(', ')}]`);
-        
+
         if (studentIdCols.length === 0 || formFieldCols.length === 0) {
           console.log(`   ❌ Invalid column configuration, skipping`);
           continue;
         }
-        
+
         // Get student identifier (use normalized user)
         const studentIdentifier = getStudentIdentifier(normalizedUser, auto.student_id_type || 'email');
         console.log(`   🎓 Student identifier (${auto.student_id_type}): "${studentIdentifier}"`);
-        
+
         if (!studentIdentifier) {
           console.log(`   ❌ Student identifier is empty, cannot match`);
           continue;
         }
-        
+
         // Get form field value to match
         const formFieldValue = parsedFormData[auto.form_field_to_match || ''];
         console.log(`   📝 Form field "${auto.form_field_to_match}": "${formFieldValue}"`);
-        
+
         if (!formFieldValue) {
           console.log(`   ❌ Form field value is empty, skipping`);
           continue;
         }
-        
+
         // Check each row in the sheet
         let rowIndex = 0;
         for (const row of rows) {
           rowIndex++;
           console.log(`   \n   📄 Checking row ${rowIndex}:`, row.slice(0, 5)); // Log first 5 columns
-          
+
           // Check if student ID matches in any of the specified columns
           let studentMatch = false;
           let matchedStudentCol = -1;
@@ -1217,12 +1217,12 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
               }
             }
           }
-          
+
           if (!studentMatch) {
             console.log(`      ❌ No student match in this row, skipping`);
             continue;
           }
-          
+
           // Check if form field matches in any of the specified columns
           let fieldMatch = false;
           let matchedFieldCol = -1;
@@ -1241,13 +1241,13 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
               }
             }
           }
-          
+
           if (fieldMatch) {
             // MATCH FOUND! Auto-validate
             console.log(`\n   🎉 MATCH FOUND! Row ${rowIndex}, validating action...`);
             console.log(`      Student matched in column ${matchedStudentCol}`);
             console.log(`      Field matched in column ${matchedFieldCol}`);
-            
+
             await env.DB.prepare(
               `UPDATE actions 
                SET status = 'validated', 
@@ -1257,13 +1257,13 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
                    validated_at = CURRENT_TIMESTAMP
                WHERE id = ?`
             ).bind(points, actionId).run();
-            
+
             // Update leaderboard with gamification
             await ensureLeaderboardGamificationColumns(env);
             const existing = await env.DB.prepare(
               'SELECT id, total_points, actions_count FROM leaderboard WHERE email = ?'
             ).bind(email).first() as any;
-            
+
             let newTotalPoints: number;
             let newActionsCount: number;
 
@@ -1281,12 +1281,12 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
             // Calculer le streak
             const today = new Date().toISOString().split('T')[0];
             const streak = await calculateStreak(env, email);
-            
+
             // Calculer le rang approximatif
             const { results: allStudents } = await env.DB.prepare(
               'SELECT email, total_points FROM leaderboard ORDER BY total_points DESC, last_update DESC'
             ).all();
-            
+
             let estimatedRank = allStudents.length + 1;
             for (let i = 0; i < allStudents.length; i++) {
               if ((allStudents[i] as any).total_points < newTotalPoints) {
@@ -1307,7 +1307,7 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
             );
 
             const emailParts = email.split('@')[0].split('.');
-            
+
             if (existing) {
               await env.DB.prepare(
                 `UPDATE leaderboard 
@@ -1350,14 +1350,14 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
                 JSON.stringify(badges)
               ).run();
             }
-            
+
             console.log(`   ✅ Action auto-validated successfully!`);
             return true; // Auto-validated
           } else {
             console.log(`      ❌ No field match in this row`);
           }
         }
-        
+
         console.log(`   ❌ No match found in any row for this automation`);
       } catch (error: any) {
         console.error(`Error checking automation ${auto.id}:`, error);
@@ -1365,7 +1365,7 @@ async function checkAutomationsAndValidate(env: Env, actionId: string, email: st
         continue;
       }
     }
-    
+
     return false; // No match found
   } catch (error: any) {
     console.error('Error checking automations:', error);
@@ -1415,7 +1415,7 @@ async function submitAction(env: Env, request: Request): Promise<Response> {
     console.log(`   Type: ${body.type}`);
     console.log(`   Email: ${body.email}`);
     console.log(`   Data:`, JSON.stringify(body.data || {}, null, 2));
-    
+
     const autoValidated = await checkAutomationsAndValidate(
       env,
       id,
@@ -1423,7 +1423,7 @@ async function submitAction(env: Env, request: Request): Promise<Response> {
       body.type,
       body.data || {}
     );
-    
+
     if (autoValidated) {
       console.log(`✅ Action ${id} was auto-validated!`);
     } else {
@@ -1434,7 +1434,7 @@ async function submitAction(env: Env, request: Request): Promise<Response> {
       success: true,
       actionId: id,
       autoValidated: autoValidated,
-      message: autoValidated 
+      message: autoValidated
         ? 'Action validée automatiquement via automatisation !'
         : 'Action soumise avec succès. En attente de validation.'
     });
@@ -1545,7 +1545,7 @@ async function validateAction(env: Env, request: Request): Promise<Response> {
     // Si validé, mettre à jour le leaderboard avec gamification
     if (body.decision === 'validated') {
       await ensureLeaderboardGamificationColumns(env);
-      
+
       // Vérifier si l'utilisateur existe
       const existing = await env.DB.prepare(
         'SELECT id, total_points, actions_count FROM leaderboard WHERE email = ?'
@@ -1572,7 +1572,7 @@ async function validateAction(env: Env, request: Request): Promise<Response> {
       // Calculer le streak
       const today = new Date().toISOString().split('T')[0];
       const streak = await calculateStreak(env, action.email);
-      
+
       // Mettre à jour last_action_date si action validée aujourd'hui
       const lastActionDate = today;
 
@@ -1580,7 +1580,7 @@ async function validateAction(env: Env, request: Request): Promise<Response> {
       const { results: allStudents } = await env.DB.prepare(
         'SELECT email, total_points FROM leaderboard ORDER BY total_points DESC, last_update DESC'
       ).all();
-      
+
       let estimatedRank = allStudents.length + 1;
       for (let i = 0; i < allStudents.length; i++) {
         if ((allStudents[i] as any).total_points < newTotalPoints) {
@@ -1740,7 +1740,7 @@ async function getActionById(env: Env, actionId: string): Promise<Response> {
 async function deleteAction(env: Env, actionId: string): Promise<Response> {
   try {
     console.log(`🗑️ deleteAction called with ID: ${actionId}`);
-    
+
     // Vérifier si l'action existe
     const action = await env.DB.prepare(
       'SELECT id, email, points FROM actions WHERE id = ?'
@@ -2073,20 +2073,20 @@ async function getAutomations(env: Env): Promise<Response> {
       // student_id_columns and form_field_columns can be stored as string or JSON
       let studentIdColumns = auto.student_id_columns;
       let formFieldColumns = auto.form_field_columns;
-      
+
       // Try to parse as JSON, if fails, keep as string
       try {
         studentIdColumns = JSON.parse(auto.student_id_columns);
       } catch {
         // Already a string, keep it
       }
-      
+
       try {
         formFieldColumns = JSON.parse(auto.form_field_columns);
       } catch {
         // Already a string, keep it
       }
-      
+
       return {
         id: auto.id,
         actionTypeId: auto.action_type_id,
@@ -2122,12 +2122,12 @@ async function createAutomation(env: Env, request: Request): Promise<Response> {
     // Handle columns: can be string like "D" or "D,E,F" or array
     const studentIdColumns = body.studentIdColumns || body.student_id_columns;
     const formFieldColumns = body.formFieldColumns || body.form_field_columns;
-    
+
     // If it's a string, keep it as string. If it's an array, stringify it.
-    const studentIdColumnsStr = typeof studentIdColumns === 'string' 
-      ? studentIdColumns 
+    const studentIdColumnsStr = typeof studentIdColumns === 'string'
+      ? studentIdColumns
       : JSON.stringify(studentIdColumns || []);
-    
+
     const formFieldColumnsStr = typeof formFieldColumns === 'string'
       ? formFieldColumns
       : JSON.stringify(formFieldColumns || []);
@@ -2168,11 +2168,11 @@ async function updateAutomation(env: Env, automationId: string, request: Request
     // Handle columns: can be string like "D" or "D,E,F" or array
     const studentIdColumns = body.studentIdColumns || body.student_id_columns;
     const formFieldColumns = body.formFieldColumns || body.form_field_columns;
-    
-    const studentIdColumnsStr = typeof studentIdColumns === 'string' 
-      ? studentIdColumns 
+
+    const studentIdColumnsStr = typeof studentIdColumns === 'string'
+      ? studentIdColumns
       : (studentIdColumns ? JSON.stringify(studentIdColumns) : null);
-    
+
     const formFieldColumnsStr = typeof formFieldColumns === 'string'
       ? formFieldColumns
       : (formFieldColumns ? JSON.stringify(formFieldColumns) : null);
@@ -2257,10 +2257,10 @@ async function getRewards(env: Env): Promise<Response> {
 async function saveRewards(env: Env, request: Request): Promise<Response> {
   try {
     const body = await request.json() as { rewards: any[] };
-    
+
     // Supprimer toutes les anciennes récompenses
     await env.DB.prepare('DELETE FROM rewards').run();
-    
+
     // Insérer les nouvelles récompenses
     if (body.rewards && body.rewards.length > 0) {
       const statements = body.rewards.map((reward) => {
@@ -2276,10 +2276,10 @@ async function saveRewards(env: Env, request: Request): Promise<Response> {
           reward.gradient || 'linear-gradient(135deg, #888, #666)'
         );
       });
-      
+
       await env.DB.batch(statements);
     }
-    
+
     return jsonResponse({ success: true, saved: body.rewards?.length || 0 });
   } catch (error: any) {
     return jsonResponse({ success: false, error: error.message }, 500);
@@ -2311,7 +2311,7 @@ async function getLandingPageConfig(env: Env): Promise<Response> {
     const rewardsResult = await env.DB.prepare(
       'SELECT id, rank, position, emoji, amount, benefits, gradient FROM rewards ORDER BY rank ASC'
     ).all();
-    
+
     const rewards = (rewardsResult.results || []).map((reward: any) => ({
       id: reward.id,
       rank: reward.rank,
@@ -2340,7 +2340,7 @@ async function getLandingPageConfig(env: Env): Promise<Response> {
 async function saveLandingPageConfig(env: Env, request: Request): Promise<Response> {
   try {
     const body = await request.json() as { config: Record<string, string> };
-    
+
     console.log('💾 Saving landing page config...');
     console.log(`   Config keys: ${Object.keys(body.config).join(', ')}`);
 
@@ -2406,42 +2406,50 @@ async function saveLandingPageConfig(env: Env, request: Request): Promise<Respon
 /**
  * GET /api/analytics/overview - Vue d'ensemble des statistiques
  */
-async function getAnalyticsOverview(env: Env, period: string = '30d'): Promise<Response> {
+/**
+ * GET /api/analytics/overview - Vue d'ensemble des statistiques
+ */
+async function getAnalyticsOverview(env: Env, period: string = '30d', school: string = 'eugenia'): Promise<Response> {
   try {
     const days = period === '7d' ? 7 : period === '30d' ? 30 : 1;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    
+
+    // Domaine email à filtrer
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     // Total étudiants
-    const totalStudents = await env.DB.prepare('SELECT COUNT(*) as count FROM leaderboard').first() as any;
+    const totalStudents = await env.DB.prepare('SELECT COUNT(*) as count FROM leaderboard WHERE email LIKE ?').bind(domain).first() as any;
     const totalCount = totalStudents?.count || 0;
-    
+
     // Étudiants actifs ce mois
     const activeStudents = await env.DB.prepare(`
       SELECT COUNT(DISTINCT email) as count 
       FROM actions 
       WHERE status = 'validated' 
         AND submitted_at >= ?
-    `).bind(startDate.toISOString()).first() as any;
-    
+        AND email LIKE ?
+    `).bind(startDate.toISOString(), domain).first() as any;
+
     // Actions ce mois
     const actionsThisMonth = await env.DB.prepare(`
       SELECT COUNT(*) as count 
       FROM actions 
       WHERE status = 'validated' 
         AND submitted_at >= ?
-    `).bind(startDate.toISOString()).first() as any;
-    
+        AND email LIKE ?
+    `).bind(startDate.toISOString(), domain).first() as any;
+
     // Moyenne de points
     const avgPoints = await env.DB.prepare(`
       SELECT AVG(total_points) as avg 
       FROM leaderboard 
-      WHERE total_points > 0
-    `).first() as any;
-    
+      WHERE total_points > 0 AND email LIKE ?
+    `).bind(domain).first() as any;
+
     // Taux de participation
     const participationRate = totalCount > 0 ? ((activeStudents?.count || 0) / totalCount) * 100 : 0;
-    
+
     // Tendance (comparaison avec période précédente)
     const prevStartDate = new Date(startDate);
     prevStartDate.setDate(prevStartDate.getDate() - days);
@@ -2450,12 +2458,13 @@ async function getAnalyticsOverview(env: Env, period: string = '30d'): Promise<R
       FROM actions 
       WHERE status = 'validated' 
         AND submitted_at >= ? AND submitted_at < ?
-    `).bind(prevStartDate.toISOString(), startDate.toISOString()).first() as any;
-    
+        AND email LIKE ?
+    `).bind(prevStartDate.toISOString(), startDate.toISOString(), domain).first() as any;
+
     const prevCount = prevActiveStudents?.count || 0;
     const currentCount = activeStudents?.count || 0;
     const participationTrend = prevCount > 0 ? ((currentCount - prevCount) / prevCount) * 100 : 0;
-    
+
     return jsonResponse({
       participationRate: Math.round(participationRate * 10) / 10,
       participationTrend: Math.round(participationTrend * 10) / 10,
@@ -2471,12 +2480,16 @@ async function getAnalyticsOverview(env: Env, period: string = '30d'): Promise<R
 /**
  * GET /api/analytics/timeline - Évolution temporelle
  */
-async function getAnalyticsTimeline(env: Env, period: string = '30d'): Promise<Response> {
+/**
+ * GET /api/analytics/timeline - Évolution temporelle
+ */
+async function getAnalyticsTimeline(env: Env, period: string = '30d', school: string = 'eugenia'): Promise<Response> {
   try {
     const days = period === '7d' ? 7 : period === '30d' ? 30 : 1;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     // Récupérer les données existantes
     const { results } = await env.DB.prepare(`
       SELECT 
@@ -2485,16 +2498,17 @@ async function getAnalyticsTimeline(env: Env, period: string = '30d'): Promise<R
       FROM actions
       WHERE status = 'validated'
         AND submitted_at >= ?
+        AND email LIKE ?
       GROUP BY DATE(submitted_at)
       ORDER BY date ASC
-    `).bind(startDate.toISOString()).all();
-    
+    `).bind(startDate.toISOString(), domain).all();
+
     // Créer un map des dates avec données
     const dataMap = new Map();
     (results || []).forEach((row: any) => {
       dataMap.set(row.date, row.count);
     });
-    
+
     // Générer tous les jours de la période même avec 0 actions
     const allDays: any[] = [];
     for (let i = 0; i < days; i++) {
@@ -2506,7 +2520,7 @@ async function getAnalyticsTimeline(env: Env, period: string = '30d'): Promise<R
         count: dataMap.get(dateStr) || 0
       });
     }
-    
+
     return jsonResponse(allDays);
   } catch (error: any) {
     return jsonResponse({ error: error.message }, 500);
@@ -2516,8 +2530,12 @@ async function getAnalyticsTimeline(env: Env, period: string = '30d'): Promise<R
 /**
  * GET /api/analytics/popular-actions - Actions les plus populaires
  */
-async function getPopularActions(env: Env, limit: number = 5): Promise<Response> {
+/**
+ * GET /api/analytics/popular-actions - Actions les plus populaires
+ */
+async function getPopularActions(env: Env, limit: number = 5, school: string = 'eugenia'): Promise<Response> {
   try {
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
     const { results } = await env.DB.prepare(`
       SELECT 
         at.label as type,
@@ -2527,11 +2545,12 @@ async function getPopularActions(env: Env, limit: number = 5): Promise<Response>
       JOIN action_types at ON a.type = at.id
       WHERE a.status = 'validated'
         AND a.submitted_at >= date('now', '-30 days')
+        AND a.email LIKE ?
       GROUP BY at.id
       ORDER BY count DESC
       LIMIT ?
-    `).bind(limit).all();
-    
+    `).bind(domain, limit).all();
+
     return jsonResponse(results || []);
   } catch (error: any) {
     return jsonResponse({ error: error.message }, 500);
@@ -2541,20 +2560,26 @@ async function getPopularActions(env: Env, limit: number = 5): Promise<Response>
 /**
  * GET /api/analytics/by-class - Répartition par classe
  */
-async function getAnalyticsByClass(env: Env): Promise<Response> {
+/**
+ * GET /api/analytics/by-class - Répartition par classe
+ */
+async function getAnalyticsByClass(env: Env, school: string = 'eugenia'): Promise<Response> {
   try {
     console.log('📊 Fetching analytics by class...');
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     const total = await env.DB.prepare(`
       SELECT COUNT(*) as total
       FROM actions a
       JOIN leaderboard l ON a.email = l.email
       WHERE a.status = 'validated'
         AND a.submitted_at >= date('now', '-30 days')
-    `).first() as any;
-    
+        AND a.email LIKE ?
+    `).bind(domain).first() as any;
+
     const totalCount = total?.total || 1;
     console.log(`📊 Total actions: ${totalCount}`);
-    
+
     const { results } = await env.DB.prepare(`
       SELECT 
         l.classe as class,
@@ -2563,18 +2588,19 @@ async function getAnalyticsByClass(env: Env): Promise<Response> {
       JOIN leaderboard l ON a.email = l.email
       WHERE a.status = 'validated'
         AND a.submitted_at >= date('now', '-30 days')
+        AND a.email LIKE ?
       GROUP BY l.classe
       ORDER BY count DESC
-    `).all();
-    
+    `).bind(domain).all();
+
     console.log(`📊 Found ${results?.length || 0} classes`);
-    
+
     const data = (results || []).map((row: any) => ({
       class: row.class || row.classe,
       count: row.count,
       percentage: Math.round((row.count / totalCount) * 100)
     }));
-    
+
     console.log('📊 By class data:', data);
     return jsonResponse(data);
   } catch (error: any) {
@@ -2586,9 +2612,14 @@ async function getAnalyticsByClass(env: Env): Promise<Response> {
 /**
  * GET /api/analytics/top-students - Top étudiants actifs
  */
-async function getTopStudents(env: Env, limit: number = 10): Promise<Response> {
+/**
+ * GET /api/analytics/top-students - Top étudiants actifs
+ */
+async function getTopStudents(env: Env, limit: number = 10, school: string = 'eugenia'): Promise<Response> {
   try {
     console.log('📊 Fetching top students...');
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     const { results } = await env.DB.prepare(`
       SELECT 
         l.first_name,
@@ -2598,14 +2629,15 @@ async function getTopStudents(env: Env, limit: number = 10): Promise<Response> {
         COALESCE(l.total_points, 0) as points
       FROM leaderboard l
       LEFT JOIN actions a ON l.email = a.email AND a.status = 'validated'
+      WHERE l.email LIKE ?
       GROUP BY l.email
       HAVING actions_count > 0
       ORDER BY actions_count DESC, points DESC
       LIMIT ?
-    `).bind(limit).all();
-    
+    `).bind(domain, limit).all();
+
     console.log(`📊 Found ${results?.length || 0} top students`);
-    
+
     const students = (results || []).map((student: any, index: number) => ({
       rank: index + 1,
       firstName: student.first_name,
@@ -2615,7 +2647,7 @@ async function getTopStudents(env: Env, limit: number = 10): Promise<Response> {
       points: student.points,
       trend: 'stable'
     }));
-    
+
     console.log('📊 Top students:', students);
     return jsonResponse(students);
   } catch (error: any) {
@@ -2627,11 +2659,15 @@ async function getTopStudents(env: Env, limit: number = 10): Promise<Response> {
 /**
  * GET /api/analytics/recent-actions - Actions récentes
  */
-async function getRecentActions(env: Env, hours: number = 48, limit: number = 20, status: string = 'all'): Promise<Response> {
+/**
+ * GET /api/analytics/recent-actions - Actions récentes
+ */
+async function getRecentActions(env: Env, hours: number = 48, limit: number = 20, status: string = 'all', school: string = 'eugenia'): Promise<Response> {
   try {
     const startDate = new Date();
     startDate.setHours(startDate.getHours() - hours);
-    
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     let query = `
       SELECT 
         a.id,
@@ -2645,20 +2681,21 @@ async function getRecentActions(env: Env, hours: number = 48, limit: number = 20
       JOIN leaderboard l ON a.email = l.email
       LEFT JOIN action_types at ON a.type = at.id
       WHERE a.submitted_at >= ?
+        AND a.email LIKE ?
     `;
-    
+
     if (status === 'validated') {
       query += ` AND a.status = 'validated'`;
     } else if (status === 'rejected') {
       query += ` AND a.status = 'rejected'`;
     }
-    
-      query += ` ORDER BY a.submitted_at DESC LIMIT ?`;
-    
+
+    query += ` ORDER BY a.submitted_at DESC LIMIT ?`;
+
     const { results } = await env.DB.prepare(query)
-      .bind(startDate.toISOString(), limit)
+      .bind(startDate.toISOString(), domain, limit)
       .all();
-    
+
     return jsonResponse(results || []);
   } catch (error: any) {
     return jsonResponse({ error: error.message }, 500);
@@ -2668,10 +2705,14 @@ async function getRecentActions(env: Env, hours: number = 48, limit: number = 20
 /**
  * GET /api/analytics/insights - Insights automatiques
  */
-async function getAnalyticsInsights(env: Env): Promise<Response> {
+/**
+ * GET /api/analytics/insights - Insights automatiques
+ */
+async function getAnalyticsInsights(env: Env, school: string = 'eugenia'): Promise<Response> {
   try {
     console.log('📊 Fetching insights...');
-    
+    const domain = school === 'eugenia' ? '%@eugeniaschool.com' : '%@albertschool.com';
+
     // Momentum du moment
     const momentum = await env.DB.prepare(`
       SELECT 
@@ -2681,13 +2722,14 @@ async function getAnalyticsInsights(env: Env): Promise<Response> {
       JOIN action_types at ON a.type = at.id
       WHERE a.status = 'validated'
         AND a.submitted_at >= date('now', '-7 days')
+        AND a.email LIKE ?
       GROUP BY at.id
       ORDER BY count DESC
       LIMIT 1
-    `).first() as any;
-    
+    `).bind(domain).first() as any;
+
     console.log('📊 Momentum:', momentum);
-    
+
     const prevMomentum = await env.DB.prepare(`
       SELECT COUNT(*) as count
       FROM actions a
@@ -2696,12 +2738,13 @@ async function getAnalyticsInsights(env: Env): Promise<Response> {
         AND at.label = ?
         AND a.submitted_at >= date('now', '-14 days')
         AND a.submitted_at < date('now', '-7 days')
-    `).bind(momentum?.action_type || '').first() as any;
-    
-    const momentumIncrease = prevMomentum?.count > 0 
+        AND a.email LIKE ?
+    `).bind(momentum?.action_type || '', domain).first() as any;
+
+    const momentumIncrease = prevMomentum?.count > 0
       ? Math.round(((momentum?.count || 0) - (prevMomentum.count || 0)) / prevMomentum.count * 100)
       : 0;
-    
+
     // Jour le plus actif
     const busiestDay = await env.DB.prepare(`
       SELECT 
@@ -2718,24 +2761,26 @@ async function getAnalyticsInsights(env: Env): Promise<Response> {
       FROM actions
       WHERE status = 'validated'
         AND submitted_at >= date('now', '-30 days')
+        AND email LIKE ?
       GROUP BY CAST(strftime('%w', submitted_at) AS INTEGER)
       ORDER BY count DESC
       LIMIT 1
-    `).first() as any;
-    
+    `).bind(domain).first() as any;
+
     console.log('📊 Busiest day:', busiestDay);
-    
+
     const totalActions = await env.DB.prepare(`
       SELECT COUNT(*) as total
       FROM actions
       WHERE status = 'validated'
         AND submitted_at >= date('now', '-30 days')
-    `).first() as any;
-    
+        AND email LIKE ?
+    `).bind(domain).first() as any;
+
     const busiestDayPercentage = totalActions?.total > 0
       ? Math.round(((busiestDay?.count || 0) / totalActions.total) * 100)
       : 0;
-    
+
     // Heure de pointe
     const peakHours = await env.DB.prepare(`
       SELECT 
@@ -2744,14 +2789,15 @@ async function getAnalyticsInsights(env: Env): Promise<Response> {
       FROM actions
       WHERE status = 'validated'
         AND submitted_at >= date('now', '-30 days')
+        AND email LIKE ?
       GROUP BY hour
       ORDER BY count DESC
       LIMIT 1
-    `).first() as any;
-    
+    `).bind(domain).first() as any;
+
     const peakHour = peakHours?.hour || 14;
     console.log('📊 Peak hour:', peakHour);
-    
+
     // Classe championne
     const topClass = await env.DB.prepare(`
       SELECT 
@@ -2761,13 +2807,14 @@ async function getAnalyticsInsights(env: Env): Promise<Response> {
       JOIN leaderboard l ON a.email = l.email
       WHERE a.status = 'validated'
         AND a.submitted_at >= date('now', '-30 days')
+        AND a.email LIKE ?
       GROUP BY l.classe
       ORDER BY count DESC
       LIMIT 1
-    `).first() as any;
-    
+    `).bind(domain).first() as any;
+
     console.log('📊 Top class:', topClass);
-    
+
     return jsonResponse({
       momentum: {
         actionType: momentum?.action_type || 'N/A',
@@ -2884,12 +2931,12 @@ export default {
 
       // Route: DELETE /actions/:id - DOIT être AVANT les autres routes /actions/*
       // Vérifier que ce n'est pas une route spéciale comme /actions/all, /actions/validate, etc.
-      if (request.method === 'DELETE' && 
-          url.pathname.startsWith('/actions/') && 
-          url.pathname !== '/actions/all' &&
-          url.pathname !== '/actions/pending' &&
-          url.pathname !== '/actions/submit' &&
-          url.pathname !== '/actions/validate') {
+      if (request.method === 'DELETE' &&
+        url.pathname.startsWith('/actions/') &&
+        url.pathname !== '/actions/all' &&
+        url.pathname !== '/actions/pending' &&
+        url.pathname !== '/actions/submit' &&
+        url.pathname !== '/actions/validate') {
         const actionId = decodeURIComponent(url.pathname.split('/')[2]);
         console.log(`🗑️ DELETE action request for ID: ${actionId}, pathname: ${url.pathname}`);
         const response = await deleteAction(env, actionId);
@@ -3069,7 +3116,8 @@ export default {
       // Route: GET /api/analytics/overview
       if (url.pathname === '/api/analytics/overview' && request.method === 'GET') {
         const period = url.searchParams.get('period') || '30d';
-        const response = await getAnalyticsOverview(env, period);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getAnalyticsOverview(env, period, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3079,7 +3127,8 @@ export default {
       // Route: GET /api/analytics/timeline
       if (url.pathname === '/api/analytics/timeline' && request.method === 'GET') {
         const period = url.searchParams.get('period') || '30d';
-        const response = await getAnalyticsTimeline(env, period);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getAnalyticsTimeline(env, period, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3089,7 +3138,8 @@ export default {
       // Route: GET /api/analytics/popular-actions
       if (url.pathname === '/api/analytics/popular-actions' && request.method === 'GET') {
         const limit = parseInt(url.searchParams.get('limit') || '5');
-        const response = await getPopularActions(env, limit);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getPopularActions(env, limit, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3098,7 +3148,8 @@ export default {
 
       // Route: GET /api/analytics/by-class
       if (url.pathname === '/api/analytics/by-class' && request.method === 'GET') {
-        const response = await getAnalyticsByClass(env);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getAnalyticsByClass(env, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3108,7 +3159,8 @@ export default {
       // Route: GET /api/analytics/top-students
       if (url.pathname === '/api/analytics/top-students' && request.method === 'GET') {
         const limit = parseInt(url.searchParams.get('limit') || '10');
-        const response = await getTopStudents(env, limit);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getTopStudents(env, limit, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3120,7 +3172,8 @@ export default {
         const hours = parseInt(url.searchParams.get('hours') || '48');
         const limit = parseInt(url.searchParams.get('limit') || '20');
         const status = url.searchParams.get('status') || 'all';
-        const response = await getRecentActions(env, hours, limit, status);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getRecentActions(env, hours, limit, status, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3129,7 +3182,8 @@ export default {
 
       // Route: GET /api/analytics/insights
       if (url.pathname === '/api/analytics/insights' && request.method === 'GET') {
-        const response = await getAnalyticsInsights(env);
+        const school = url.searchParams.get('school') || 'eugenia';
+        const response = await getAnalyticsInsights(env, school);
         return new Response(response.body, {
           ...response,
           headers: { ...response.headers, ...corsHeaders() },
@@ -3517,7 +3571,7 @@ async function getOAuthCredentials(env: Env): Promise<Response> {
     ).bind('google').first() as any;
 
     if (!credentials) {
-      return jsonResponse({ 
+      return jsonResponse({
         configured: false,
         clientId: null,
         hasCredentials: false
@@ -3549,9 +3603,9 @@ async function handleGoogleOAuthCallback(env: Env, request: Request): Promise<Re
     // Get credentials from DB (like n8n)
     const credentials = await getGoogleOAuthCredentials(env);
     if (!credentials) {
-      return jsonResponse({ 
-        success: false, 
-        error: 'OAuth credentials not configured. Please configure Client ID and Secret first.' 
+      return jsonResponse({
+        success: false,
+        error: 'OAuth credentials not configured. Please configure Client ID and Secret first.'
       }, 400);
     }
 
@@ -3570,9 +3624,9 @@ async function handleGoogleOAuthCallback(env: Env, request: Request): Promise<Re
 
     if (!tokenResponse.ok) {
       const errorText = await tokenResponse.text();
-      return jsonResponse({ 
-        success: false, 
-        error: `Failed to exchange code: ${errorText}` 
+      return jsonResponse({
+        success: false,
+        error: `Failed to exchange code: ${errorText}`
       }, 400);
     }
 
@@ -3782,13 +3836,13 @@ async function getReports(env: Env): Promise<Response> {
 async function updateReportStatus(env: Env, reportId: string, request: Request): Promise<Response> {
   try {
     const body = await request.json() as { status: string };
-    
+
     if (!['pending', 'in_progress', 'resolved'].includes(body.status)) {
       return jsonResponse({ success: false, error: 'Statut invalide' }, 400);
     }
 
     const now = new Date().toISOString();
-    
+
     await env.DB.prepare(
       'UPDATE reports SET status = ?, updated_at = ? WHERE id = ?'
     ).bind(body.status, now, reportId).run();
@@ -3901,7 +3955,7 @@ async function isAssociationAdmin(env: Env, associationId: number, email: string
     const member = await env.DB.prepare(
       'SELECT role FROM association_members WHERE association_id = ? AND student_email = ? AND status = "active"'
     ).bind(associationId, email.toLowerCase()).first() as any;
-    
+
     return member?.role === 'admin';
   } catch {
     return false;

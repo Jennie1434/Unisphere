@@ -19,16 +19,16 @@ export default function useAnalytics(filters = {}, school = 'eugenia') {
       const emailDomain = SCHOOL_EMAIL_DOMAINS[school];
 
       const [overview, timeline, popularActions, byClass, topStudents, insights, recentActions] = await Promise.all([
-        fetch(`${API_URL}/api/analytics/overview?period=${period}`).then(r => {
+        fetch(`${API_URL}/api/analytics/overview?period=${period}&school=${school}`).then(r => {
           if (!r.ok) console.error('API Error:', r.status, r.statusText);
           return r.json();
         }),
-        fetch(`${API_URL}/api/analytics/timeline?period=${period}`).then(r => r.json()),
-        fetch(`${API_URL}/api/analytics/popular-actions?limit=5`).then(r => r.json()),
-        fetch(`${API_URL}/api/analytics/by-class`).then(r => r.json()),
-        fetch(`${API_URL}/api/analytics/top-students?limit=10`).then(r => r.json()),
-        fetch(`${API_URL}/api/analytics/insights`).then(r => r.json()),
-        fetch(`${API_URL}/api/analytics/recent-actions?hours=24&limit=20`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/timeline?period=${period}&school=${school}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/popular-actions?limit=5&school=${school}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/by-class?school=${school}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/top-students?limit=10&school=${school}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/insights?school=${school}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/recent-actions?hours=24&limit=20&school=${school}`).then(r => r.json()),
       ]);
 
       // Filtrer par école
