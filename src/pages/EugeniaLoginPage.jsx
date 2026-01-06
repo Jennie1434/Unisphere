@@ -59,7 +59,7 @@ export default function EugeniaLoginPage() {
         <div className="bg-white border-2 border-black p-12 shadow-[30px_30px_0px_rgba(0,0,0,1)] md:p-20">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-black mb-6 italic tracking-tighter leading-none text-[#671324]" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
-              DÉVERROUILLAGE.
+              CONNEXION.
             </h1>
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="w-8 h-[2px] bg-[#DBA12D]" />
