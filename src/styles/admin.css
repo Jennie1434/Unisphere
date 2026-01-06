@@ -1,321 +1,54 @@
-/* Styles pour le panel admin avec couleurs Eugenia */
+/* Styles pour le panel admin */
 
-/* Background du panel admin */
-.admin-panel {
-  background: #f9fafb;
-  min-height: 100vh;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.dark .admin-panel {
-  background: #f3f4f6;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* Header Admin */
-.admin-header {
-  background: white !important;
-  border-bottom: 1px solid #e5e7eb;
-  color: #111827 !important;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 10px;
 }
 
-.dark .admin-header {
-  background: white !important;
-  color: #111827 !important;
+::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
 }
 
-.admin-header h1 {
-  color: #111827;
-  font-weight: 700;
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Navigation Admin */
-.admin-nav {
-  background: white !important;
-  border-bottom: 1px solid #e5e7eb;
+.glass-dark {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.dark .admin-nav {
-  background: white !important;
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
 }
 
-.admin-nav a {
-  color: #4b5563;
-  transition: all 0.2s ease;
-  border-radius: 0.5rem;
-  margin: 0.25rem 0.5rem;
-  padding: 0.75rem 1rem;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-.admin-nav a:hover {
-  background: #f3f4f6;
-  color: #111827;
+/* Typography Overrides */
+.font-serif {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-.admin-nav a.active {
-  background: #fdf2f8; /* pink-50 */
-  color: #be185d; /* pink-700 */
-  font-weight: 600;
-}
-
-/* Cards Admin */
-.admin-card {
-  background: white !important;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  transition: all 0.2s ease;
-  color: #111827 !important;
-}
-
-/* En mode sombre, garder les panels admin en blanc clair */
-.dark .admin-card {
-  background: #f9fafb !important;
-  border-color: #e5e7eb;
-  color: #111827 !important;
-}
-
-.admin-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transform: translateY(-2px);
-}
-
-/* Boutons Admin */
-.btn-admin-primary {
-  background: linear-gradient(135deg, var(--eugenia-burgundy) 0%, var(--eugenia-pink) 100%);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.btn-admin-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  filter: brightness(110%);
-}
-
-.btn-admin-secondary {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-admin-secondary:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  color: #111827;
-}
-
-.btn-admin-danger {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-admin-danger:hover {
-  background: #fecaca;
-  color: #7f1d1d;
-}
-
-/* Badges Admin */
-.badge-admin {
-  font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.badge-admin-success {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.badge-admin-warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.badge-admin-danger {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.badge-admin-info {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-/* Stats Cards */
-.stats-card {
-  border-left: none;
-  border-top: 4px solid var(--eugenia-yellow);
-}
-
-.stats-card:hover {
-  transform: translateY(-4px);
-  border-left-width: 0;
-}
-
-.stats-card.pending {
-  border-top-color: #ef4444;
-}
-
-.stats-card.success {
-  border-top-color: #10b981;
-}
-
-.stats-card.info {
-  border-top-color: #3b82f6;
-}
-
-/* Forms Admin */
-.admin-form input:focus,
-.admin-form select:focus,
-.admin-form textarea:focus {
-  border-color: var(--eugenia-pink);
-  ring: 2px solid rgba(227, 48, 84, 0.2);
-  outline: none;
-}
-
-.admin-form label {
-  color: #374151;
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-/* Tables Admin */
-.admin-table {
-  width: 100%;
-  background: white !important;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-.dark .admin-table {
-  background: white !important;
-}
-
-.dark .admin-table th,
-.dark .admin-table td {
-  color: #111827 !important;
-}
-
-.admin-table thead {
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.admin-table th {
-  color: #6b7280;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  padding: 1rem 1.5rem;
-  text-align: left;
-}
-
-.admin-table td {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #f3f4f6;
-  color: #374151;
-}
-
-.admin-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-/* Alerts Admin */
-.alert-admin {
-  border: 1px solid transparent;
-  padding: 1rem;
-  border-radius: 0.75rem;
-}
-
-.alert-admin-success {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #065f46;
-}
-
-.alert-admin-warning {
-  background: #fffbeb;
-  border-color: #fde68a;
-  color: #92400e;
-}
-
-.alert-admin-danger {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #991b1b;
-}
-
-/* Links Admin */
-.admin-link {
-  color: #4b5563;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.admin-link:hover {
-  color: var(--eugenia-pink);
-}
-
-/* Force les panels admin à rester blancs/clairs même en mode sombre */
-.admin-panel * .admin-card,
-.admin-panel .admin-card,
-.admin-card {
-  background: white !important;
-  color: #111827 !important;
-}
-
-.dark .admin-panel * .admin-card,
-.dark .admin-panel .admin-card,
-.dark .admin-card {
-  background: #f9fafb !important;
-  color: #111827 !important;
-}
-
-/* Force les textes dans les admin-cards à rester sombres */
-.admin-card * {
-  color: inherit;
-}
-
-.admin-card h1,
-.admin-card h2,
-.admin-card h3,
-.admin-card h4,
-.admin-card p,
-.admin-card span,
-.admin-card div {
-  color: #111827 !important;
-}
-
-.dark .admin-card h1,
-.dark .admin-card h2,
-.dark .admin-card h3,
-.dark .admin-card h4,
-.dark .admin-card p,
-.dark .admin-card span,
-.dark .admin-card div {
-  color: #111827 !important;
-}
 
 
