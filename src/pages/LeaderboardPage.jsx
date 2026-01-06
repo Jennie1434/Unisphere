@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Leaderboard from '../components/student/Leaderboard';
-import LeaderboardStats from '../components/student/LeaderboardStats';
+
 import PageLayout from '../components/shared/PageLayout';
 import { useStudentAuth } from '../contexts/StudentAuthContext';
 import { Trophy, Zap, Target } from 'lucide-react';
@@ -60,14 +60,7 @@ export default function LeaderboardPage({ school = 'eugenia' }) {
           <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-gradient-to-t from-[#671324]/10 to-transparent blur-[200px] -z-10 animate-pulse" />
         </header>
 
-        {/* STATS SECTION */}
-        {student && (
-          <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">
-            <div className="bg-white border-2 border-black p-12 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-5px] hover:translate-y-[-5px] hover:shadow-[25px_25px_0px_#DBA12D] transition-all duration-500">
-              <LeaderboardStats school={school} />
-            </div>
-          </section>
-        )}
+
 
         {/* LEADERBOARD TABLE */}
         <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">

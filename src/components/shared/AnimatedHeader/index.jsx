@@ -12,9 +12,9 @@ export default function Header({ school = 'eugenia' }) {
     const menu = {
         open: {
             width: "480px",
-            height: "650px",
+            height: "100vh",
             top: "-25px",
-            right: "-25px",
+            right: "-30px",
             transition: { duration: 0.75, type: "tween", ease: [0.76, 0, 0.24, 1] }
         },
         closed: {
@@ -36,12 +36,7 @@ export default function Header({ school = 'eugenia' }) {
         { title: "Soumettre", href: `${schoolPath}/submit` }
     ];
 
-    const footerLinks = [
-        { title: "Facebook", href: "/" },
-        { title: "LinkedIn", href: "/" },
-        { title: "Instagram", href: "/" },
-        { title: "Twitter", href: "/" }
-    ];
+    const footerLinks = [];
 
     return (
         <div className={styles.header}>
