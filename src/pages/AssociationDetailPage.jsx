@@ -9,6 +9,7 @@ import AssociationApplicationForm from '../components/student/AssociationApplica
 export default function AssociationDetailPage({ school = 'eugenia' }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { student } = useStudentAuth();
   // const theme = useSchoolTheme(school); // Removed for consistent Green Branding
   const schoolPath = school === 'eugenia' ? '/eugenia-school' : '/albert-school';
   const isEugenia = school === 'eugenia';

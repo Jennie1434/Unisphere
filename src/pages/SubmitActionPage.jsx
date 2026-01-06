@@ -116,21 +116,22 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
 
   return (
     <PageLayout school={school} minimalFooter={true}>
-      <div className="min-h-screen bg-[#F7F7F5] py-12">
+      <div className="min-h-screen bg-white text-black selection:bg-[#DBA12D] selection:text-black font-sans py-12">
         <div className="max-w-4xl mx-auto px-6">
           {/* Navigation Breadcrumb */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-black/40 hover:text-black transition-colors mb-8 font-bold text-xs uppercase tracking-widest"
+            className="flex items-center gap-2 text-black/40 hover:text-black transition-colors mb-8 font-black text-[10px] uppercase tracking-widest"
           >
             <ArrowLeft className="w-4 h-4" /> Retour
           </button>
 
           <header className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-black tracking-tight mb-4">
-              Soumettre une action
+            <h1 className="text-6xl md:text-7xl font-black tracking-tighter mb-4" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+              SOUMETTRE <br />
+              <span className="text-[#DBA12D] italic">UNE ACTION.</span>
             </h1>
-            <p className="text-gray-500 font-medium text-lg">
+            <p className="text-black/60 font-bold text-lg max-w-2xl uppercase tracking-tight">
               Remplissez le formulaire ci-dessous pour valider vos points. Chaque soumission est vérifiée par l'administration.
             </p>
           </header>
@@ -138,39 +139,44 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-[32px] p-8 md:p-10 shadow-xl shadow-black/5 border border-black/5">
+              <div className="bg-white border-2 border-black p-8 md:p-10 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-5px] hover:translate-y-[-5px] hover:shadow-[25px_25px_0px_#DBA12D] transition-all duration-300">
                 <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Action Type Selection */}
                   <div className="space-y-4">
-                    <label className="block text-xs font-black uppercase tracking-widest text-black/30">
+                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-black">
                       Catégorie d'action
                     </label>
-                    <select
-                      className="w-full px-6 py-4 rounded-xl bg-gray-50 border border-black/5 text-black font-bold focus:ring-2 focus:ring-black/10 transition-all appearance-none cursor-pointer outline-none"
-                      value={selectedType}
-                      onChange={handleTypeChange}
-                      required
-                    >
-                      <option value="">Sélectionnez une catégorie...</option>
-                      {actionTypes.map(type => (
-                        <option key={type.id} value={type.id}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative">
+                      <select
+                        className="w-full px-6 py-4 rounded-none bg-white border-2 border-black text-black font-bold uppercase tracking-wider focus:outline-none focus:bg-black focus:text-white transition-all appearance-none cursor-pointer"
+                        value={selectedType}
+                        onChange={handleTypeChange}
+                        required
+                      >
+                        <option value="">Sélectionnez une catégorie...</option>
+                        {actionTypes.map(type => (
+                          <option key={type.id} value={type.id}>
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Dynamic Fields */}
                   {selectedActionType && (
-                    <div className="space-y-8 pt-4 border-t border-black/5">
+                    <div className="space-y-8 pt-8 border-t-2 border-black/5">
                       {selectedActionType.fields.map(field => (
                         <div key={field.name} className="space-y-4">
-                          <label className="block text-xs font-black uppercase tracking-widest text-black/30">
-                            {field.label} {field.required && <span className="text-red-500">*</span>}
+                          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                            {field.label} {field.required && <span className="text-[#671324]">*</span>}
                           </label>
                           {field.type === 'textarea' ? (
                             <textarea
-                              className="w-full px-6 py-4 rounded-xl bg-gray-50 border border-black/5 text-black font-medium focus:ring-2 focus:ring-black/10 transition-all min-h-[150px] outline-none"
+                              className="w-full px-6 py-4 rounded-none bg-black/[0.02] border-2 border-black text-black font-medium focus:outline-none focus:bg-white focus:shadow-[8px_8px_0px_#DBA12D] transition-all min-h-[150px] placeholder:text-black/20"
                               value={formData[field.name] || ''}
                               onChange={(e) => handleFieldChange(field.name, e.target.value)}
                               placeholder={field.placeholder}
@@ -179,7 +185,7 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
                           ) : (
                             <input
                               type={field.type}
-                              className="w-full px-6 py-4 rounded-xl bg-gray-50 border border-black/5 text-black font-medium focus:ring-2 focus:ring-black/10 transition-all outline-none"
+                              className="w-full px-6 py-4 rounded-none bg-black/[0.02] border-2 border-black text-black font-medium focus:outline-none focus:bg-white focus:shadow-[8px_8px_0px_#DBA12D] transition-all placeholder:text-black/20"
                               value={formData[field.name] || ''}
                               onChange={(e) => handleFieldChange(field.name, e.target.value)}
                               placeholder={field.placeholder}
@@ -194,18 +200,11 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
                   {/* Feedback Message */}
                   {message.text && (
                     <div
-                      className="p-6 rounded-2xl flex items-center gap-4 border"
-                      style={message.type === 'success' ? {
-                        backgroundColor: school === 'eugenia' ? '#FEF3C7' : '#EFF6FF',
-                        borderColor: school === 'eugenia' ? '#DBA12D' : '#3461FF',
-                        color: school === 'eugenia' ? '#78350F' : '#1E3A8A'
-                      } : {
-                        backgroundColor: '#FEE2E2',
-                        borderColor: '#EF4444',
-                        color: '#991B1B'
-                      }}>
+                      className="p-6 border-2 border-black flex items-center gap-4 bg-[#DBA12D]"
+                      style={message.type === 'error' ? { backgroundColor: '#671324', color: 'white', borderColor: 'black' } : {}}
+                    >
                       {message.type === 'success' ? <CheckCircle2 className="w-6 h-6 shrink-0" /> : <AlertCircle className="w-6 h-6 shrink-0" />}
-                      <p className="font-bold text-sm tracking-tight">{message.text}</p>
+                      <p className="font-black text-sm uppercase tracking-wider">{message.text}</p>
                     </div>
                   )}
 
@@ -213,10 +212,7 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
                   <button
                     type="submit"
                     disabled={submitting || !selectedType}
-                    className="w-full py-5 rounded-xl text-white font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:hover:bg-black shadow-xl"
-                    style={{
-                      backgroundColor: 'black'
-                    }}
+                    className="w-full py-5 bg-black border-2 border-black text-white font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-4 transition-all hover:bg-[#671324] disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[10px_10px_0px_rgba(0,0,0,0.2)]"
                   >
                     {submitting ? (
                       <Clock className="w-5 h-5 animate-spin" />
@@ -231,12 +227,12 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
             </div>
 
             {/* Side Info */}
-            <div className="space-y-6">
-              <div className="bg-white rounded-[32px] p-8 border border-black/5 shadow-lg shadow-black/5">
-                <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6">
-                  <Sparkles className="w-6 h-6" style={{ color: successColor }} />
+            <div className="space-y-8">
+              <div className="bg-white border-2 border-black p-8 shadow-[10px_10px_0px_rgba(0,0,0,1)]">
+                <div className="w-12 h-12 bg-black flex items-center justify-center mb-6 border-2 border-black">
+                  <Sparkles className="w-6 h-6 text-[#DBA12D]" />
                 </div>
-                <h4 className="text-black font-bold mb-3 tracking-tight">Conseils de validation</h4>
+                <h4 className="text-2xl font-black mb-6 tracking-tighter" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>VALIDATION.</h4>
                 <ul className="space-y-4">
                   {[
                     "Soyez précis dans vos descriptions",
@@ -244,24 +240,26 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
                     "Vérifiez l'orthographe",
                     "Les points sont attribués sous 48h"
                   ].map((tip, i) => (
-                    <li key={i} className="flex gap-3 text-xs font-bold text-black/60 leading-relaxed">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: successColor }} />
+                    <li key={i} className="flex gap-4 text-xs font-bold text-black leading-relaxed uppercase tracking-tight">
+                      <div className="w-4 h-4 rounded-full border-2 border-black flex items-center justify-center shrink-0 mt-0.5">
+                        <div className="w-2 h-2 bg-[#DBA12D] rounded-full" />
+                      </div>
                       {tip}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-white rounded-[32px] p-8 border border-black/5">
-                <h4 className="text-black font-bold mb-3 tracking-tight">Besoin d'aide ?</h4>
-                <p className="text-xs text-black/40 font-medium leading-relaxed mb-6">
-                  Si vous ne trouvez pas la catégorie correspondante, contactez le support.
+              <div className="bg-black text-white p-8 border-2 border-black shadow-[10px_10px_0px_#DBA12D]">
+                <h4 className="text-2xl font-black mb-4 tracking-tighter italic" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>IDÉES ?</h4>
+                <p className="text-xs text-white/60 font-medium leading-relaxed mb-8 uppercase tracking-wide">
+                  Si vous pensez qu'une action manque à la liste, proposez-la directement.
                 </p>
                 <button
-                  onClick={() => navigate(`/${school}-school/support`)}
-                  className="w-full py-4 border border-black/10 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                  onClick={() => navigate(`/${school}-school/report`)}
+                  className="w-full py-4 border-2 border-[#DBA12D] text-[#DBA12D] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#DBA12D] hover:text-black transition-all"
                 >
-                  Contacter le support
+                  Suggérer une nouvelle action
                 </button>
               </div>
             </div>

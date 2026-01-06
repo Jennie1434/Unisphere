@@ -191,18 +191,23 @@ export default function EugeniaSchoolPage() {
 
                 {/* Panel Actions */}
                 <div className="flex flex-col gap-4">
-                  <Link
-                    to={panel.link}
-                    className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#671324] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
-                  >
-                    LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    to={panel.submitLink}
-                    className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
-                  >
-                    SOUMETTRE +
-                  </Link>
+                  {panel.id !== 'signalement' && (
+                    <Link
+                      to={panel.link}
+                      className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#671324] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
+                    >
+                      LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                  )}
+
+                  {panel.id !== 'associations' && (
+                    <Link
+                      to={panel.submitLink}
+                      className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
+                    >
+                      SOUMETTRE +
+                    </Link>
+                  )}
                 </div>
 
                 {/* Kinetic Glow Effect on Hover */}

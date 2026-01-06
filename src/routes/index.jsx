@@ -62,6 +62,7 @@ const Analytics = lazyLoad(() => import('../pages/Analytics'));
 const GoogleOAuthCallback = lazyLoad(() => import('../pages/GoogleOAuthCallback'));
 const GoogleSheetsSetup = lazyLoad(() => import('../pages/GoogleSheetsSetup'));
 const AssociationManagementPage = lazyLoad(() => import('../pages/AssociationManagementPage'));
+const CreateAssociationPage = lazyLoad(() => import('../pages/CreateAssociationPage'));
 const AssociationDetailPage = lazyLoad(() => import('../pages/AssociationDetailPage'));
 const NotificationsPage = lazyLoad(() => import('../pages/NotificationsPage'));
 const NotFoundPage = lazyLoad(() => import('../pages/NotFoundPage'));
@@ -114,6 +115,14 @@ export function createStudentRoutes(school) {
       element: (
         <SchoolAuth school={school}>
           <AssociationsPage school={school} />
+        </SchoolAuth>
+      )
+    },
+    {
+      path: `${schoolPath}/associations/create`,
+      element: (
+        <SchoolAuth school={school}>
+          <CreateAssociationPage school={school} />
         </SchoolAuth>
       )
     },
