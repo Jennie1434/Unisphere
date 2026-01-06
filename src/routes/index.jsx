@@ -7,42 +7,69 @@ import { ROUTES, SCHOOLS } from '../constants/routes';
 import SchoolAuth from '../components/student/SchoolAuth';
 import AdminAuth from '../components/admin/AdminAuth';
 
+// Helper pour gérer les erreurs de chargement de chunks (version mismatch après déploiement)
+const lazyLoad = (importFn) => {
+  return lazy(() => {
+    return importFn().catch(error => {
+      // Si le module ne peut pas être chargé (souvent dû à un redéploiement), on recharge la page
+      if (error.message.includes('Failed to fetch dynamically imported module') ||
+        error.message.includes('Importing a module script failed')) {
+
+        // On évite une boucle infinie avec sessionStorage
+        const storageKey = `retry-lazy-refreshed`;
+        if (!sessionStorage.getItem(storageKey)) {
+          sessionStorage.setItem(storageKey, 'true');
+          window.location.reload();
+          // On renvoie une promesse qui ne résout jamais pour attendre le reload
+          return new Promise(() => { });
+        }
+      }
+      throw error;
+    });
+  });
+};
+
+// Nettoyage du flag de reload au chargement réussi
+window.addEventListener('load', () => {
+  sessionStorage.removeItem('retry-lazy-refreshed');
+});
+
 // Lazy load toutes les pages pour améliorer les performances
-const UniSphereLandingPage = lazy(() => import('../pages/UniSphereLandingPage'));
-const SelectSchoolPage = lazy(() => import('../pages/SelectSchoolPage'));
-const EugeniaSchoolPage = lazy(() => import('../pages/EugeniaSchoolPage'));
-const AlbertSchoolPage = lazy(() => import('../pages/AlbertSchoolPage'));
-const EugeniaLoginPage = lazy(() => import('../pages/EugeniaLoginPage'));
-const AlbertLoginPage = lazy(() => import('../pages/AlbertLoginPage'));
-const LeaderboardPage = lazy(() => import('../pages/LeaderboardPage'));
-const SubmitActionPage = lazy(() => import('../pages/SubmitActionPage'));
-const AmbassadeursPage = lazy(() => import('../pages/AmbassadeursPage'));
-const AssociationsPage = lazy(() => import('../pages/AssociationsPage'));
-const StudentProfilePage = lazy(() => import('../pages/StudentProfilePage'));
-const StudentPublicProfilePage = lazy(() => import('../pages/StudentPublicProfilePage'));
-const ReportIssuePage = lazy(() => import('../pages/ReportIssuePage'));
-const AdminPage = lazy(() => import('../pages/AdminPage'));
-const AdminDashboard = lazy(() => import('../pages/AdminDashboard'));
-const AdminGuide = lazy(() => import('../pages/AdminGuide'));
-const ValidationQueue = lazy(() => import('../components/admin/ValidationQueue'));
-const ReportsQueue = lazy(() => import('../components/admin/ReportsQueue'));
-const ActionTypeEditor = lazy(() => import('../components/admin/ActionTypeEditor'));
-const LeaderboardConfig = lazy(() => import('../components/admin/LeaderboardConfig'));
-const AutomationConfig = lazy(() => import('../components/admin/AutomationConfig'));
-const LandingConfig = lazy(() => import('../components/admin/LandingConfig'));
-const Analytics = lazy(() => import('../pages/Analytics'));
-const GoogleOAuthCallback = lazy(() => import('../pages/GoogleOAuthCallback'));
-const GoogleSheetsSetup = lazy(() => import('../pages/GoogleSheetsSetup'));
-const AssociationManagementPage = lazy(() => import('../pages/AssociationManagementPage'));
-const AssociationDetailPage = lazy(() => import('../pages/AssociationDetailPage'));
-const NotificationsPage = lazy(() => import('../pages/NotificationsPage'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const UniSphereLandingPage = lazyLoad(() => import('../pages/UniSphereLandingPage'));
+const SelectSchoolPage = lazyLoad(() => import('../pages/SelectSchoolPage'));
+const EugeniaSchoolPage = lazyLoad(() => import('../pages/EugeniaSchoolPage'));
+const AlbertSchoolPage = lazyLoad(() => import('../pages/AlbertSchoolPage'));
+const EugeniaLoginPage = lazyLoad(() => import('../pages/EugeniaLoginPage'));
+const AlbertLoginPage = lazyLoad(() => import('../pages/AlbertLoginPage'));
+const LeaderboardPage = lazyLoad(() => import('../pages/LeaderboardPage'));
+const SubmitActionPage = lazyLoad(() => import('../pages/SubmitActionPage'));
+const AmbassadeursPage = lazyLoad(() => import('../pages/AmbassadeursPage'));
+const AssociationsPage = lazyLoad(() => import('../pages/AssociationsPage'));
+const StudentProfilePage = lazyLoad(() => import('../pages/StudentProfilePage'));
+const StudentPublicProfilePage = lazyLoad(() => import('../pages/StudentPublicProfilePage'));
+const ReportIssuePage = lazyLoad(() => import('../pages/ReportIssuePage'));
+const AdminPage = lazyLoad(() => import('../pages/AdminPage'));
+const AdminDashboard = lazyLoad(() => import('../pages/AdminDashboard'));
+const AdminGuide = lazyLoad(() => import('../pages/AdminGuide'));
+const ValidationQueue = lazyLoad(() => import('../components/admin/ValidationQueue'));
+const ReportsQueue = lazyLoad(() => import('../components/admin/ReportsQueue'));
+const ActionTypeEditor = lazyLoad(() => import('../components/admin/ActionTypeEditor'));
+const LeaderboardConfig = lazyLoad(() => import('../components/admin/LeaderboardConfig'));
+const AutomationConfig = lazyLoad(() => import('../components/admin/AutomationConfig'));
+const LandingConfig = lazyLoad(() => import('../components/admin/LandingConfig'));
+const Analytics = lazyLoad(() => import('../pages/Analytics'));
+const GoogleOAuthCallback = lazyLoad(() => import('../pages/GoogleOAuthCallback'));
+const GoogleSheetsSetup = lazyLoad(() => import('../pages/GoogleSheetsSetup'));
+const AssociationManagementPage = lazyLoad(() => import('../pages/AssociationManagementPage'));
+const AssociationDetailPage = lazyLoad(() => import('../pages/AssociationDetailPage'));
+const NotificationsPage = lazyLoad(() => import('../pages/NotificationsPage'));
+const NotFoundPage = lazyLoad(() => import('../pages/NotFoundPage'));
 
 // Portfolio Pages
-const PortfolioHome = lazy(() => import('../pages/portfolio/PortfolioHome'));
-const ProjectDetailsPage = lazy(() => import('../pages/portfolio/ProjectDetailsPage'));
-const SubmitProjectPage = lazy(() => import('../pages/portfolio/SubmitProjectPage'));
-const PortfolioProfilePage = lazy(() => import('../pages/portfolio/StudentProfilePage'));
+const PortfolioHome = lazyLoad(() => import('../pages/portfolio/PortfolioHome'));
+const ProjectDetailsPage = lazyLoad(() => import('../pages/portfolio/ProjectDetailsPage'));
+const SubmitProjectPage = lazyLoad(() => import('../pages/portfolio/SubmitProjectPage'));
+const PortfolioProfilePage = lazyLoad(() => import('../pages/portfolio/StudentProfilePage'));
 
 /**
  * Crée les routes étudiantes pour une école

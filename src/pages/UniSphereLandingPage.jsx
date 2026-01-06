@@ -40,6 +40,8 @@ export default function UniSphereLandingPage() {
       smooth: true,
     });
 
+    window.lenis = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -49,6 +51,7 @@ export default function UniSphereLandingPage() {
 
     return () => {
       lenis.destroy();
+      window.lenis = null;
     };
   }, []);
 
@@ -75,7 +78,9 @@ export default function UniSphereLandingPage() {
       <VerticalManifestColumn />
 
       {/* 4. Section pod / produit avec cartes */}
-      <BenefitCards />
+      <div id="universities">
+        <BenefitCards />
+      </div>
 
       {/* 5. Section "inside lies nature's magic" */}
       <NatureMagicSection />
@@ -84,7 +89,9 @@ export default function UniSphereLandingPage() {
       <FeatureGrid />
 
       {/* 7. Section application mobile (mockups) */}
-      <AppMockups />
+      <div id="students">
+        <AppMockups />
+      </div>
 
       {/* 8. Texte explicatif app */}
       <AppExplainer />
@@ -99,7 +106,9 @@ export default function UniSphereLandingPage() {
       <CommunitySection />
 
       {/* 12. Cinematic Footer */}
-      <SectionFAQ />
+      <div id="faq">
+        <SectionFAQ />
+      </div>
       <CinematicFooter />
     </div>
   );
