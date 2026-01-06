@@ -273,7 +273,7 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
               <Award className="w-12 h-12 text-[#671324]" />
               <h2 className="text-4xl font-black" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Hall of Fame.</h2>
             </div>
-            <BadgesDisplay studentEmail={student.email} school={school} />
+            <BadgesDisplay studentEmail={student.email} school={school} student={student} />
           </div>
         </section>
 

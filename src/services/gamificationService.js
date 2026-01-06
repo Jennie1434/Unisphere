@@ -246,8 +246,28 @@ export function getAllBadges() {
 }
 
 /**
- * Formater le nombre de points pour affichage
+ * Calculer les badges gagnés localement (fallback si API indisponible)
  */
+export function calculateEarnedBadges(student) {
+  if (!student) return [];
+
+  const earned = [];
+  const points = student.totalPoints || 0;
+  const actions = student.actionsCount || 0;
+  // Note: ranks/streaks might not be available in simple student object, ignoring for fallback
+
+  // Badge: Premier Pas (1 action)
+  if (actions >= 1) earned.push('first_action');
+
+  // Badge: Niveau 5
+  if (calculateLevel(points).level >= 5) earned.push('level_5');
+
+  // Badge: Niveau 10
+  if (calculateLevel(points).level >= 10) earned.push('level_10');
+
+  return earned;
+}
+
 export function formatPoints(points) {
   if (points >= 1000) {
     return `${(points / 1000).toFixed(1)}k`;
