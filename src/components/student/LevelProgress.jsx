@@ -16,7 +16,7 @@ export default function LevelProgress({ points, currentLevel, levelProgress, ani
       const steps = 60;
       const increment = progress / steps;
       let current = 0;
-      
+
       const timer = setInterval(() => {
         current += increment;
         if (current >= progress) {
@@ -33,15 +33,28 @@ export default function LevelProgress({ points, currentLevel, levelProgress, ani
     }
   }, [progress, animated]);
 
-  const pointsInCurrentLevel = points - (levelInfo.nextLevelPoints - (levelInfo.nextLevelPoints - (points >= 1000 ? 250 : 50)));
-  const pointsNeededForNext = levelInfo.nextLevelPoints - points;
+  // Calculate points within current level range
+  const getLevelThresholds = (level) => {
+    if (level === 1) return { min: 0, max: 50 };
+    if (level === 2) return { min: 50, max: 150 };
+    if (level === 3) return { min: 150, max: 300 };
+    if (level === 4) return { min: 300, max: 500 };
+    if (level === 5) return { min: 500, max: 750 };
+    if (level === 6) return { min: 750, max: 1000 };
+    return { min: 1000 + (level - 7) * 250, max: 1000 + (level - 6) * 250 };
+  };
+
+  const thresholds = getLevelThresholds(level);
+  const pointsInCurrentLevel = Math.max(0, points - thresholds.min);
+  const pointsNeededForLevel = thresholds.max - thresholds.min;
+  const pointsNeededForNext = Math.max(0, thresholds.max - points);
 
   return (
     <div className="w-full">
       {/* Niveau et nom */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <div 
+          <div
             className="px-4 py-2 rounded-lg font-bold text-white text-sm"
             style={{ backgroundColor: levelColor }}
           >
@@ -49,8 +62,8 @@ export default function LevelProgress({ points, currentLevel, levelProgress, ani
           </div>
           <span className="text-gray-700 font-semibold">{levelName}</span>
         </div>
-        <div className="text-sm text-gray-600">
-          {points} / {levelInfo.nextLevelPoints} pts
+        <div className="text-sm text-gray-600 font-bold">
+          {pointsInCurrentLevel} / {pointsNeededForLevel} pts
         </div>
       </div>
 
@@ -64,7 +77,7 @@ export default function LevelProgress({ points, currentLevel, levelProgress, ani
           }}
         >
           {/* Effet de brillance animé */}
-          <div 
+          <div
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
             style={{
               animation: animated ? 'shimmer 2s infinite' : 'none'

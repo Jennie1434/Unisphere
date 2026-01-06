@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function TopStudentsTable({ students }) {
   // S'assurer que students est un tableau
@@ -16,10 +17,10 @@ export default function TopStudentsTable({ students }) {
   }
 
   const getRankIcon = (rank) => {
-    if (rank === 1) return '🥇';
-    if (rank === 2) return '🥈';
-    if (rank === 3) return '🥉';
-    return `#${rank}`;
+    if (rank === 1) return { icon: '🥇', color: '#FFD700' };
+    if (rank === 2) return { icon: '🥈', color: '#C0C0C0' };
+    if (rank === 3) return { icon: '🥉', color: '#CD7F32' };
+    return { icon: `#${rank}`, color: 'inherit' };
   };
 
   return (
@@ -41,9 +42,16 @@ export default function TopStudentsTable({ students }) {
           <tbody>
             {studentsArray.map((student) => (
               <tr key={student.rank} className="border-b border-black/10 hover:bg-black/5 transition-colors">
-                <td className="px-4 py-3 font-black text-lg">{getRankIcon(student.rank)}</td>
+                <td className="px-4 py-3 font-black text-lg" style={{ color: getRankIcon(student.rank).color }}>
+                  {getRankIcon(student.rank).icon}
+                </td>
                 <td className="px-4 py-3 font-bold uppercase text-sm">
-                  {student.firstName} {student.lastName}
+                  <Link
+                    to={`/profile/${student.firstName?.toLowerCase()}-${student.lastName?.toLowerCase()}`}
+                    className="hover:underline hover:text-[#DBA12D] transition-colors"
+                  >
+                    {student.firstName} {student.lastName}
+                  </Link>
                 </td>
                 <td className="px-4 py-3 font-bold text-xs text-black/60">{student.class}</td>
                 <td className="px-4 py-3 text-right font-mono text-xs">{student.actionsCount}</td>

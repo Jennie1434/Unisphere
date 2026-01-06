@@ -140,14 +140,20 @@ export default function Leaderboard({ school = 'eugenia' }) {
             >
               {/* Rank */}
               <div className="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
-                <div className="w-24 flex-shrink-0 font-black text-2xl italic group-hover:text-[#DBA12D]" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                <div
+                  className="w-24 flex-shrink-0 font-black text-2xl italic group-hover:text-[#DBA12D]"
+                  style={{
+                    fontFamily: 'ui-serif, Georgia, serif',
+                    color: user.rank === 1 ? '#FFD700' : user.rank === 2 ? '#C0C0C0' : user.rank === 3 ? '#CD7F32' : 'inherit'
+                  }}
+                >
                   #{user.rank.toString().padStart(2, '0')}
                 </div>
 
                 {/* Mobile only info */}
                 <div className="md:hidden flex-1">
                   <div className="font-black text-lg uppercase tracking-tight">
-                    <Link to={`/profile/${user.id || user.email}`} className="hover:underline">
+                    <Link to={`/profile/${user.firstName?.toLowerCase()}-${user.lastName?.toLowerCase()}`} className="hover:underline">
                       {user.firstName} {user.lastName}
                     </Link>
                   </div>
@@ -170,7 +176,7 @@ export default function Leaderboard({ school = 'eugenia' }) {
                 </div>
                 <div className="flex-1">
                   <div className="font-black text-lg uppercase tracking-tight flex items-center gap-3">
-                    <Link to={`/profile/${user.id || user.email}`} className="hover:underline decoration-2 underline-offset-4 decoration-[#DBA12D]">
+                    <Link to={`/profile/${user.firstName?.toLowerCase()}-${user.lastName?.toLowerCase()}`} className="hover:underline decoration-2 underline-offset-4 decoration-[#DBA12D]">
                       {user.firstName} {user.lastName}
                     </Link>
                     {isCurrentUser && (

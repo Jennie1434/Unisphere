@@ -152,11 +152,7 @@ export default function StudentPublicProfilePage() {
           <LeaderboardStats student={student} />
         </section>
 
-        {/* BADGES SECTION */}
-        <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">
-          <h2 className="text-4xl font-black mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Hall of Fame.</h2>
-          <BadgesDisplay studentEmail={student.email} />
-        </section>
+
 
       </div>
     </PageLayout>
