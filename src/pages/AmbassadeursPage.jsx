@@ -121,7 +121,7 @@ export default function AmbassadeursPage({ school = 'eugenia' }) {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: "spring", delay: i * 0.1 }}
-                className="bg-white border-2 border-black p-12 flex flex-col items-center text-center group hover:bg-black hover:scale-105 transition-all duration-500 shadow-[15px_15px_0px_rgba(0,0,0,1)] hover:shadow-[20px_20px_0px_#14F195]"
+                className="bg-white border-2 border-black p-12 flex flex-col items-center text-center group hover:bg-black hover:scale-105 transition-all duration-500 shadow-[15px_15px_0px_rgba(0,0,0,1)] hover:shadow-[20px_20px_0px_#671324]"
               >
                 <div className="mb-8 w-20 h-20 border-2 border-black flex items-center justify-center group-hover:border-[#DBA12D] group-hover:bg-transparent bg-white transition-all">
                   {stat.icon && <stat.icon.type {...stat.icon.props} className="w-10 h-10 group-hover:text-[#DBA12D] transition-colors" />}
