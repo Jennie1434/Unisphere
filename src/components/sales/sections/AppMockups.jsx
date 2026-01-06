@@ -16,6 +16,7 @@ export default function AppMockups() {
 
     return (
         <section
+            id="students"
             ref={containerRef}
             className="py-64 bg-black overflow-hidden relative min-h-screen flex flex-col items-center justify-center"
         >

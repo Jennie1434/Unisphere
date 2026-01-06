@@ -1,27 +1,35 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import EugeniaLogo from './EugeniaLogo';
-                                                                                          import { useStudentAuth } from '../../contexts/StudentAuthContext';
+import { useStudentAuth } from '../../contexts/StudentAuthContext';
 
 function StudentAuthButton() {
-  const { student } = useStudentAuth();
-  
+  const { student, logout } = useStudentAuth();
+
   if (student) {
     // Déterminer l'école à partir de l'email de l'étudiant
     const schoolPath = student.school === 'albert' ? '/albert-school' : '/eugenia-school';
     return (
-      <Link 
-        to={`${schoolPath}/student/profile`}
-        className="text-white font-semibold hover:text-eugenia-yellow transition-colors"
-      >
-        👤 Mon profil
-      </Link>
+      <div className="flex items-center gap-4">
+        <Link
+          to={`${schoolPath}/student/profile`}
+          className="text-white font-semibold hover:text-eugenia-yellow transition-colors"
+        >
+          👤 Mon profil
+        </Link>
+        <button
+          onClick={logout}
+          className="text-red-400 font-semibold hover:text-red-300 transition-colors"
+        >
+          Déconnexion
+        </button>
+      </div>
     );
   }
-  
+
   return (
-    <Link 
-      to="/select-school" 
+    <Link
+      to="/select-school"
       className="text-white font-semibold hover:text-eugenia-yellow transition-colors"
     >
       🔐 Connexion
@@ -30,23 +38,35 @@ function StudentAuthButton() {
 }
 
 function StudentAuthButtonMobile({ onClose }) {
-  const { student } = useStudentAuth();
-  
+  const { student, logout } = useStudentAuth();
+
   if (student) {
     // Déterminer l'école à partir de l'email de l'étudiant
     const schoolPath = student.school === 'albert' ? '/albert-school' : '/eugenia-school';
     return (
-      <Link
-        to={`${schoolPath}/student/profile`}
-        onClick={onClose}
-        className="block px-6 py-4 text-gray-800 hover:bg-gray-100 hover:text-eugenia-burgundy transition-colors font-semibold flex items-center gap-2"
-      >
-        <span className="text-xl">👤</span>
-        <span>Mon profil</span>
-      </Link>
+      <>
+        <Link
+          to={`${schoolPath}/student/profile`}
+          onClick={onClose}
+          className="block px-6 py-4 text-gray-800 hover:bg-gray-100 hover:text-eugenia-burgundy transition-colors font-semibold flex items-center gap-2"
+        >
+          <span className="text-xl">👤</span>
+          <span>Mon profil</span>
+        </Link>
+        <button
+          onClick={() => {
+            logout();
+            onClose();
+          }}
+          className="w-full text-left block px-6 py-4 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-semibold flex items-center gap-2"
+        >
+          <span className="text-xl">🚪</span>
+          <span>Déconnexion</span>
+        </button>
+      </>
     );
   }
-  
+
   return (
     <Link
       to="/select-school"
@@ -90,19 +110,19 @@ export default function Header() {
           </button>
 
           {/* Logo - Centré sur mobile, gauche sur desktop */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="hover:opacity-80 transition-opacity absolute left-1/2 transform -translate-x-1/2 md:relative md:left-0 md:transform-none"
             onClick={closeMenu}
           >
             <EugeniaLogo />
           </Link>
-          
+
           {/* Liens navigation - Desktop seulement */}
           <div className="hidden md:flex gap-6 items-center">
             <StudentAuthButton />
           </div>
-          
+
           {/* Espaceur invisible pour équilibrer sur mobile */}
           <div className="md:hidden w-6 h-6" aria-hidden="true" />
         </nav>
@@ -112,11 +132,11 @@ export default function Header() {
       {isMenuOpen && (
         <>
           {/* Overlay */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50 z-40 md:hidden"
             onClick={closeMenu}
           />
-          
+
           {/* Menu drawer */}
           <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-xl z-50 md:hidden transform transition-transform duration-300 ease-in-out">
             {/* Header du menu */}

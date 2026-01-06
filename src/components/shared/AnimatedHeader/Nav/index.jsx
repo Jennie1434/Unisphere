@@ -19,9 +19,18 @@ export default function Nav({ links, footerLinks, school }) {
                                     animate="enter"
                                     exit="exit"
                                 >
-                                    <Link to={href}>
-                                        {title}
-                                    </Link>
+                                    {link.action ? (
+                                        <button
+                                            onClick={link.action}
+                                            className="text-left w-full hover:text-red-500 transition-colors"
+                                        >
+                                            {title}
+                                        </button>
+                                    ) : (
+                                        <Link to={href}>
+                                            {title}
+                                        </Link>
+                                    )}
                                 </motion.div>
                             </div>
                         )
