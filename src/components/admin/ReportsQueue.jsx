@@ -15,7 +15,7 @@ export default function ReportsQueue({ school = 'eugenia' }) {
     try {
       const emailDomain = SCHOOL_EMAIL_DOMAINS[school];
       const API_URL = import.meta.env.VITE_API_URL;
-      
+
       if (API_URL) {
         const response = await fetch(`${API_URL}/reports`);
         if (response.ok) {
@@ -52,21 +52,21 @@ export default function ReportsQueue({ school = 'eugenia' }) {
   const updateReportStatus = async (reportId, newStatus) => {
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-      
+
       if (API_URL) {
         const response = await fetch(`${API_URL}/reports/${reportId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
         });
-        
+
         if (response.ok) {
           loadReports();
         }
       } else {
         // Fallback: localStorage
         const stored = JSON.parse(localStorage.getItem('reports') || '[]');
-        const updated = stored.map(r => 
+        const updated = stored.map(r =>
           r.id === reportId ? { ...r, status: newStatus } : r
         );
         localStorage.setItem('reports', JSON.stringify(updated));
@@ -84,12 +84,12 @@ export default function ReportsQueue({ school = 'eugenia' }) {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-      
+
       if (API_URL) {
         const response = await fetch(`${API_URL}/reports/${reportId}`, {
           method: 'DELETE'
         });
-        
+
         if (response.ok) {
           loadReports();
         }
@@ -105,8 +105,8 @@ export default function ReportsQueue({ school = 'eugenia' }) {
     }
   };
 
-  const filteredReports = filter === 'all' 
-    ? reports 
+  const filteredReports = filter === 'all'
+    ? reports
     : reports.filter(r => r.status === filter);
 
   const getStatusBadge = (status) => {
@@ -160,15 +160,14 @@ export default function ReportsQueue({ school = 'eugenia' }) {
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                filter === status
-                  ? 'bg-eugenia-burgundy text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+              className={`px-4 py-2 border-2 text-[10px] font-black uppercase tracking-widest transition-all ${filter === status
+                  ? 'bg-black border-black text-white shadow-[4px_4px_0px_rgba(0,0,0,0.1)]'
+                  : 'bg-white border-black text-black hover:bg-black hover:text-white'
+                }`}
             >
-              {status === 'all' ? 'Tous' : 
-               status === 'pending' ? 'En attente' :
-               status === 'in_progress' ? 'En cours' : 'Résolus'}
+              {status === 'all' ? 'TOUS' :
+                status === 'pending' ? 'EN ATTENTE' :
+                  status === 'in_progress' ? 'EN COURS' : 'RÉSOLUS'}
             </button>
           ))}
         </div>
@@ -176,9 +175,9 @@ export default function ReportsQueue({ school = 'eugenia' }) {
 
       {/* Liste des signalements */}
       {filteredReports.length === 0 ? (
-        <div className="card text-center py-12">
+        <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
           <div className="text-6xl mb-4">📭</div>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-black font-bold uppercase tracking-wide">
             Aucun signalement {filter !== 'all' ? `avec le statut "${filter}"` : ''}
           </p>
         </div>
@@ -187,82 +186,82 @@ export default function ReportsQueue({ school = 'eugenia' }) {
           {filteredReports
             .sort((a, b) => new Date(b.createdAt || b.id) - new Date(a.createdAt || a.id))
             .map(report => (
-            <div key={report.id} className="card hover:shadow-lg transition-shadow">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Photo */}
-                {report.photo && (
-                  <div className="md:w-48 flex-shrink-0">
-                    <img
-                      src={report.photo}
-                      alt="Photo du problème"
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-
-                {/* Contenu */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{getCategoryEmoji(report.category)}</span>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900">
-                          {report.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          Par {report.studentName || 'Anonyme'} • {report.location}
-                        </p>
-                      </div>
+              <div key={report.id} className="bg-white border-2 border-black p-6 transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_black] group">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Photo */}
+                  {report.photo && (
+                    <div className="md:w-48 flex-shrink-0">
+                      <img
+                        src={report.photo}
+                        alt="Photo du problème"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
                     </div>
-                    {getStatusBadge(report.status || 'pending')}
-                  </div>
-
-                  <p className="text-gray-700 mb-4">{report.description}</p>
-
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => updateReportStatus(report.id, 'in_progress')}
-                      className="btn btn-outline btn-sm"
-                      disabled={report.status === 'in_progress'}
-                    >
-                      🔄 En cours
-                    </button>
-                    <button
-                      onClick={() => updateReportStatus(report.id, 'resolved')}
-                      className="btn btn-success btn-sm"
-                      disabled={report.status === 'resolved'}
-                    >
-                      ✅ Résolu
-                    </button>
-                    <button
-                      onClick={() => setSelectedReport(report)}
-                      className="btn btn-outline btn-sm"
-                    >
-                      👁️ Voir détails
-                    </button>
-                    <button
-                      onClick={() => deleteReport(report.id)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      🗑️ Supprimer
-                    </button>
-                  </div>
-
-                  {report.createdAt && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      Signalé le {new Date(report.createdAt).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
                   )}
+
+                  {/* Contenu */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{getCategoryEmoji(report.category)}</span>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900">
+                            {report.title}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Par {report.studentName || 'Anonyme'} • {report.location}
+                          </p>
+                        </div>
+                      </div>
+                      {getStatusBadge(report.status || 'pending')}
+                    </div>
+
+                    <p className="text-gray-700 mb-4">{report.description}</p>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => updateReportStatus(report.id, 'in_progress')}
+                        className="btn btn-outline btn-sm"
+                        disabled={report.status === 'in_progress'}
+                      >
+                        🔄 En cours
+                      </button>
+                      <button
+                        onClick={() => updateReportStatus(report.id, 'resolved')}
+                        className="btn btn-success btn-sm"
+                        disabled={report.status === 'resolved'}
+                      >
+                        ✅ Résolu
+                      </button>
+                      <button
+                        onClick={() => setSelectedReport(report)}
+                        className="btn btn-outline btn-sm"
+                      >
+                        👁️ Voir détails
+                      </button>
+                      <button
+                        onClick={() => deleteReport(report.id)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        🗑️ Supprimer
+                      </button>
+                    </div>
+
+                    {report.createdAt && (
+                      <p className="text-xs text-gray-500 mt-2">
+                        Signalé le {new Date(report.createdAt).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
 

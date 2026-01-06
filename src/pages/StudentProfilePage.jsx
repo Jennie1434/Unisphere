@@ -229,8 +229,8 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
                     initial={{ x: -10 }}
                     animate={{ x: 0 }}
                     className={`p-6 border-2 text-[11px] font-black uppercase tracking-widest ${passwordMessage.type === 'success'
-                        ? 'bg-black text-[#DBA12D] border-[#DBA12D]'
-                        : 'bg-black text-red-400 border-red-400'
+                      ? 'bg-black text-[#DBA12D] border-[#DBA12D]'
+                      : 'bg-black text-red-400 border-red-400'
                       }`}
                   >
                     {passwordMessage.text}

@@ -20,34 +20,34 @@ export default function ValidationQueue({ school = 'eugenia' }) {
     try {
       setLoading(true);
       console.log('📥 Loading data...');
-      
+
       const emailDomain = SCHOOL_EMAIL_DOMAINS[school];
-      
+
       const [actions, types, allActions] = await Promise.all([
         getActionsToValidate(school),
         getActionTypes(),
         getAllActions(school)
       ]);
-      
+
       // Filtrer par école
-      const filteredActions = actions.filter(a => 
+      const filteredActions = actions.filter(a =>
         a.email && a.email.toLowerCase().includes(emailDomain)
       );
-      const filteredAllActions = allActions.filter(a => 
+      const filteredAllActions = allActions.filter(a =>
         a.email && a.email.toLowerCase().includes(emailDomain)
       );
-      
+
       console.log('📥 Loaded pending actions:', filteredActions.length);
       console.log('📥 Loaded all actions:', filteredAllActions.length);
-      
+
       setPendingActions(filteredActions);
       setActionTypes(types);
-      
+
       // Filtrer les actions validées ou refusées
-      const validated = filteredAllActions.filter(a => 
+      const validated = filteredAllActions.filter(a =>
         a.status === 'validated' || a.status === 'rejected' || a.decision === 'validated' || a.decision === 'rejected'
       );
-      
+
       console.log('📥 Filtered validated actions:', validated.length);
       setValidatedActions(validated);
     } catch (error) {
@@ -62,7 +62,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
       const emailDomain = SCHOOL_EMAIL_DOMAINS[school];
       const actions = await getActionsToValidate(school);
       // Filtrer par école
-      const filteredActions = actions.filter(a => 
+      const filteredActions = actions.filter(a =>
         a.email && a.email.toLowerCase().includes(emailDomain)
       );
       setPendingActions(filteredActions);
@@ -83,7 +83,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
 
   const handleDeleteAction = async (actionId, e) => {
     e.stopPropagation(); // Empêcher l'ouverture du modal
-    
+
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer définitivement cette action ? Cette action est irréversible.')) {
       return;
     }
@@ -92,27 +92,27 @@ export default function ValidationQueue({ school = 'eugenia' }) {
 
     try {
       console.log('🗑️ Deleting action:', actionId);
-      
+
       // Invalider le cache AVANT la suppression
       invalidateCache('actions_pending');
       invalidateCache('actions_all');
       invalidateCache('leaderboard');
-      
+
       const result = await deleteAction(actionId);
       console.log('🗑️ Delete result:', result);
-      
+
       // Vérifier si la suppression a réussi (vérifier aussi response.ok si data n'est pas défini)
       const success = result?.success === true || (result && !result.error);
-      
+
       if (success) {
         // Invalider le cache à nouveau après la suppression
         invalidateCache('actions_pending');
         invalidateCache('actions_all');
         invalidateCache('leaderboard');
-        
+
         // Attendre un peu pour que le cache soit invalidé
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         // Recharger les données sans utiliser le cache
         console.log('🔄 Reloading data after delete...');
         await loadData();
@@ -137,7 +137,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
     const now = new Date();
     const diffMs = now - date;
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins < 1) {
       return 'Il y a quelques instants';
     } else if (diffMins < 60) {
@@ -161,9 +161,9 @@ export default function ValidationQueue({ school = 'eugenia' }) {
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', { 
-      day: '2-digit', 
-      month: '2-digit', 
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -191,16 +191,16 @@ export default function ValidationQueue({ school = 'eugenia' }) {
           </h2>
           <button
             onClick={loadPendingActions}
-            className="btn btn-admin-secondary"
+            className="px-6 py-2 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             🔄 Rafraîchir
           </button>
         </div>
 
         {pendingActions.length === 0 ? (
-          <div className="admin-card text-center py-12">
+          <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
             <div className="text-6xl mb-4">🎉</div>
-            <p className="text-gray-500 text-lg">
+            <p className="text-black text-lg font-bold uppercase tracking-wide">
               Aucune action en attente de validation !
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
               return (
                 <div
                   key={action.id}
-                  className="admin-card hover:shadow-xl transition-shadow cursor-pointer"
+                  className="bg-white border-2 border-black p-6 transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_black] cursor-pointer group"
                   onClick={() => handleActionClick(action)}
                 >
                   <div className="flex items-center justify-between">
@@ -234,7 +234,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                         </div>
                       </div>
                     </div>
-                    <button className="btn btn-admin-primary">
+                    <button className="px-4 py-2 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-green-600 transition-colors">
                       Voir détails
                     </button>
                   </div>
@@ -256,16 +256,16 @@ export default function ValidationQueue({ school = 'eugenia' }) {
           </h2>
           <button
             onClick={loadData}
-            className="btn btn-admin-secondary"
+            className="px-6 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             🔄 Rafraîchir
           </button>
         </div>
 
         {validatedActions.length === 0 ? (
-          <div className="admin-card text-center py-12">
+          <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
             <div className="text-6xl mb-4">📋</div>
-            <p className="text-gray-500 text-lg">
+            <p className="text-black text-lg font-bold uppercase tracking-wide">
               Aucune action validée ou refusée pour le moment.
             </p>
           </div>
@@ -283,10 +283,9 @@ export default function ValidationQueue({ school = 'eugenia' }) {
               return (
                 <div
                   key={action.id}
-                  className={`admin-card hover:shadow-xl transition-shadow ${
-                    isValidated ? 'border-l-4 border-green-500' : 
-                    isRejected ? 'border-l-4 border-red-500' : ''
-                  }`}
+                  className={`bg-white border-2 border-black p-6 transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_black] ${isValidated ? 'border-l-[6px] border-l-green-500' :
+                      isRejected ? 'border-l-[6px] border-l-red-500' : ''
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">

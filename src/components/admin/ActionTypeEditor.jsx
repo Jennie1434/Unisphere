@@ -47,13 +47,13 @@ export default function ActionTypeEditor({ school = 'eugenia' }) {
       alert('Veuillez remplir tous les champs requis');
       return;
     }
-    
+
     // Ajouter l'école au type d'action
     const actionTypeWithSchool = {
       ...editingType,
       school: school
     };
-    
+
     await saveActionType(actionTypeWithSchool);
     await loadActionTypes();
     setShowForm(false);
@@ -109,35 +109,35 @@ export default function ActionTypeEditor({ school = 'eugenia' }) {
       {/* Liste des types existants */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {actionTypes.map((type) => (
-          <div key={type.id} className="card">
+          <div key={type.id} className="bg-white border-2 border-black p-6 hover:shadow-[8px_8px_0px_black] transition-all hover:translate-x-[-4px] hover:translate-y-[-4px]">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <span className="text-3xl">{type.emoji}</span>
-                <h3 className="text-xl font-bold">{type.label}</h3>
+                <h3 className="text-xl font-black uppercase tracking-tight">{type.label}</h3>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-eugenia-yellow">
+                <div className="text-2xl font-black text-black">
                   {type.points}
                 </div>
-                <div className="text-xs text-gray-500">points</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-black/40">points</div>
               </div>
             </div>
-            <div className="text-sm text-gray-600 mb-4">
+            <div className="text-xs font-bold uppercase tracking-widest text-black/60 mb-6 border-l-2 border-black/10 pl-3">
               Catégorie: {type.category}
             </div>
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-6">
               {type.fields?.length || 0} champ(s)
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => handleEdit(type)}
-                className="btn btn-secondary flex-1"
+                className="px-4 py-2 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black border-2 border-black transition-all flex-1"
               >
                 ✏️ Modifier
               </button>
               <button
                 onClick={() => handleDelete(type.id)}
-                className="btn btn-danger flex-1"
+                className="px-4 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-600 hover:text-white border-2 border-black transition-all flex-1"
               >
                 🗑️ Supprimer
               </button>
@@ -148,7 +148,7 @@ export default function ActionTypeEditor({ school = 'eugenia' }) {
 
       {/* Formulaire d'édition */}
       {showForm && editingType && (
-        <div className="card border-2 border-primary-600">
+        <div className="bg-white border-2 border-black p-8 shadow-[15px_15px_0px_rgba(0,0,0,0.2)]">
           <h3 className="text-xl font-bold mb-4">
             {editingType.id.startsWith('new') ? '➕ Nouveau type' : '✏️ Modifier le type'}
           </h3>

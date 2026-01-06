@@ -16,7 +16,9 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 
 export default function EugeniaSchoolPage() {
   const { student } = useStudentAuth();
-  const firstName = student?.firstName || 'Étudiant';
+  const firstName = (student?.firstName && student.firstName !== 'Étudiant')
+    ? student.firstName
+    : (student?.email?.split('@')[0] || 'Étudiant');
   const containerRef = useRef(null);
 
   const panels = [

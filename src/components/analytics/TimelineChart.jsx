@@ -5,7 +5,7 @@ import { formatDate } from '../../utils/analyticsHelpers';
 export default function TimelineChart({ data }) {
   // S'assurer que data est un tableau
   const dataArray = Array.isArray(data) ? data : [];
-  
+
   if (!dataArray || dataArray.length === 0) {
     return (
       <div className="admin-card">
@@ -23,7 +23,7 @@ export default function TimelineChart({ data }) {
   }));
 
   return (
-    <div className="admin-card">
+    <div className="bg-white border-2 border-black p-8 shadow-[10px_10px_0px_black]">
       <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--eugenia-burgundy)' }}>
         📊 Évolution des Actions
       </h3>

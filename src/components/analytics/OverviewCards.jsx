@@ -44,9 +44,10 @@ export default function OverviewCards({ data }) {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="admin-card analytics-card relative"
+          className="bg-white border-2 border-black p-6 relative overflow-hidden transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_black]"
           style={{
-            borderLeftColor: card.color,
+            borderLeftColor: 'black',
+            borderLeftWidth: '2px',
             animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
           }}
         >
@@ -76,10 +77,10 @@ export default function OverviewCards({ data }) {
               </div>
             )}
           </div>
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--eugenia-burgundy)' }}>
+          <h3 className="text-4xl font-black mb-1" style={{ fontFamily: 'ui-serif, Georgia, serif', color: 'black' }}>
             {card.value}
           </h3>
-          <p className="text-gray-600 text-sm">{card.title}</p>
+          <p className="text-black/50 text-[10px] font-black uppercase tracking-[0.2em]">{card.title}</p>
         </div>
       ))}
     </div>

@@ -15,10 +15,14 @@ export default function useAnalytics(filters = {}, school = 'eugenia') {
 
       const period = filters.period || '30d';
 
+      console.log('📡 Fetching analytics from:', `${API_URL}/api/analytics/overview?period=${period}`);
       const emailDomain = SCHOOL_EMAIL_DOMAINS[school];
-      
+
       const [overview, timeline, popularActions, byClass, topStudents, insights, recentActions] = await Promise.all([
-        fetch(`${API_URL}/api/analytics/overview?period=${period}`).then(r => r.json()),
+        fetch(`${API_URL}/api/analytics/overview?period=${period}`).then(r => {
+          if (!r.ok) console.error('API Error:', r.status, r.statusText);
+          return r.json();
+        }),
         fetch(`${API_URL}/api/analytics/timeline?period=${period}`).then(r => r.json()),
         fetch(`${API_URL}/api/analytics/popular-actions?limit=5`).then(r => r.json()),
         fetch(`${API_URL}/api/analytics/by-class`).then(r => r.json()),

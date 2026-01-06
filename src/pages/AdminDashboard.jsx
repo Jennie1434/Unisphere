@@ -179,7 +179,7 @@ export default function AdminDashboard({ school = 'eugenia' }) {
   };
 
   const formatTimeAgo = (dateString) => {
-    if (!dateString) return 'À l\'instant';
+    if (!dateString) return 'Il y a un instant';
 
     const date = new Date(dateString);
     const now = new Date();
@@ -188,21 +188,21 @@ export default function AdminDashboard({ school = 'eugenia' }) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 60) return `${diffMins} min`;
-    if (diffHours < 24) return `${diffHours} h`;
-    return `${diffDays} j`;
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    return `Il y a ${diffDays}j`;
   };
 
   const getActionTypeLabel = (type) => {
     const labels = {
-      'linkedin-post': 'Post LinkedIn',
-      'jpo-participation': 'Participation JPO',
-      'temoignage-etudiant': 'Témoignage',
-      'parrainage-elite': 'Parrainage',
-      'competition-hackathon': 'Hackathon',
-      'edito-blog': 'Article Blog'
+      'linkedin-post': '📱 Post LinkedIn',
+      'jpo-participation': '🎓 Participation JPO',
+      'temoignage-etudiant': '💬 Témoignage',
+      'parrainage-elite': '🤝 Parrainage',
+      'competition-hackathon': '🏆 Hackathon',
+      'edito-blog': '✍️ Article Blog'
     };
-    return labels[type] || type || 'Action';
+    return labels[type] || type || '📋 Action';
   };
 
   const statsCards = [
@@ -210,64 +210,65 @@ export default function AdminDashboard({ school = 'eugenia' }) {
       title: 'Actions en attente',
       value: stats.pendingActions,
       icon: AlertCircle,
-      color: stats.pendingActions > 0 ? 'text-red-600' : 'text-green-600',
-      bgColor: stats.pendingActions > 0 ? 'bg-red-50' : 'bg-green-50',
+      color: stats.pendingActions > 0 ? '#EF4444' : '#10B981',
       link: '/admin/validate',
-      badge: stats.pendingActions > 0 ? 'Action Requise' : 'À jour'
+      badge: stats.pendingActions > 0 ? 'ACTION REQUISE' : 'À JOUR'
     },
     {
       title: 'Total actions',
       value: stats.totalActions,
       icon: TrendingUp,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      color: primaryColor,
       link: null
     },
     {
       title: 'Participants',
       value: stats.totalUsers,
       icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
+      color: '#8B5CF6',
       link: null
     },
     {
       title: 'Points distribués',
       value: stats.totalPoints,
       icon: Trophy,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50',
+      color: accentColor,
       link: null
     }
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-16">
 
       {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-end justify-between gap-6"
       >
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 font-serif mb-2">
-            Dashboard
-          </h1>
-          <p className="text-gray-500 font-medium">
-            Vue d'ensemble de l'activité {SCHOOL_NAMES[school]}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 shadow-sm">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-xs font-bold uppercase tracking-wide text-gray-600">
-            Système synchronisé
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-[2px] w-12 bg-black" />
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30">
+            ADMIN CONTROL PANEL
           </span>
+        </div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-4" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+              Dashboard <span className="italic" style={{ color: primaryColor }}>Admin.</span>
+            </h1>
+            <p className="text-sm font-bold text-black/40 uppercase tracking-[0.2em]">
+              {SCHOOL_NAMES[school]} — Vue d'ensemble du système
+            </p>
+          </div>
+          <div className="flex items-center gap-3 px-6 py-3 border-2 border-black bg-white shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-widest">Système Synchronisé</span>
+          </div>
         </div>
       </motion.div>
 
       {/* STATS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {statsCards.map((card, index) => {
           const Icon = card.icon;
           const CardWrapper = card.link ? Link : 'div';
@@ -276,127 +277,126 @@ export default function AdminDashboard({ school = 'eugenia' }) {
           return (
             <motion.div
               key={card.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className="h-full"
             >
               <CardWrapper
                 {...cardProps}
-                className="block h-full bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group"
+                className="group flex flex-col h-full bg-white border-2 border-black p-8 relative overflow-hidden hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[15px_15px_0px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-xl ${card.bgColor} ${card.color} transition-transform group-hover:scale-110`}>
-                    <Icon className="w-6 h-6" />
+                <div className="flex items-start justify-between mb-8 relative z-10">
+                  <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center transition-transform group-hover:scale-110 shrink-0">
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
                   {card.badge && (
-                    <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${card.color === 'text-red-600' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-                      }`}>
+                    <span
+                      className="text-[8px] font-black uppercase tracking-widest px-3 py-1.5 border border-black/10 shrink-0"
+                      style={{
+                        backgroundColor: card.color === '#EF4444' ? '#FEE2E2' : '#D1FAE5',
+                        color: card.color
+                      }}
+                    >
                       {card.badge}
                     </span>
                   )}
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">
+                <div className="mt-auto relative z-10">
+                  <div className="text-6xl font-black mb-2 tracking-tighter" style={{ color: card.color }}>
                     {card.value}
                   </div>
-                  <div className="text-xs font-bold uppercase tracking-wide text-gray-400">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 truncate">
                     {card.title}
                   </div>
                 </div>
+                {/* Decorative background element */}
+                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-black/[0.02] rounded-full -z-0 group-hover:scale-150 transition-transform duration-700" />
               </CardWrapper>
             </motion.div>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        {/* ACTIVITY FEED */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* ACTIVITY */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-          className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="lg:col-span-2 bg-white border-2 border-black p-10 relative overflow-hidden"
         >
-          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
             <div className="flex items-center gap-3">
-              <Activity className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-bold text-gray-900">Activité Récente</h2>
+              <Activity className="w-6 h-6" style={{ color: primaryColor }} />
+              <h2 className="text-3xl font-black" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                Activité <span className="italic" style={{ color: primaryColor }}>récente.</span>
+              </h2>
             </div>
             <div className="flex gap-2">
               {['all', 'manual', 'auto'].map(filter => (
                 <button
                   key={filter}
                   onClick={() => setActivityFilter(filter)}
-                  className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide rounded-lg transition-colors ${activityFilter === filter
+                  className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all border-2 border-black shadow-[4px_4px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${activityFilter === filter
                       ? 'bg-black text-white'
-                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      : 'bg-white text-black hover:bg-black/5'
                     }`}
                 >
-                  {filter === 'all' ? 'Tout' : filter === 'manual' ? 'Manuel' : 'Auto'}
+                  {filter === 'all' ? 'TOUTES' : filter === 'manual' ? 'MANUELLES' : 'AUTO'}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="divide-y divide-gray-50">
+          <div className="space-y-4">
             {loadingActivity ? (
-              <div className="p-12 text-center">
-                <div className="w-8 h-8 border-2 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4" />
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Chargement...</span>
+              <div className="text-center py-20">
+                <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-6" style={{ borderTopColor: accentColor }} />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Chargement des données...</span>
               </div>
             ) : recentActivity.length === 0 ? (
-              <div className="p-12 text-center text-gray-400 text-sm font-medium">
-                Aucune activité récente
+              <div className="text-center py-20 border-2 border-dashed border-black/10 text-black/30 text-xs font-black uppercase tracking-[0.2em]">
+                Aucune activité trouvée
               </div>
             ) : (
               recentActivity.map((action) => (
                 <div
                   key={action.id}
-                  className="p-4 hover:bg-gray-50 transition-colors flex items-center gap-4 group"
+                  className="flex items-center justify-between p-6 bg-white border-2 border-black hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_black] transition-all group cursor-default"
                 >
-                  <div className="shrink-0">
-                    {action.status === 'validated' ? (
-                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                      </div>
-                    ) : action.status === 'rejected' ? (
-                      <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                        <XCircle className="w-5 h-5 text-red-600" />
-                      </div>
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-yellow-600" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-bold text-gray-900 text-sm truncate">
-                        {getActionTypeLabel(action.type)}
-                      </span>
-                      {action.status === 'validated' && (
-                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${action.validatedBy === 'system' || action.autoValidated
-                            ? 'bg-blue-50 text-blue-600'
-                            : 'bg-purple-50 text-purple-600'
-                          }`}>
-                          {action.validatedBy === 'system' || action.autoValidated ? 'Auto' : 'Manuel'}
+                  <div className="flex items-center gap-6 flex-1 min-w-0">
+                    <div className="shrink-0">
+                      {action.status === 'validated' ? <CheckCircle className="w-6 h-6 text-green-600" /> :
+                        action.status === 'rejected' ? <XCircle className="w-6 h-6 text-red-600" /> :
+                          <Clock className="w-6 h-6 text-amber-500" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-1 overflow-hidden">
+                        <span className="font-black text-black text-sm uppercase tracking-wide truncate">
+                          {getActionTypeLabel(action.type)}
                         </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-500 truncate">
-                      {action.email || 'Email inconnu'}
+                        {action.status === 'validated' && (
+                          <span className={`text-[8px] px-2 py-0.5 font-black uppercase tracking-widest shrink-0 ${action.validatedBy === 'system' || action.autoValidated
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-purple-100 text-purple-700'
+                            }`}>
+                            {action.validatedBy === 'system' || action.autoValidated ? '🤖 AUTO' : '👤 MANUEL'}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[10px] text-black/40 font-bold uppercase tracking-widest truncate">
+                        {action.email || 'Email non renseigné'}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="text-right shrink-0">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">
+                  <div className="text-right shrink-0 pl-4">
+                    <div className="text-[9px] text-black/30 font-black uppercase tracking-widest mb-1">
                       {formatTimeAgo(action.date || action.validatedAt)}
                     </div>
                     {action.status === 'validated' && action.points > 0 && (
-                      <div className="text-sm font-bold text-green-600">
-                        +{action.points} pts
+                      <div className="text-base font-black" style={{ color: accentColor }}>
+                        +{action.points} PTS
                       </div>
                     )}
                   </div>
@@ -404,65 +404,47 @@ export default function AdminDashboard({ school = 'eugenia' }) {
               ))
             )}
           </div>
-
-          <div className="p-4 border-t border-gray-100 bg-gray-50/50">
-            <Link
-              to={`/admin/actions`}
-              className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors"
-            >
-              Voir tout l'historique
-              <ArrowRight className="w-3 h-3" />
+          
+          <div className="mt-10 pt-10 border-t-2 border-black/5 flex justify-center">
+            <Link to="/admin/actions" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-black/40 hover:text-black transition-colors group">
+              Voir tout l'historique d'activité <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
         </motion.div>
 
-        {/* ALERTS SECTION */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-fit"
-        >
-          <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-500" />
-            <h2 className="text-lg font-bold text-gray-900">
-              Alertes <span className="text-gray-400 font-normal text-sm ml-1">({alerts.length})</span>
-            </h2>
-          </div>
-
-          <div className="p-4 space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
-            {alerts.length === 0 ? (
-              <div className="text-center py-8 text-gray-400 text-sm">
-                Aucune alerte détectée ✨
-              </div>
-            ) : (
-              alerts.map(alert => (
+        {/* ALERTS */}
+        {alerts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white border-2 border-black p-10 h-fit"
+          >
+            <div className="flex items-center gap-3 mb-10">
+              <AlertCircle className="w-6 h-6 text-amber-500" />
+              <h2 className="text-2xl font-black" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                Alertes <span className="text-black/20 italic">({alerts.length})</span>
+              </h2>
+            </div>
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {alerts.map(alert => (
                 <div
                   key={alert.id}
-                  className={`p-4 rounded-xl border ${alert.severity === 'high'
-                      ? 'bg-red-50 border-red-100'
-                      : 'bg-amber-50 border-amber-100'
+                  className={`p-5 border-2 ${alert.severity === 'high' ? 'bg-red-50 border-red-300' : 'bg-amber-50 border-amber-300'
                     }`}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="text-xl">{alert.icon}</div>
+                  <div className="flex items-start gap-4">
+                    <div className="text-2xl shrink-0">{alert.icon}</div>
                     <div>
-                      <div className={`text-xs font-bold uppercase tracking-wide mb-1 ${alert.severity === 'high' ? 'text-red-800' : 'text-amber-800'
-                        }`}>
-                        {alert.title}
-                      </div>
-                      <div className={`text-xs ${alert.severity === 'high' ? 'text-red-600' : 'text-amber-600'
-                        }`}>
-                        {alert.message}
-                      </div>
+                      <div className="font-black text-black text-[10px] uppercase tracking-widest mb-1">{alert.title}</div>
+                      <div className="text-[11px] text-black/70 font-medium leading-relaxed">{alert.message}</div>
                     </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </motion.div>
-
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
