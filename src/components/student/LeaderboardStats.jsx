@@ -73,7 +73,7 @@ export default function LeaderboardStats({ school = 'eugenia', student: propStud
 
   if (loading) {
     return (
-      <div className="bg-white rounded-[24px] p-8 border border-black/5 flex justify-center">
+      <div className="bg-white rounded-none p-8 border-2 border-black shadow-[8px_8px_0px_black] flex justify-center">
         <Loader className="w-6 h-6 animate-spin text-black" />
       </div>
     );
@@ -84,31 +84,31 @@ export default function LeaderboardStats({ school = 'eugenia', student: propStud
   return (
     <div className="space-y-6">
       {/* En-tête avec rangs */}
-      <div className="bg-white rounded-[24px] p-8 border border-black/5 shadow-sm">
-        <h2 className="text-2xl font-bold text-black mb-6">Mes Statistiques</h2>
+      <div className="bg-white rounded-none p-8 border-2 border-black shadow-[8px_8px_0px_black]">
+        <h2 className="text-2xl font-black uppercase tracking-tight text-black mb-6" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Mes Statistiques</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-6 bg-gray-50 rounded-[20px] border border-black/5">
+          <div className="text-center p-6 bg-white rounded-none border-2 border-black">
             <div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Rang Global</div>
             <div className="text-4xl font-black text-black">
               {stats.ranks?.global ? `#${stats.ranks.global}` : 'N/A'}
             </div>
           </div>
           {stats.student?.classe && (
-            <div className="text-center p-6 bg-gray-50 rounded-[20px] border border-black/5">
+            <div className="text-center p-6 bg-white rounded-none border-2 border-black">
               <div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Rang Classe</div>
               <div className="text-4xl font-black text-black">
                 {stats.ranks?.class ? `#${stats.ranks.class}` : 'N/A'}
               </div>
             </div>
           )}
-          <div className="text-center p-6 bg-[#10B981]/10 rounded-[20px] border border-[#10B981]/20">
-            <div className="text-xs font-black uppercase tracking-widest text-[#10B981] mb-2">Points Totaux</div>
-            <div className="text-4xl font-black text-[#10B981]">{stats.student?.totalPoints || 0}</div>
+          <div className="text-center p-6 bg-[#DBA12D] rounded-none border-2 border-black">
+            <div className="text-xs font-black uppercase tracking-widest text-black/60 mb-2">Points Totaux</div>
+            <div className="text-4xl font-black text-black">{stats.student?.totalPoints || 0}</div>
           </div>
         </div>
 
         {error && (
-          <div className="mt-4 bg-red-50 border border-red-100 rounded-xl p-3 flex items-center gap-2 text-red-600 text-sm font-medium">
+          <div className="mt-4 bg-red-50 border-2 border-red-600 rounded-none p-3 flex items-center gap-2 text-red-600 text-sm font-medium">
             <AlertCircle className="w-4 h-4" />
             <span>{error}</span>
           </div>
@@ -116,8 +116,8 @@ export default function LeaderboardStats({ school = 'eugenia', student: propStud
       </div>
 
       {/* Niveau et progression */}
-      <div className="bg-white rounded-[24px] p-8 border border-black/5 shadow-sm">
-        <h3 className="text-lg font-bold text-black mb-6">Progression</h3>
+      <div className="bg-white rounded-none p-8 border-2 border-black shadow-[8px_8px_0px_black]">
+        <h3 className="text-lg font-black uppercase tracking-tight text-black mb-6" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Progression</h3>
         <LevelProgress
           points={stats.student?.totalPoints || 0}
           currentLevel={stats.level?.current}
@@ -127,8 +127,8 @@ export default function LeaderboardStats({ school = 'eugenia', student: propStud
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Streak */}
-        <div className="bg-white rounded-[24px] p-8 border border-black/5 shadow-sm">
-          <h3 className="text-lg font-bold text-black mb-6">Série en cours</h3>
+        <div className="bg-white rounded-none p-8 border-2 border-black shadow-[8px_8px_0px_black]">
+          <h3 className="text-lg font-black uppercase tracking-tight text-black mb-6" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Série en cours</h3>
           <StreakCounter
             currentStreak={stats.streak?.current || 0}
             longestStreak={stats.streak?.longest || 0}
@@ -136,7 +136,7 @@ export default function LeaderboardStats({ school = 'eugenia', student: propStud
         </div>
 
         {/* Badges */}
-        <div className="bg-white rounded-[24px] p-8 border border-black/5 shadow-sm">
+        <div className="bg-white rounded-none p-8 border-2 border-black shadow-[8px_8px_0px_black]">
           <BadgeCollection earnedBadges={stats.badges || []} showLocked={true} />
         </div>
       </div>

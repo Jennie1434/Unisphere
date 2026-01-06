@@ -3,8 +3,9 @@ import { useStudentAuth } from '../contexts/StudentAuthContext';
 import PageLayout from '../components/shared/PageLayout';
 import LeaderboardStats from '../components/student/LeaderboardStats';
 import BadgesDisplay from '../components/student/BadgesDisplay';
-import { Lock, Eye, EyeOff, Shield, ArrowUpRight, Award } from 'lucide-react';
+import { Lock, Eye, EyeOff, Shield, ArrowUpRight, Award, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getStudentAssociations } from '../services/associationsApi';
 
 export default function StudentProfilePage({ school = 'eugenia' }) {
   const { student } = useStudentAuth();
@@ -26,10 +27,26 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
   }, []);
 
   useEffect(() => {
-    const savedAssociations = localStorage.getItem(`associations_${student.email}`);
-    if (savedAssociations) {
-      setAssociations(JSON.parse(savedAssociations));
+    async function fetchAssociations() {
+      if (student?.email) {
+        try {
+          const data = await getStudentAssociations(student.email);
+          if (Array.isArray(data)) {
+            setAssociations(data);
+            return;
+          }
+        } catch (error) {
+          console.error('Failed to fetch associations:', error);
+        }
+
+        // Fallback to localStorage
+        const savedAssociations = localStorage.getItem(`associations_${student.email}`);
+        if (savedAssociations) {
+          setAssociations(JSON.parse(savedAssociations));
+        }
+      }
     }
+    fetchAssociations();
   }, [student]);
 
   const handleJoinAssociation = (assoId) => {
@@ -298,20 +315,22 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {associations.map(asso => (
-                  <div key={asso.id} className="bg-white border-2 border-black p-8 hover:bg-black hover:text-white group transition-all">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <span className="text-5xl">{asso.emoji}</span>
-                        <span className="font-black text-lg uppercase">{asso.name}</span>
+                  <Link
+                    key={asso.id}
+                    to={`/eugenia-school/associations/${asso.id}`}
+                    className="group border-2 border-black p-8 hover:bg-[#DBA12D] hover:shadow-[10px_10px_0px_black] transition-all flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-6">
+                      <span className="text-4xl">{asso.emoji || '🤝'}</span>
+                      <div>
+                        <h3 className="text-xl font-black uppercase tracking-tight">{asso.name}</h3>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-black/50 group-hover:text-black mt-1">
+                          Role: {asso.role || 'Membre'}
+                        </p>
                       </div>
-                      <button
-                        onClick={() => handleLeaveAssociation(asso.id)}
-                        className="px-6 py-3 bg-black text-white group-hover:bg-white group-hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-widest transition-all"
-                      >
-                        QUITTER
-                      </button>
                     </div>
-                  </div>
+                    <ArrowUpRight className="w-8 h-8 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0" />
+                  </Link>
                 ))}
               </div>
             )}

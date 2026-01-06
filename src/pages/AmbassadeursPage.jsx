@@ -135,8 +135,8 @@ export default function AmbassadeursPage({ school = 'eugenia' }) {
           </div>
         </section>
 
-        {/* 3. MISSIONS GALLERY (Kinetic Cards) */}
-        <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">
+        {/* 3. MISSIONS CAROUSEL (Auto-Scroll) */}
+        <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto overflow-hidden">
           <div className="flex items-end justify-between mb-20">
             <div>
               <span className="text-[#DBA12D] font-black text-[11px] tracking-[0.5em] mb-4 block uppercase transition-all hover:tracking-[0.8em] cursor-default">ACTIVE MISSIONS ENGINE</span>
@@ -146,18 +146,30 @@ export default function AmbassadeursPage({ school = 'eugenia' }) {
               ALL QUESTS <ArrowUpRight className="w-5 h-5" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {missions.map((mission, i) => (
-              <motion.div
-                key={mission.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", delay: i * 0.1 }}
-              >
-                <MissionCard mission={mission} school={school} />
-              </motion.div>
-            ))}
+
+          {/* Carousel Container */}
+          <div className="relative">
+            <motion.div
+              className="flex gap-12"
+              animate={{
+                x: [0, -((missions.length * 450) / 2)]
+              }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 30,
+                  ease: "linear"
+                }
+              }}
+            >
+              {/* Duplicate missions for seamless loop */}
+              {[...missions, ...missions].map((mission, i) => (
+                <div key={`mission-${i}`} className="flex-shrink-0 w-[420px]">
+                  <MissionCard mission={mission} school={school} />
+                </div>
+              ))}
+            </motion.div>
           </div>
         </section>
 
@@ -194,7 +206,12 @@ export default function AmbassadeursPage({ school = 'eugenia' }) {
                             {ambassador.firstName.charAt(0)}{ambassador.lastName.charAt(0)}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-black text-2xl group-hover:tracking-wider transition-all uppercase">{ambassador.firstName} {ambassador.lastName}</span>
+                            <Link
+                              to={`/profile/${ambassador.firstName.toLowerCase()}-${ambassador.lastName.toLowerCase()}`}
+                              className="font-black text-2xl group-hover:tracking-wider transition-all uppercase hover:text-[#DBA12D]"
+                            >
+                              {ambassador.firstName} {ambassador.lastName}
+                            </Link>
                             <span className="text-[9px] font-black text-black/40 uppercase tracking-widest">RANK: ELITE_AGENT</span>
                           </div>
                         </div>

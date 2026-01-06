@@ -2913,11 +2913,8 @@ export default {
       if (url.pathname.startsWith('/leaderboard/student/') && url.pathname.endsWith('/stats') && request.method === 'GET') {
         try {
           const pathParts = url.pathname.split('/');
-          console.log('📊 Stats request:', { pathname: url.pathname, pathParts });
-          // pathParts = ['', 'leaderboard', 'student', 'email@domain.com', 'stats']
           if (pathParts.length >= 4 && pathParts[pathParts.length - 1] === 'stats') {
             const email = decodeURIComponent(pathParts[pathParts.length - 2]);
-            console.log('📊 Decoded email:', email);
             const response = await getStudentStats(env, email);
             return new Response(response.body, {
               ...response,
@@ -2927,7 +2924,25 @@ export default {
             return jsonResponse({ error: 'Invalid URL format' }, 400);
           }
         } catch (error: any) {
-          console.error('❌ Error in stats route:', error);
+          return jsonResponse({ error: error.message || 'Internal server error' }, 500);
+        }
+      }
+
+      // Route: GET /leaderboard/student/:email/associations - Liste des associations d'un étudiant
+      if (url.pathname.startsWith('/leaderboard/student/') && url.pathname.endsWith('/associations') && request.method === 'GET') {
+        try {
+          const pathParts = url.pathname.split('/');
+          if (pathParts.length >= 4 && pathParts[pathParts.length - 1] === 'associations') {
+            const email = decodeURIComponent(pathParts[pathParts.length - 2]);
+            const response = await getStudentAssociations(env, email);
+            return new Response(response.body, {
+              ...response,
+              headers: { ...response.headers, ...corsHeaders() },
+            });
+          } else {
+            return jsonResponse({ error: 'Invalid URL format' }, 400);
+          }
+        } catch (error: any) {
           return jsonResponse({ error: error.message || 'Internal server error' }, 500);
         }
       }
@@ -4293,6 +4308,36 @@ async function updateMemberRole(env: Env, associationId: string, email: string, 
     return jsonResponse({ success: true });
   } catch (error: any) {
     return jsonResponse({ success: false, error: error.message }, 500);
+  }
+}
+
+/**
+ * GET /leaderboard/student/:email/associations - Liste des associations d'un étudiant
+ */
+async function getStudentAssociations(env: Env, email: string): Promise<Response> {
+  try {
+    await ensureAssociationTables(env);
+    const { results } = await env.DB.prepare(
+      `SELECT a.*, am.role, am.joined_at
+       FROM associations a
+       JOIN association_members am ON a.id = am.association_id
+       WHERE am.student_email = ? AND am.status = 'active'
+       ORDER BY am.joined_at DESC`
+    ).bind(email.toLowerCase()).all();
+
+    const associations = (results || []).map((asso: any) => ({
+      id: asso.id,
+      name: asso.name,
+      emoji: asso.emoji || '🤝',
+      description: asso.description || '',
+      category: asso.category || 'Autre',
+      role: asso.role,
+      joinedAt: asso.joined_at
+    }));
+
+    return jsonResponse(associations);
+  } catch (error: any) {
+    return jsonResponse({ error: error.message }, 500);
   }
 }
 

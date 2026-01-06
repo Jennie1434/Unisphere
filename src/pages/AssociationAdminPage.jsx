@@ -10,6 +10,10 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
     const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, members, events
     const [showApplicationsModal, setShowApplicationsModal] = useState(false);
     const [showMessageModal, setShowMessageModal] = useState(false);
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+    const [showManageEventModal, setShowManageEventModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [pendingApplications, setPendingApplications] = useState([
         { id: 1, name: 'Marie Dupont', email: 'mdupont@eugeniaschool.com', message: 'Je suis passionnée par le consulting et je voudrais développer mes compétences.', date: '2026-01-06' },
         { id: 2, name: 'Lucas Martin', email: 'lmartin@eugeniaschool.com', message: 'Ancien stagiaire chez BCG, je veux continuer dans cette voie !', date: '2026-01-05' }
@@ -58,7 +62,10 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                             </h1>
                         </div>
                         <div className="flex gap-4">
-                            <button className="px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest border-2 border-black">
+                            <button
+                                onClick={() => setShowSettingsModal(true)}
+                                className="px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest border-2 border-black"
+                            >
                                 <Settings className="w-4 h-4 mr-2 inline" />
                                 Paramètres
                             </button>
@@ -177,7 +184,10 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                         <div>
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-3xl font-black">Vos Événements</h2>
-                                <button className="px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest">
+                                <button
+                                    onClick={() => setShowCreateEventModal(true)}
+                                    className="px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                                >
                                     + Créer
                                 </button>
                             </div>
@@ -195,8 +205,27 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                                             </div>
                                         </div>
                                         <div className="flex gap-4">
-                                            <button className="px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors text-xs font-black uppercase">Gérer</button>
-                                            <button className="px-4 py-2 border border-black hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors text-xs font-black uppercase">Annuler</button>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedEvent(event);
+                                                    setShowManageEventModal(true);
+                                                }}
+                                                className="px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors text-xs font-black uppercase"
+                                            >
+                                                Gérer
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedEvent(event);
+                                                    if (confirm(`Êtes-vous sûr de vouloir annuler l'événement "${event.name}" ?`)) {
+                                                        // Handle event cancellation
+                                                        console.log('Event cancelled:', event.id);
+                                                    }
+                                                }}
+                                                className="px-4 py-2 border border-black hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors text-xs font-black uppercase"
+                                            >
+                                                Annuler
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -219,7 +248,7 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                                             <div className="text-xs text-gray-500 font-bold">{member.role}</div>
                                         </div>
                                         <button
-                                            onClick={() => alert(`Gérer le membre : ${member.name}\n(Changer de rôle, exclure, etc.)`)}
+                                            onClick={() => console.log('Manage member:', member.id)}
                                             className="ml-auto text-gray-400 hover:text-black transition-colors"
                                         >
                                             <Settings className="w-4 h-4" />
@@ -231,6 +260,94 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                     )}
 
                 </div>
+
+                {/* Settings Modal */}
+                {showSettingsModal && (
+                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white border-4 border-black shadow-[16px_16px_0px_black] max-w-md w-full p-8">
+                            <h3 className="text-2xl font-black uppercase mb-6">Paramètres</h3>
+                            <div className="space-y-4 mb-8">
+                                <button className="w-full text-left p-4 border-2 border-black hover:bg-gray-50 font-bold">
+                                    ⚙️ Modifier le nom/description
+                                </button>
+                                <button className="w-full text-left p-4 border-2 border-black hover:bg-gray-50 font-bold">
+                                    🔐 Gérer les permissions
+                                </button>
+                                <button className="w-full text-left p-4 border-2 border-red-600 hover:bg-red-50 font-bold text-red-600">
+                                    🗑️ Supprimer l'association
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => setShowSettingsModal(false)}
+                                className="w-full px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                            >
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Create Event Modal */}
+                {showCreateEventModal && (
+                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white border-4 border-black shadow-[16px_16px_0px_black] max-w-md w-full p-8">
+                            <h3 className="text-2xl font-black uppercase mb-6">Créer un événement</h3>
+                            <div className="space-y-4 mb-8">
+                                <input type="text" placeholder="Titre" className="w-full p-3 border-2 border-black font-bold" />
+                                <input type="date" className="w-full p-3 border-2 border-black font-bold" />
+                                <textarea placeholder="Description" className="w-full p-3 border-2 border-black font-bold h-24"></textarea>
+                                <input type="text" placeholder="Lieu" className="w-full p-3 border-2 border-black font-bold" />
+                            </div>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setShowCreateEventModal(false)}
+                                    className="flex-1 px-6 py-3 border-2 border-black hover:bg-gray-50 transition-colors font-black uppercase text-xs tracking-widest"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        console.log('Event created');
+                                        setShowCreateEventModal(false);
+                                    }}
+                                    className="flex-1 px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                                >
+                                    Créer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Manage Event Modal */}
+                {showManageEventModal && selectedEvent && (
+                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white border-4 border-black shadow-[16px_16px_0px_black] max-w-md w-full p-8">
+                            <h3 className="text-2xl font-black uppercase mb-6">Gérer: {selectedEvent.name}</h3>
+                            <div className="space-y-4 mb-8">
+                                <button className="w-full text-left p-4 border-2 border-black hover:bg-gray-50 font-bold">
+                                    ✏️ Modifier les détails
+                                </button>
+                                <button className="w-full text-left p-4 border-2 border-black hover:bg-gray-50 font-bold">
+                                    👥 Voir les participants ({selectedEvent.participants})
+                                </button>
+                                <button className="w-full text-left p-4 border-2 border-black hover:bg-gray-50 font-bold">
+                                    📧 Envoyer un rappel
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setShowManageEventModal(false);
+                                    setSelectedEvent(null);
+                                }}
+                                className="w-full px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                            >
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </PageLayout>
     );

@@ -22,7 +22,7 @@ export default function Nav({ links, footerLinks, school }) {
                                     {link.action ? (
                                         <button
                                             onClick={link.action}
-                                            className="text-left w-full hover:text-red-500 transition-colors"
+                                            className="text-left w-full px-4 py-2 bg-black text-white hover:bg-red-600 transition-colors font-black uppercase text-sm tracking-widest rounded-none border-2 border-black hover:border-red-600"
                                         >
                                             {title}
                                         </button>

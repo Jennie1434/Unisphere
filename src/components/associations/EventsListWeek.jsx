@@ -5,20 +5,42 @@ export default function EventsListWeek({ events = [], school = 'eugenia' }) {
     const hoverBgClass = isEugenia ? 'hover:bg-eugenia-yellow/10' : 'hover:bg-blue-50';
     const groupHoverTextClass = isEugenia ? 'group-hover:text-eugenia-burgundy' : 'group-hover:text-blue-700';
     const iconHoverClass = isEugenia ? 'group-hover:text-eugenia-burgundy' : 'group-hover:text-blue-500';
-    // Mock grouping for demo if events not grouped
+    // Get current dates for this week
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dayAfterTomorrow = new Date(today);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+
+    const formatDate = (date) => {
+        const day = date.getDate();
+        const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+        return `${day} ${month}`;
+    };
+
+    const getDayName = (date) => {
+        const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+        return days[date.getDay()];
+    };
+
     const days = [
-        { name: 'Aujourd\'hui', date: '5 Oct', events: events.slice(0, 2) },
-        { name: 'Demain', date: '6 Oct', events: events.slice(2, 3) },
-        { name: 'Vendredi', date: '7 Oct', events: [] },
+        { name: 'Aujourd\'hui', date: formatDate(today), events: events.slice(0, 2) },
+        { name: 'Demain', date: formatDate(tomorrow), events: events.slice(2, 3) },
+        { name: getDayName(dayAfterTomorrow), date: formatDate(dayAfterTomorrow), events: [] },
     ];
 
+    const schoolPath = isEugenia ? '/eugenia-school' : '/albert-school';
+
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-black/5 p-6">
+        <div className="bg-white rounded-none shadow-[8px_8px_0px_black] border-2 border-black p-6">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold font-serif">Cette semaine</h3>
-                <button className="text-xs font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">
+                <h3 className="text-lg font-black uppercase tracking-tight" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>🗓️ AGENDA.</h3>
+                <a
+                    href={`${schoolPath}/associations/agenda`}
+                    className="text-xs font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors"
+                >
                     Voir tout
-                </button>
+                </a>
             </div>
 
             <div className="space-y-6">
@@ -51,9 +73,6 @@ export default function EventsListWeek({ events = [], school = 'eugenia' }) {
                 ))}
             </div>
 
-            <button className="w-full mt-6 py-3 rounded-xl border-2 border-dashed border-black/5 text-xs font-bold text-black/40 hover:border-black/20 hover:text-black transition-all">
-                + Ajouter un événement
-            </button>
         </div>
     );
 }

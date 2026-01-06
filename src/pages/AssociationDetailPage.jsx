@@ -105,49 +105,54 @@ export default function AssociationDetailPage({ school = 'eugenia' }) {
   return (
     <PageLayout school={school}>
       <div className="min-h-screen bg-gray-50">
-        {/* Hero Section */}
-        {/* Hero Section */}
-        <section className="bg-white/50 backdrop-blur-sm py-12 px-4 text-black">
+        {/* Hero Section - Brutalist */}
+        <section className="bg-white py-12 px-4 text-black border-b-4 border-black">
           <div className="max-w-7xl mx-auto">
             <Link
               to={`${schoolPath}/associations`}
-              className="inline-flex items-center gap-2 text-black/60 hover:text-black mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-black/60 hover:text-black mb-6 transition-colors font-black uppercase text-xs tracking-widest"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
               </svg>
-              Retour aux associations
+              Retour
             </Link>
 
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-              <div className="w-32 h-32 rounded-full bg-black/5 backdrop-blur-lg flex items-center justify-center text-6xl shadow-xl border border-black/5">
+              <div className="w-32 h-32 rounded-none bg-white border-4 border-black shadow-[8px_8px_0px_black] flex items-center justify-center text-6xl">
                 {association.emoji || '🤝'}
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">{association.name}</h1>
+                <h1 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tight" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{association.name}</h1>
                 {association.description && (
-                  <p className="text-xl text-black/70 mb-4 font-sans">{association.description}</p>
+                  <p className="text-lg text-black/70 mb-4 font-medium">{association.description}</p>
                 )}
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                   {association.category && (
-                    <span className="px-4 py-2 bg-black/5 backdrop-blur-lg rounded-full text-sm font-semibold">
+                    <span className="px-4 py-2 bg-black text-white rounded-none text-xs font-black uppercase tracking-widest border-2 border-black">
                       {association.category}
                     </span>
                   )}
-                  <span className="px-4 py-2 bg-black/5 backdrop-blur-lg rounded-full text-sm flex items-center gap-1">
+                  <span className="px-4 py-2 bg-white border-2 border-black rounded-none text-xs font-black uppercase flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    {association.membersCount || members.length} membre{association.membersCount !== 1 ? 's' : ''}
+                    {association.membersCount || members.length}
                   </span>
                   {events.length > 0 && (
-                    <span className="px-4 py-2 bg-black/5 backdrop-blur-lg rounded-full text-sm flex items-center gap-1">
+                    <span className="px-4 py-2 bg-white border-2 border-black rounded-none text-xs font-black uppercase flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      {events.length} événement{events.length !== 1 ? 's' : ''}
+                      {events.length}
+                    </span>
+                  )}
+                  {association.isRecruiting && (
+                    <span className="px-4 py-2 bg-[#DBA12D] text-black rounded-none text-xs font-black uppercase tracking-widest border-2 border-black flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                      Recrute
                     </span>
                   )}
                 </div>
@@ -157,26 +162,36 @@ export default function AssociationDetailPage({ school = 'eugenia' }) {
                   {isAdmin && (
                     <Link
                       to={`${schoolPath}/associations/${id}/manage`}
-                      className={`px-6 py-3 bg-white border border-black/10 font-semibold rounded-xl hover:text-white transition-all flex items-center gap-2 ${isEugenia ? 'text-[#671324] hover:bg-[#671324]' : 'text-black hover:bg-black'}`}
+                      className="px-6 py-3 bg-white border-2 border-black font-black rounded-none hover:bg-black hover:text-white transition-all flex items-center gap-2 uppercase text-xs tracking-widest shadow-[4px_4px_0px_black]"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
-                      Gérer l'association
+                      Gérer
                     </Link>
                   )}
-                  {!isMember && student && (
+                  {isMember ? (
+                    <button
+                      disabled
+                      className="px-6 py-3 bg-[#DBA12D] text-black border-2 border-black font-black rounded-none shadow-[4px_4px_0px_black] flex items-center gap-2 uppercase text-xs tracking-widest cursor-not-allowed"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Rejoint
+                    </button>
+                  ) : student ? (
                     <button
                       onClick={() => setActiveTab('apply')}
-                      className={`px-6 py-3 font-semibold rounded-xl shadow-lg transition-all flex items-center gap-2 ${btnPrimaryClass}`}
+                      className="px-6 py-3 bg-black text-white border-2 border-black font-black rounded-none hover:bg-[#DBA12D] hover:text-black transition-all shadow-[4px_4px_0px_black] flex items-center gap-2 uppercase text-xs tracking-widest"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
-                      Postuler
+                      Rejoindre
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -186,14 +201,14 @@ export default function AssociationDetailPage({ school = 'eugenia' }) {
         {/* Contenu */}
         <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Onglets */}
-          <div className="bg-white rounded-xl shadow-sm mb-6 border border-gray-200">
-            <div className="flex gap-2 border-b border-gray-200 p-4">
+          <div className="bg-white rounded-none shadow-[8px_8px_0px_black] mb-6 border-2 border-black">
+            <div className="flex gap-2 border-b-2 border-black p-4">
               {tabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === tab.id
-                    ? borderActiveTab
+                  className={`px-6 py-3 font-black uppercase text-xs tracking-widest transition-colors border-b-4 ${activeTab === tab.id
+                    ? 'border-[#DBA12D] text-black'
                     : 'border-transparent text-black/40 hover:text-black'
                     }`}
                 >

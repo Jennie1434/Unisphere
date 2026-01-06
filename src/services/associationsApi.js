@@ -228,4 +228,10 @@ export async function getAllEvents(month, year) {
   const query = params.toString();
   return api.get(`/events${query ? `?${query}` : ''}`);
 }
+/**
+ * Récupère les associations d'un étudiant spécifique
+ */
+export async function getStudentAssociations(email) {
+  return api.get(`/leaderboard/student/${encodeURIComponent(email)}/associations`);
+}
 

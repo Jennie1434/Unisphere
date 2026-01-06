@@ -6,7 +6,6 @@ import UniSphereNavbar from '../components/sales/UniSphereNavbar';
 // New Sections - Narrative Sequence
 import EditorialHero from '../components/sales/sections/EditorialHero';
 import VerticalManifestColumn from '../components/sales/sections/VerticalManifestColumn';
-import BenefitCards from '../components/sales/sections/BenefitCards';
 import NatureMagicSection from '../components/sales/sections/NatureMagicSection';
 import FeatureGrid from '../components/sales/sections/FeatureGrid';
 import AppMockups from '../components/sales/sections/AppMockups';
@@ -77,10 +76,7 @@ export default function UniSphereLandingPage() {
       {/* 3. Grande colonne de texte vertical */}
       <VerticalManifestColumn />
 
-      {/* 4. Section pod / produit avec cartes */}
-      <div id="universities">
-        <BenefitCards />
-      </div>
+
 
       {/* 5. Section "inside lies nature's magic" */}
       <NatureMagicSection />

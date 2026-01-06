@@ -88,11 +88,11 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-            <div className="bg-white rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="bg-white rounded-none w-full max-w-lg overflow-hidden shadow-[16px_16px_0px_black] border-4 border-black relative">
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors z-10"
+                    className="absolute top-4 right-4 p-2 rounded-none bg-black text-white hover:bg-red-600 transition-colors z-10 border-2 border-black"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -101,24 +101,24 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
                     {!results ? (
                         <>
                             <div className="mb-8">
-                                <span className={`text-xs font-black uppercase tracking-widest mb-2 block ${textAccentClass}`}>
+                                <span className="text-xs font-black uppercase tracking-widest mb-2 block" style={{ color: accentColor }}>
                                     Question {step + 1}/{questions.length}
                                 </span>
-                                <h2 className={`text-2xl md:text-3xl font-bold font-serif ${textPrimaryClass}`}>
+                                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
                                     {questions[step].question}
                                 </h2>
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {questions[step].options.map((opt, i) => (
                                     <button
                                         key={i}
                                         onClick={() => handleOptionClick(opt.value)}
-                                        className={`w-full text-left p-5 rounded-xl border border-black/5 transition-all group group-hover:scale-[1.02] ${borderHoverClass} ${groupHoverBgClass}`}
+                                        className="w-full text-left p-5 rounded-none border-2 border-black transition-all hover:shadow-[6px_6px_0px_black] hover:-translate-y-1 bg-white hover:bg-[#DBA12D]"
                                     >
                                         <div className="flex items-center justify-between">
-                                            <span className={`font-bold transition-colors ${groupHoverTextClass} ${textPrimaryClass}`}>{opt.label}</span>
-                                            <ArrowRightIcon className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 ${textAccentClass}`} />
+                                            <span className="font-black uppercase text-sm tracking-tight text-black">{opt.label}</span>
+                                            <ArrowRightIcon className="w-5 h-5 text-black" />
                                         </div>
                                     </button>
                                 ))}
@@ -163,10 +163,10 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
 
                 {/* Progress Bar */}
                 {!results && (
-                    <div className="h-1.5 w-full bg-gray-100">
+                    <div className="h-2 w-full bg-gray-200 border-t-2 border-black">
                         <div
-                            className="h-full transition-all duration-500 ease-out"
-                            style={{ width: `${((step + 1) / questions.length) * 100}%`, backgroundColor: accentColor }}
+                            className="h-full transition-all duration-500 ease-out bg-black"
+                            style={{ width: `${((step + 1) / questions.length) * 100}%` }}
                         />
                     </div>
                 )}

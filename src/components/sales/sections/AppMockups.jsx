@@ -46,11 +46,27 @@ export default function AppMockups() {
                     transition={{ duration: 1 }}
                     className="z-10 w-full max-w-4xl aspect-video bg-zinc-900 rounded-[2rem] border border-white/20 shadow-[0_0_100px_rgba(20,241,149,0.15)] overflow-hidden relative"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#14F195]/5 via-white/5 to-transparent" />
-                    <div className="absolute top-0 left-0 right-0 h-10 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2">
+                    {/* Browser Top Bar */}
+                    <div className="absolute top-0 left-0 right-0 h-10 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2 z-20">
                         <div className="w-3 h-3 rounded-full bg-red-500/50" />
                         <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                         <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                    </div>
+
+                    {/* Video Content */}
+                    <div className="absolute inset-0 pt-10">
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                        >
+                            <source src="/videos/WhatsApp Video 2026-01-06 at 22.15.55.mp4" type="video/mp4" />
+                        </video>
+
+                        {/* Subtle overlay for depth */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                     </div>
                 </motion.div>
 

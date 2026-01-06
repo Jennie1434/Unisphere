@@ -190,27 +190,7 @@ export default function AssociationsPage({ school = 'eugenia' }) {
                 <EventsListWeek school={school} />
               </div>
 
-              {/* Manifesto Callout (Vibrant Black) */}
-              <motion.div
-                whileHover={{ scale: 1.02, rotate: -1 }}
-                className="bg-black text-white p-12 relative overflow-hidden group cursor-pointer shadow-2xl border-4 border-black"
-              >
-                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-30 transition-opacity">
-                  <Globe className="w-48 h-48 text-[#DBA12D]" />
-                </div>
-                <h3 className="text-5xl font-black mb-6 relative z-10 leading-[0.9]" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
-                  CRÉEZ <br /><span className="text-[#DBA12D] italic">VOTRE</span> HUB.
-                </h3>
-                <p className="text-white/40 text-sm mb-12 leading-relaxed relative z-10 font-bold uppercase tracking-tight">
-                  Propulsez vos idées. Le BDE vous donne les outils pour structurer et financer vos projets les plus fous.
-                </p>
-                <button
-                  onClick={() => alert('La création de projets sera bientôt disponible ! En attendant, contactez le BDE pour soumettre votre idée.')}
-                  className="flex items-center gap-5 text-xs font-black uppercase tracking-[0.3em] text-[#DBA12D] group-hover:gap-10 transition-all border-b-2 border-[#DBA12D] pb-2"
-                >
-                  SOUMETTRE UN PROJET <ArrowUpRight className="w-5 h-5" />
-                </button>
-              </motion.div>
+
 
             </aside>
           </div>

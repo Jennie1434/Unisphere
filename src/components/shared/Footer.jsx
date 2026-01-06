@@ -22,11 +22,9 @@ export default function Footer({ school = 'eugenia', minimal = false }) {
     return (
       <footer className="py-8 px-4 border-t border-black/5 mt-auto bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold uppercase tracking-widest text-black/40">
-          <p>© {currentYear} {school === 'eugenia' ? 'Eugenia' : 'Albert'} School — Tous droits réservés</p>
+          <p>© <span className="text-white">{currentYear}</span> {school === 'eugenia' ? 'Eugenia' : 'Albert'} School — Tous droits réservés</p>
           <div className="flex gap-8">
             <Link to="/" className="hover:text-black transition-colors">Mentions</Link>
-            <Link to="/" className="hover:text-black transition-colors">Confidentialité</Link>
-            <Link to="/" className="hover:text-black transition-colors">Support</Link>
           </div>
         </div>
       </footer>
