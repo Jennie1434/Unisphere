@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  loadConfig, 
-  saveConfig, 
-  getRewardsConfig, 
+import {
+  loadConfig,
+  saveConfig,
+  getRewardsConfig,
   getGlobalConfig,
-  updateGlobalConfig 
+  updateGlobalConfig
 } from '../../services/configService';
+import ConfirmModal from './ConfirmModal';
 import RewardEditor from './RewardEditor';
 import RewardCard from '../shared/RewardCard';
 
@@ -15,6 +16,7 @@ import RewardCard from '../shared/RewardCard';
 export default function RewardsConfig() {
   const [config, setConfig] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [rewardToDelete, setRewardToDelete] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -66,16 +68,22 @@ export default function RewardsConfig() {
   };
 
   const handleDeleteReward = (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette récompense ?')) {
-      const updatedRewards = config.rewards
-        .filter(r => r.id !== id)
-        .map((r, index) => ({ ...r, rank: index + 1 }));
-      
-      setConfig({
-        ...config,
-        rewards: updatedRewards
-      });
-    }
+    setRewardToDelete(id);
+  };
+
+  const confirmDeleteReward = () => {
+    if (!rewardToDelete) return;
+    const id = rewardToDelete;
+    setRewardToDelete(null); // Close modal
+
+    const updatedRewards = config.rewards
+      .filter(r => r.id !== id)
+      .map((r, index) => ({ ...r, rank: index + 1 }));
+
+    setConfig({
+      ...config,
+      rewards: updatedRewards
+    });
   };
 
   const handleSave = async () => {
@@ -84,17 +92,17 @@ export default function RewardsConfig() {
 
     try {
       await saveConfig(config);
-      setMessage({ 
-        type: 'success', 
-        text: '✅ Configuration sauvegardée avec succès !' 
+      setMessage({
+        type: 'success',
+        text: '✅ Configuration sauvegardée avec succès !'
       });
-      
+
       // Clear message after 3 seconds
       setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: '❌ Erreur lors de la sauvegarde' 
+      setMessage({
+        type: 'error',
+        text: '❌ Erreur lors de la sauvegarde'
       });
     } finally {
       setIsSaving(false);
@@ -118,9 +126,8 @@ export default function RewardsConfig() {
 
       {/* Message */}
       {message.text && (
-        <div className={`alert mb-6 ${
-          message.type === 'success' ? 'alert-success' : 'alert-danger'
-        }`}>
+        <div className={`alert mb-6 ${message.type === 'success' ? 'alert-success' : 'alert-danger'
+          }`}>
           {message.text}
         </div>
       )}
@@ -128,7 +135,7 @@ export default function RewardsConfig() {
       {/* Config globale */}
       <div className="config-section card mb-8">
         <h3 className="text-2xl font-bold mb-4">📊 Informations générales</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-group">
             <label className="block text-gray-700 font-semibold mb-2">
@@ -199,7 +206,7 @@ export default function RewardsConfig() {
       {/* Preview */}
       <div className="preview-section card mb-8">
         <h3 className="text-2xl font-bold mb-4">👀 Aperçu sur la landing page</h3>
-        
+
         <div className="rewards-preview grid grid-cols-1 md:grid-cols-3 gap-6">
           {config.rewards && config.rewards.map(reward => (
             <RewardCard key={reward.id} {...reward} />
@@ -218,6 +225,15 @@ export default function RewardsConfig() {
           {isSaving ? '⏳ Sauvegarde...' : '💾 Sauvegarder la configuration'}
         </button>
       </div>
+      <ConfirmModal
+        isOpen={!!rewardToDelete}
+        onClose={() => setRewardToDelete(null)}
+        onConfirm={confirmDeleteReward}
+        title="Supprimer la récompense"
+        message="Êtes-vous sûr de vouloir supprimer cette récompense ?"
+        confirmText="Supprimer"
+        isDanger={true}
+      />
     </div>
   );
 }

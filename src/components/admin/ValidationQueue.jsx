@@ -11,6 +11,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
   const [loading, setLoading] = useState(true);
   const [actionTypes, setActionTypes] = useState([]);
   const [deletingIds, setDeletingIds] = useState(new Set());
+  const [actionToDelete, setActionToDelete] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -81,12 +82,18 @@ export default function ValidationQueue({ school = 'eugenia' }) {
     loadData(); // Refresh toutes les données
   };
 
-  const handleDeleteAction = async (actionId, e) => {
-    e.stopPropagation(); // Empêcher l'ouverture du modal
+  const handleDeleteAction = (actionId, e) => {
+    e.stopPropagation();
+    setActionToDelete(actionId);
+  };
 
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer définitivement cette action ? Cette action est irréversible.')) {
-      return;
-    }
+  const confirmDelete = async () => {
+
+
+
+    if (!actionToDelete) return;
+    const actionId = actionToDelete;
+    setActionToDelete(null);
 
     setDeletingIds(prev => new Set(prev).add(actionId));
 
@@ -284,7 +291,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                 <div
                   key={action.id}
                   className={`bg-white border-2 border-black p-6 transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_black] ${isValidated ? 'border-l-[6px] border-l-green-500' :
-                      isRejected ? 'border-l-[6px] border-l-red-500' : ''
+                    isRejected ? 'border-l-[6px] border-l-red-500' : ''
                     }`}
                 >
                   <div className="flex items-center justify-between">
@@ -344,6 +351,47 @@ export default function ValidationQueue({ school = 'eugenia' }) {
           onClose={handleCloseModal}
           onActionComplete={handleCloseModal}
         />
+      )}
+
+      {/* Modal de confirmation de suppression */}
+      {actionToDelete && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setActionToDelete(null)}>
+          <div
+            className="bg-white border-2 border-black p-8 shadow-[12px_12px_0px_black] max-w-md w-full relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-4 mb-6 text-red-600">
+              <div className="w-12 h-12 flex items-center justify-center border-2 border-black rounded-none shadow-[4px_4px_0px_black] text-2xl bg-white">
+                ⚠️
+              </div>
+              <h3 className="text-2xl font-black uppercase tracking-tight text-black">
+                Attention !
+              </h3>
+            </div>
+
+            <p className="font-bold text-black mb-2 text-lg uppercase tracking-wide">
+              Suppression définitive
+            </p>
+            <p className="text-black/60 font-medium mb-8 leading-relaxed">
+              Êtes-vous sûr de vouloir supprimer cette action ? Cette opération est <span className="font-black text-black">irréversible</span> et retirera les points associés.
+            </p>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActionToDelete(null)}
+                className="flex-1 px-6 py-3 border-2 border-black font-black uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 px-6 py-3 bg-red-600 text-white border-2 border-black font-black uppercase tracking-widest text-xs hover:bg-white hover:text-red-600 shadow-[4px_4px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                Confirmer
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

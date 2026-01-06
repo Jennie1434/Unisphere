@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { getActionTypes, saveActionType, deleteActionType } from '../../services/configService';
+import ConfirmModal from './ConfirmModal';
 
 export default function ActionTypeEditor({ school = 'eugenia' }) {
   const [actionTypes, setActionTypes] = useState([]);
   const [editingType, setEditingType] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [typeToDelete, setTypeToDelete] = useState(null);
 
   useEffect(() => {
     loadActionTypes();
@@ -60,11 +62,17 @@ export default function ActionTypeEditor({ school = 'eugenia' }) {
     setEditingType(null);
   };
 
-  const handleDelete = async (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce type d\'action ?')) {
-      await deleteActionType(id);
-      await loadActionTypes();
-    }
+  const handleDelete = (id) => {
+    setTypeToDelete(id);
+  };
+
+  const confirmDeleteType = async () => {
+    if (!typeToDelete) return;
+    const id = typeToDelete;
+    setTypeToDelete(null); // Close modal immediately
+
+    await deleteActionType(id);
+    await loadActionTypes();
   };
 
   const addField = () => {
@@ -285,6 +293,16 @@ export default function ActionTypeEditor({ school = 'eugenia' }) {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={!!typeToDelete}
+        onClose={() => setTypeToDelete(null)}
+        onConfirm={confirmDeleteType}
+        title="Supprimer le type d'action"
+        message="Êtes-vous sûr de vouloir supprimer ce type d'action ? Cela n'affectera pas les actions déjà soumises."
+        confirmText="Supprimer"
+        isDanger={true}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getLeaderboard, updateLeaderboardUser, deleteLeaderboardUser, bulkImportStudents } from '../../services/googleSheets';
 import BulkImportStudents from './BulkImportStudents';
 import { SCHOOL_EMAIL_DOMAINS } from '../../constants/routes';
+import ConfirmModal from './ConfirmModal';
 
 export default function LeaderboardConfig({ school = 'eugenia' }) {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -9,6 +10,7 @@ export default function LeaderboardConfig({ school = 'eugenia' }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [studentToDelete, setStudentToDelete] = useState(null);
 
   useEffect(() => {
     loadLeaderboard();
@@ -64,15 +66,21 @@ export default function LeaderboardConfig({ school = 'eugenia' }) {
     }
   };
 
-  const handleDelete = async (email) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) {
-      const result = await deleteLeaderboardUser(email);
+  const handleDelete = (email) => {
+    setStudentToDelete(email);
+  };
 
-      if (result.success) {
-        await loadLeaderboard();
-      } else {
-        alert('Erreur lors de la suppression: ' + (result.error || 'Erreur inconnue'));
-      }
+  const confirmDeleteStudent = async () => {
+    if (!studentToDelete) return;
+    const email = studentToDelete;
+    setStudentToDelete(null);
+
+    const result = await deleteLeaderboardUser(email);
+
+    if (result.success) {
+      await loadLeaderboard();
+    } else {
+      alert('Erreur lors de la suppression: ' + (result.error || 'Erreur inconnue'));
     }
   };
 
@@ -95,8 +103,8 @@ export default function LeaderboardConfig({ school = 'eugenia' }) {
           <button
             onClick={() => setShowImport(!showImport)}
             className={`px-4 py-2 border-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all ${showImport
-                ? 'bg-black text-white hover:bg-white hover:text-black border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none'
-                : 'bg-white text-black hover:bg-black hover:text-white border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none'
+              ? 'bg-black text-white hover:bg-white hover:text-black border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none'
+              : 'bg-white text-black hover:bg-black hover:text-white border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none'
               }`}
           >
             {showImport ? '← Retour à la liste' : '📥 Import en masse'}
@@ -280,6 +288,15 @@ export default function LeaderboardConfig({ school = 'eugenia' }) {
           )}
         </>
       )}
+      <ConfirmModal
+        isOpen={!!studentToDelete}
+        onClose={() => setStudentToDelete(null)}
+        onConfirm={confirmDeleteStudent}
+        title="Supprimer l'étudiant"
+        message="Êtes-vous sûr de vouloir supprimer cet étudiant ? Cette action est irréversible et supprimera tout son historique."
+        confirmText="Supprimer"
+        isDanger={true}
+      />
     </div>
   );
 }

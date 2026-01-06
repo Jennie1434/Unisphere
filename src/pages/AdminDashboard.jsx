@@ -211,7 +211,7 @@ export default function AdminDashboard({ school = 'eugenia' }) {
       value: stats.pendingActions,
       icon: AlertCircle,
       color: stats.pendingActions > 0 ? '#EF4444' : '#10B981',
-      link: '/admin/validate',
+      link: school === 'eugenia' ? '/eugenia-school/admin/validate' : '/albert-school/admin/validate',
       badge: stats.pendingActions > 0 ? 'ACTION REQUISE' : 'À JOUR'
     },
     {
@@ -339,8 +339,8 @@ export default function AdminDashboard({ school = 'eugenia' }) {
                   key={filter}
                   onClick={() => setActivityFilter(filter)}
                   className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all border-2 border-black shadow-[4px_4px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${activityFilter === filter
-                      ? 'bg-black text-white'
-                      : 'bg-white text-black hover:bg-black/5'
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black hover:bg-black/5'
                     }`}
                 >
                   {filter === 'all' ? 'TOUTES' : filter === 'manual' ? 'MANUELLES' : 'AUTO'}
@@ -378,8 +378,8 @@ export default function AdminDashboard({ school = 'eugenia' }) {
                         </span>
                         {action.status === 'validated' && (
                           <span className={`text-[8px] px-2 py-0.5 font-black uppercase tracking-widest shrink-0 ${action.validatedBy === 'system' || action.autoValidated
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'bg-purple-100 text-purple-700'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-purple-100 text-purple-700'
                             }`}>
                             {action.validatedBy === 'system' || action.autoValidated ? '🤖 AUTO' : '👤 MANUEL'}
                           </span>
@@ -404,9 +404,9 @@ export default function AdminDashboard({ school = 'eugenia' }) {
               ))
             )}
           </div>
-          
+
           <div className="mt-10 pt-10 border-t-2 border-black/5 flex justify-center">
-            <Link to="/admin/actions" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-black/40 hover:text-black transition-colors group">
+            <Link to={school === 'eugenia' ? '/eugenia-school/admin/validate' : '/albert-school/admin/validate'} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-black/40 hover:text-black transition-colors group">
               Voir tout l'historique d'activité <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>

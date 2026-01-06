@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getActionTypes, getAutomationRules, saveAutomationRule, deleteAutomationRule } from '../../services/configService.js';
 import GoogleOAuthConnect from './GoogleOAuthConnect.jsx';
+import ConfirmModal from './ConfirmModal';
 
 export default function AutomationConfig({ school = 'eugenia' }) {
   const [automations, setAutomations] = useState([]);
@@ -8,6 +9,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
   const [loading, setLoading] = useState(true);
   const [editingAutomation, setEditingAutomation] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [automationToDelete, setAutomationToDelete] = useState(null);
   const [formData, setFormData] = useState({
     actionTypeId: '',
     enabled: true,
@@ -32,7 +34,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
     try {
       const allRules = await getAutomationRules();
       const allTypes = await getActionTypes();
-      
+
       // Filtrer par école
       const filteredRules = allRules.filter(rule => {
         // Si la règle a un champ school, filtrer par celui-ci
@@ -43,7 +45,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
         // Pour l'instant, on les garde mais on devrait les migrer
         return true;
       });
-      
+
       // Filtrer les types d'action par école
       const filteredTypes = allTypes.filter(type => {
         if (type.school) {
@@ -52,7 +54,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
         // Pour compatibilité, garder les types sans école
         return true;
       });
-      
+
       setAutomations(filteredRules);
       setActionTypes(filteredTypes);
     } catch (error) {
@@ -101,7 +103,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
       alert('Veuillez remplir tous les champs obligatoires (Type d\'action, Sheet ID, Colonnes ID étudiant)');
       return;
     }
-    
+
     if (!formData.formFieldToMatch || !formData.formFieldColumns) {
       alert('Veuillez remplir tous les champs obligatoires de l\'étape 2 (Champ du formulaire et Colonnes)');
       return;
@@ -136,11 +138,17 @@ export default function AutomationConfig({ school = 'eugenia' }) {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette automatisation ?')) {
-      await deleteAutomationRule(id);
-      await loadData();
-    }
+  const handleDelete = (id) => {
+    setAutomationToDelete(id);
+  };
+
+  const confirmDeleteAutomation = async () => {
+    if (!automationToDelete) return;
+    const id = automationToDelete;
+    setAutomationToDelete(null); // Close modal immediately
+
+    await deleteAutomationRule(id);
+    await loadData();
   };
 
   const handleToggle = async (automation) => {
@@ -159,7 +167,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
     if (!formData.actionTypeId) return [];
     const actionType = actionTypes.find(t => t.id === formData.actionTypeId);
     if (!actionType) return [];
-    
+
     // Retourner tous les champs du formulaire (sans les champs étudiants)
     return (actionType.fields || []).map(field => ({
       name: field.name,
@@ -232,7 +240,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => handleToggle(automation)}
@@ -478,6 +486,15 @@ export default function AutomationConfig({ school = 'eugenia' }) {
         </div>
       )}
 
+      <ConfirmModal
+        isOpen={!!automationToDelete}
+        onClose={() => setAutomationToDelete(null)}
+        onConfirm={confirmDeleteAutomation}
+        title="Supprimer l'automatisation"
+        message="Êtes-vous sûr de vouloir supprimer cette règle d'automatisation ?"
+        confirmText="Supprimer"
+        isDanger={true}
+      />
     </div>
   );
 }

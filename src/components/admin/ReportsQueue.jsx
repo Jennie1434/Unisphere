@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { SCHOOL_EMAIL_DOMAINS } from '../../constants/routes';
+import ConfirmModal from './ConfirmModal';
 
 export default function ReportsQueue({ school = 'eugenia' }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, resolved, in_progress
   const [selectedReport, setSelectedReport] = useState(null);
+  const [reportToDelete, setReportToDelete] = useState(null);
 
   useEffect(() => {
     loadReports();
@@ -77,10 +79,14 @@ export default function ReportsQueue({ school = 'eugenia' }) {
     }
   };
 
-  const deleteReport = async (reportId) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?')) {
-      return;
-    }
+  const deleteReport = (reportId) => {
+    setReportToDelete(reportId);
+  };
+
+  const confirmDeleteReport = async () => {
+    if (!reportToDelete) return;
+    const reportId = reportToDelete;
+    setReportToDelete(null);
 
     try {
       const API_URL = import.meta.env.VITE_API_URL;
@@ -161,8 +167,8 @@ export default function ReportsQueue({ school = 'eugenia' }) {
               key={status}
               onClick={() => setFilter(status)}
               className={`px-4 py-2 border-2 text-[10px] font-black uppercase tracking-widest transition-all ${filter === status
-                  ? 'bg-black border-black text-white shadow-[4px_4px_0px_rgba(0,0,0,0.1)]'
-                  : 'bg-white border-black text-black hover:bg-black hover:text-white'
+                ? 'bg-black border-black text-white shadow-[4px_4px_0px_rgba(0,0,0,0.1)]'
+                : 'bg-white border-black text-black hover:bg-black hover:text-white'
                 }`}
             >
               {status === 'all' ? 'TOUS' :
@@ -354,6 +360,15 @@ export default function ReportsQueue({ school = 'eugenia' }) {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={!!reportToDelete}
+        onClose={() => setReportToDelete(null)}
+        onConfirm={confirmDeleteReport}
+        title="Supprimer le signalement"
+        message="Êtes-vous sûr de vouloir supprimer ce signalement ? Cette action est irréversible."
+        confirmText="Supprimer"
+        isDanger={true}
+      />
     </div>
   );
 }
