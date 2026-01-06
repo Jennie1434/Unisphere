@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useStudentAuth } from '../contexts/StudentAuthContext';
 import PageLayout from '../components/shared/PageLayout';
 import LeaderboardStats from '../components/student/LeaderboardStats';
-import { Lock, Eye, EyeOff, Shield, ArrowUpRight } from 'lucide-react';
+import BadgesDisplay from '../components/student/BadgesDisplay';
+import { Lock, Eye, EyeOff, Shield, ArrowUpRight, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function StudentProfilePage({ school = 'eugenia' }) {
@@ -261,6 +262,19 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
               </form>
             )}
           </div>
+
+
+        </section>
+
+        {/* BADGES SECTION */}
+        <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">
+          <div className="bg-white border-2 border-black p-12 md:p-16 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-5px] hover:translate-y-[-5px] hover:shadow-[25px_25px_0px_#DBA12D] transition-all duration-500">
+            <div className="flex items-center gap-6 mb-12">
+              <Award className="w-12 h-12 text-[#671324]" />
+              <h2 className="text-4xl font-black" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Hall of Fame.</h2>
+            </div>
+            <BadgesDisplay studentEmail={student.email} school={school} />
+          </div>
         </section>
 
         {/* STATS SECTION */}
@@ -320,6 +334,6 @@ export default function StudentProfilePage({ school = 'eugenia' }) {
         </section>
 
       </div>
-    </PageLayout>
+    </PageLayout >
   );
 }

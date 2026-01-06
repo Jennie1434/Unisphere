@@ -43,8 +43,8 @@ export function calculateLevel(points) {
   // Calculer la progression (0-100)
   const currentLevelMin = levelThresholds.find(t => t.level === currentLevel)?.min || 0;
   const currentLevelMax = levelThresholds.find(t => t.level === currentLevel)?.max || nextLevelPoints;
-  const progress = currentLevelMax > currentLevelMin 
-    ? ((points - currentLevelMin) / (currentLevelMax - currentLevelMin)) * 100 
+  const progress = currentLevelMax > currentLevelMin
+    ? ((points - currentLevelMin) / (currentLevelMax - currentLevelMin)) * 100
     : 0;
 
   return {
@@ -93,12 +93,33 @@ export function getLevelColor(level) {
 /**
  * Obtenir les informations d'un badge
  */
+/**
+ * Sauvegarder la configuration des badges
+ */
+export function saveBadgesConfig(config) {
+  localStorage.setItem('eugenia_badges_config', JSON.stringify(config));
+}
+
+/**
+ * Charger la configuration des badges
+ */
+function getBadgesConfig() {
+  const stored = localStorage.getItem('eugenia_badges_config');
+  return stored ? JSON.parse(stored) : null;
+}
+
+/**
+ * Obtenir les informations d'un badge
+ */
 export function getBadgeInfo(badgeId) {
-  const badges = {
+  const customConfig = getBadgesConfig();
+
+  const defaultBadges = {
     first_action: {
       id: 'first_action',
       name: 'Premier Pas',
       description: 'Première action validée',
+      criteria: 'Valider 1 action',
       icon: '🎯',
       color: '#3B82F6'
     },
@@ -106,6 +127,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_100',
       name: 'Top 100',
       description: 'Dans le top 100 du classement',
+      criteria: 'Classement <= 100',
       icon: '🌟',
       color: '#10B981'
     },
@@ -113,6 +135,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_50',
       name: 'Top 50',
       description: 'Dans le top 50 du classement',
+      criteria: 'Classement <= 50',
       icon: '⭐',
       color: '#10B981'
     },
@@ -120,6 +143,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_25',
       name: 'Top 25',
       description: 'Dans le top 25 du classement',
+      criteria: 'Classement <= 25',
       icon: '💫',
       color: '#F59E0B'
     },
@@ -127,6 +151,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_10',
       name: 'Top 10',
       description: 'Dans le top 10 du classement',
+      criteria: 'Classement <= 10',
       icon: '🔥',
       color: '#F59E0B'
     },
@@ -134,6 +159,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_5',
       name: 'Top 5',
       description: 'Dans le top 5 du classement',
+      criteria: 'Classement <= 5',
       icon: '💎',
       color: '#8B5CF6'
     },
@@ -141,6 +167,7 @@ export function getBadgeInfo(badgeId) {
       id: 'top_3',
       name: 'Top 3',
       description: 'Dans le top 3 du classement',
+      criteria: 'Classement <= 3',
       icon: '🏆',
       color: '#8B5CF6'
     },
@@ -148,6 +175,7 @@ export function getBadgeInfo(badgeId) {
       id: 'champion',
       name: 'Champion',
       description: 'Numéro 1 du classement',
+      criteria: 'Classement #1',
       icon: '👑',
       color: '#FCD34D'
     },
@@ -155,6 +183,7 @@ export function getBadgeInfo(badgeId) {
       id: 'streak_7',
       name: 'Streak de 7 jours',
       description: '7 jours consécutifs avec action',
+      criteria: 'Streak >= 7 jours',
       icon: '🔥',
       color: '#EF4444'
     },
@@ -162,6 +191,7 @@ export function getBadgeInfo(badgeId) {
       id: 'streak_30',
       name: 'Streak de 30 jours',
       description: '30 jours consécutifs avec action',
+      criteria: 'Streak >= 30 jours',
       icon: '🔥🔥',
       color: '#DC2626'
     },
@@ -169,6 +199,7 @@ export function getBadgeInfo(badgeId) {
       id: 'level_5',
       name: 'Niveau 5',
       description: 'Atteint le niveau 5',
+      criteria: 'Niveau >= 5',
       icon: '⭐',
       color: '#10B981'
     },
@@ -176,10 +207,14 @@ export function getBadgeInfo(badgeId) {
       id: 'level_10',
       name: 'Niveau 10',
       description: 'Atteint le niveau 10',
+      criteria: 'Niveau >= 10',
       icon: '💫',
       color: '#8B5CF6'
     }
   };
+
+  // Merge default with custom config
+  const badges = { ...defaultBadges, ...(customConfig || {}) };
 
   return badges[badgeId] || {
     id: badgeId,

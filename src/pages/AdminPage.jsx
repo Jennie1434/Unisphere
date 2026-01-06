@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, CheckSquare, AlertTriangle, Target, Users, TrendingUp, LogOut, Menu, X, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, AlertTriangle, Target, Users, TrendingUp, LogOut, Menu, X, ChevronRight, Award } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AdminPage({ school = 'eugenia' }) {
@@ -35,6 +35,7 @@ export default function AdminPage({ school = 'eugenia' }) {
     { path: `${adminPath}/reports`, icon: AlertTriangle, label: 'Signalements' },
     { path: `${adminPath}/actions`, icon: Target, label: 'Types d\'actions' },
     { path: `${adminPath}/leaderboard`, icon: Users, label: 'Élèves' },
+    { path: `${adminPath}/gamification`, icon: Award, label: 'Gamification' },
     { path: `${adminPath}/analytics`, icon: TrendingUp, label: 'Analytics' }
   ];
 

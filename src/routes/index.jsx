@@ -57,6 +57,7 @@ const ActionTypeEditor = lazyLoad(() => import('../components/admin/ActionTypeEd
 const LeaderboardConfig = lazyLoad(() => import('../components/admin/LeaderboardConfig'));
 const AutomationConfig = lazyLoad(() => import('../components/admin/AutomationConfig'));
 const LandingConfig = lazyLoad(() => import('../components/admin/LandingConfig'));
+const GamificationConfig = lazyLoad(() => import('../components/admin/GamificationConfig'));
 const Analytics = lazyLoad(() => import('../pages/Analytics'));
 const GoogleOAuthCallback = lazyLoad(() => import('../pages/GoogleOAuthCallback'));
 const GoogleSheetsSetup = lazyLoad(() => import('../pages/GoogleSheetsSetup'));
@@ -253,6 +254,10 @@ export function createAdminRoutes(school) {
         {
           path: 'automations',
           element: <AutomationConfig school={school} />
+        },
+        {
+          path: 'gamification',
+          element: <GamificationConfig school={school} />
         },
         {
           path: 'analytics',
