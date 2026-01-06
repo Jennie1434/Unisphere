@@ -131,10 +131,10 @@ export default function AutomationConfig({ school = 'eugenia' }) {
       await loadData();
       setShowAddForm(false);
       setEditingAutomation(null);
-      alert('✅ Automatisation sauvegardée avec succès !');
+      alert('Automatisation sauvegardée avec succès !');
     } catch (error) {
       console.error('Error saving automation:', error);
-      alert(`❌ Erreur lors de la sauvegarde: ${error.message || error.toString()}. Vérifiez la console pour plus de détails.`);
+      alert(`Erreur lors de la sauvegarde: ${error.message || error.toString()}. Vérifiez la console pour plus de détails.`);
     }
   };
 
@@ -171,7 +171,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
     // Retourner tous les champs du formulaire (sans les champs étudiants)
     return (actionType.fields || []).map(field => ({
       name: field.name,
-      label: `${field.type === 'date' ? '📅' : '📝'} ${field.label}`,
+      label: `${field.type === 'date' ? '[DATE]' : '[TEXT]'} ${field.label}`,
       type: field.type
     }));
   };
@@ -189,14 +189,14 @@ export default function AutomationConfig({ school = 'eugenia' }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">
-          🤖 Configuration des Automatisations
+          Configuration des Automatisations
         </h2>
         <div className="flex gap-3">
           <button onClick={loadData} className="btn btn-secondary">
-            🔄 Actualiser
+            ↺ Actualiser
           </button>
           <button onClick={handleAdd} className="btn btn-primary">
-            ➕ Nouvelle automatisation
+            + Nouvelle automatisation
           </button>
         </div>
       </div>
@@ -226,7 +226,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{actionTypes.find(t => t.id === automation.actionTypeId)?.emoji || '📋'}</span>
+                      <span className="text-2xl">{actionTypes.find(t => t.id === automation.actionTypeId)?.emoji || '•'}</span>
                       <div>
                         <h4 className="font-bold text-lg">
                           {getActionTypeName(automation.actionTypeId)}
@@ -246,19 +246,19 @@ export default function AutomationConfig({ school = 'eugenia' }) {
                       onClick={() => handleToggle(automation)}
                       className={`btn ${automation.enabled ? 'btn-success' : 'btn-secondary'} text-sm`}
                     >
-                      {automation.enabled ? '✅ Activée' : '⏸️ Désactivée'}
+                      {automation.enabled ? 'ACTIF' : 'INACTIF'}
                     </button>
                     <button
                       onClick={() => handleEdit(automation)}
                       className="btn btn-secondary text-sm"
                     >
-                      ✏️
+                      ✎
                     </button>
                     <button
                       onClick={() => handleDelete(automation.id)}
                       className="btn btn-danger text-sm"
                     >
-                      🗑️
+                      ✕
                     </button>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
       {showAddForm && (
         <div className="card border-2 border-primary-600">
           <h3 className="text-xl font-bold mb-4">
-            {editingAutomation ? '✏️ Modifier l\'automatisation' : '➕ Ajouter une automatisation'}
+            {editingAutomation ? '✎ Modifier l\'automatisation' : '+ Ajouter une automatisation'}
           </h3>
 
           <div className="space-y-4">
@@ -348,7 +348,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
             {/* Section 1 : ID Étudiant */}
             <div className="border-t-2 border-blue-300 pt-4">
               <h4 className="font-bold text-lg mb-3 text-blue-700">
-                🎓 Étape 1 : Identifier l'étudiant
+                1. Identifier l'étudiant
               </h4>
               <div className="space-y-4">
                 <div>
@@ -360,10 +360,10 @@ export default function AutomationConfig({ school = 'eugenia' }) {
                     value={formData.studentIdType}
                     onChange={(e) => setFormData({ ...formData, studentIdType: e.target.value })}
                   >
-                    <option value="email">📧 Email</option>
-                    <option value="nom">👤 Nom</option>
-                    <option value="prenom">👤 Prénom</option>
-                    <option value="nom_complet">👤 Nom complet (Prénom + Nom)</option>
+                    <option value="email">Email</option>
+                    <option value="nom">Nom</option>
+                    <option value="prenom">Prénom</option>
+                    <option value="nom_complet">Nom complet (Prénom + Nom)</option>
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
                     Comment identifier l'étudiant dans votre Sheet ?
@@ -385,7 +385,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
                     Les colonnes où chercher l'identifiant
                   </p>
                   <p className="text-xs text-gray-600 mt-2 bg-blue-50 p-2 rounded border border-blue-200">
-                    💡 <strong>Plusieurs colonnes</strong> (ex: Ambassadeur 1-4) : Utilisez des virgules. Ex: <code>D,E,F,G</code>
+                    INFO: <strong>Plusieurs colonnes</strong> (ex: Ambassadeur 1-4) : Utilisez des virgules. Ex: <code>D,E,F,G</code>
                   </p>
                 </div>
               </div>
@@ -394,7 +394,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
             {/* Section 2 : Champ formulaire */}
             <div className="border-t-2 border-green-300 pt-4">
               <h4 className="font-bold text-lg mb-3 text-green-700">
-                📝 Étape 2 : Vérifier un champ du formulaire
+                2. Vérifier un champ du formulaire
               </h4>
               <div className="space-y-4">
                 <div>
@@ -471,7 +471,7 @@ export default function AutomationConfig({ school = 'eugenia' }) {
 
           <div className="flex gap-3 mt-6">
             <button onClick={handleSave} className="btn btn-primary">
-              💾 Enregistrer
+              ENREGISTRER
             </button>
             <button
               onClick={() => {

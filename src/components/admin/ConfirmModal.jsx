@@ -11,7 +11,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
             >
                 <div className={`flex items-center gap-4 mb-6 ${isDanger ? 'text-red-600' : 'text-black'}`}>
                     <div className="w-12 h-12 flex items-center justify-center border-2 border-black rounded-none shadow-[4px_4px_0px_black] text-2xl bg-white">
-                        {isDanger ? '⚠️' : 'ℹ️'}
+                        {isDanger ? '!' : 'i'}
                     </div>
                     <h3 className="text-2xl font-black uppercase tracking-tight text-black">
                         {title || 'Attention !'}
@@ -35,8 +35,8 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
                             onClose();
                         }}
                         className={`flex-1 px-6 py-3 border-2 border-black font-black uppercase tracking-widest text-xs shadow-[4px_4px_0px_black] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-white hover:bg-white ${isDanger
-                                ? 'bg-red-600 hover:text-red-600'
-                                : 'bg-black hover:text-black'
+                            ? 'bg-red-600 hover:text-red-600'
+                            : 'bg-black hover:text-black'
                             }`}
                     >
                         {confirmText}

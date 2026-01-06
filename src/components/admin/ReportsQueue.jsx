@@ -25,8 +25,9 @@ export default function ReportsQueue({ school = 'eugenia' }) {
           const allReports = Array.isArray(data) ? data : [];
           // Filtrer par école (basé sur l'email de l'auteur du signalement)
           const filteredReports = allReports.filter(report => {
-            if (!report.email) return false;
-            return report.email.toLowerCase().includes(emailDomain);
+            const email = report.studentEmail || report.email;
+            if (!email) return false;
+            return email.toLowerCase().includes(emailDomain);
           });
           setReports(filteredReports);
         }
@@ -36,8 +37,9 @@ export default function ReportsQueue({ school = 'eugenia' }) {
         const allReports = stored ? JSON.parse(stored) : [];
         // Filtrer par école
         const filteredReports = allReports.filter(report => {
-          if (!report.email) return false;
-          return report.email.toLowerCase().includes(emailDomain);
+          const email = report.studentEmail || report.email;
+          if (!email) return false;
+          return email.toLowerCase().includes(emailDomain);
         });
         setReports(filteredReports);
       }
@@ -131,13 +133,13 @@ export default function ReportsQueue({ school = 'eugenia' }) {
 
   const getCategoryEmoji = (category) => {
     const emojis = {
-      materiel: '🪑',
-      nettoyage: '🧹',
-      securite: '🚨',
-      technique: '💻',
-      autre: '📋'
+      materiel: '🛠',
+      nettoyage: '✦',
+      securite: '🛡',
+      technique: '⚡',
+      autre: '📌'
     };
-    return emojis[category] || '📋';
+    return emojis[category] || '📌';
   };
 
   if (loading) {
@@ -153,7 +155,7 @@ export default function ReportsQueue({ school = 'eugenia' }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            🚨 Signalements
+            Signalements
           </h2>
           <p className="text-gray-600">
             {reports.length} signalement{reports.length > 1 ? 's' : ''} au total
@@ -182,7 +184,7 @@ export default function ReportsQueue({ school = 'eugenia' }) {
       {/* Liste des signalements */}
       {filteredReports.length === 0 ? (
         <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
-          <div className="text-6xl mb-4">📭</div>
+          <div className="text-6xl mb-4 text-gray-300 font-thin">—</div>
           <p className="text-xl text-black font-bold uppercase tracking-wide">
             Aucun signalement {filter !== 'all' ? `avec le statut "${filter}"` : ''}
           </p>
@@ -230,26 +232,26 @@ export default function ReportsQueue({ school = 'eugenia' }) {
                         className="btn btn-outline btn-sm"
                         disabled={report.status === 'in_progress'}
                       >
-                        🔄 En cours
+                        ➤ En cours
                       </button>
                       <button
                         onClick={() => updateReportStatus(report.id, 'resolved')}
                         className="btn btn-success btn-sm"
                         disabled={report.status === 'resolved'}
                       >
-                        ✅ Résolu
+                        ✓ Résolu
                       </button>
                       <button
                         onClick={() => setSelectedReport(report)}
                         className="btn btn-outline btn-sm"
                       >
-                        👁️ Voir détails
+                        ↗ Voir détails
                       </button>
                       <button
                         onClick={() => deleteReport(report.id)}
                         className="btn btn-danger btn-sm"
                       >
-                        🗑️ Supprimer
+                        ✕ Supprimer
                       </button>
                     </div>
 
@@ -344,7 +346,7 @@ export default function ReportsQueue({ school = 'eugenia' }) {
                 className="btn btn-outline flex-1"
                 disabled={selectedReport.status === 'in_progress'}
               >
-                🔄 Marquer en cours
+                ➤ Marquer en cours
               </button>
               <button
                 onClick={() => {
@@ -354,7 +356,7 @@ export default function ReportsQueue({ school = 'eugenia' }) {
                 className="btn btn-success flex-1"
                 disabled={selectedReport.status === 'resolved'}
               >
-                ✅ Marquer résolu
+                ✓ Marquer résolu
               </button>
             </div>
           </div>

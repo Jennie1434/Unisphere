@@ -200,15 +200,15 @@ export default function ValidationQueue({ school = 'eugenia' }) {
             onClick={loadPendingActions}
             className="px-6 py-2 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
-            🔄 Rafraîchir
+            ↺ Rafraîchir
           </button>
         </div>
 
         {pendingActions.length === 0 ? (
           <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
-            <div className="text-6xl mb-4">🎉</div>
+            <div className="text-6xl mb-4 text-gray-300 font-thin">—</div>
             <p className="text-black text-lg font-bold uppercase tracking-wide">
-              Aucune action en attente de validation !
+              Aucune action en attente de validation
             </p>
           </div>
         ) : (
@@ -228,7 +228,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="text-4xl">🔴</div>
+                      <div className="text-4xl text-red-500 font-black">•</div>
                       <div>
                         <div className="font-bold text-xl text-gray-900">
                           {fullName}
@@ -237,7 +237,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                           {getActionTypeLabel(action.type)}
                         </div>
                         <div className="text-sm text-gray-500 mt-1">
-                          🕐 {formatTimeAgo(action.date)}
+                          {formatTimeAgo(action.date)}
                         </div>
                       </div>
                     </div>
@@ -265,13 +265,13 @@ export default function ValidationQueue({ school = 'eugenia' }) {
             onClick={loadData}
             className="px-6 py-2 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] border-2 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
-            🔄 Rafraîchir
+            ↺ Rafraîchir
           </button>
         </div>
 
         {validatedActions.length === 0 ? (
           <div className="bg-white border-2 border-black p-12 text-center shadow-[8px_8px_0px_rgba(0,0,0,0.1)]">
-            <div className="text-6xl mb-4">📋</div>
+            <div className="text-6xl mb-4 text-gray-300 font-thin">—</div>
             <p className="text-black text-lg font-bold uppercase tracking-wide">
               Aucune action validée ou refusée pour le moment.
             </p>
@@ -297,7 +297,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
                       <div className="text-4xl">
-                        {isValidated ? '✅' : isRejected ? '❌' : '📋'}
+                        {isValidated ? '✓' : isRejected ? '✕' : '•'}
                       </div>
                       <div className="flex-1">
                         <div className="font-bold text-xl text-gray-900">
@@ -317,7 +317,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                             <span className="text-red-600">Refusé</span>
                           )}
                           {' • '}
-                          🕐 {formatDate(action.validatedAt || action.date)}
+                          {formatDate(action.validatedAt || action.date)}
                         </div>
                       </div>
                     </div>
@@ -334,7 +334,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
                         className="btn btn-admin-danger"
                         title="Supprimer définitivement"
                       >
-                        {deletingIds.has(action.id) ? '⏳' : '🗑️'}
+                        {deletingIds.has(action.id) ? '...' : '✕'}
                       </button>
                     </div>
                   </div>
@@ -362,7 +362,7 @@ export default function ValidationQueue({ school = 'eugenia' }) {
           >
             <div className="flex items-center gap-4 mb-6 text-red-600">
               <div className="w-12 h-12 flex items-center justify-center border-2 border-black rounded-none shadow-[4px_4px_0px_black] text-2xl bg-white">
-                ⚠️
+                !
               </div>
               <h3 className="text-2xl font-black uppercase tracking-tight text-black">
                 Attention !
