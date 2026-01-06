@@ -38,6 +38,13 @@ export default function Header({ school = 'eugenia' }) {
     ];
 
     if (student) {
+        if (student.managedAssociationId) {
+            links.push({
+                title: "Gérer mon asso",
+                href: `${schoolPath}/associations/manage/${student.managedAssociationId}`
+            });
+        }
+
         links.push({
             title: "Déconnexion",
             href: "#",

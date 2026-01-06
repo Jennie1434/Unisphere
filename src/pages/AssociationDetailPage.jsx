@@ -378,16 +378,83 @@ export default function AssociationDetailPage({ school = 'eugenia' }) {
               )}
 
               {activeTab === 'apply' && (
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Postuler à cette association</h3>
-                  <AssociationApplicationForm
-                    school={school}
-                    onSuccess={() => {
-                      setActiveTab('overview');
-                      // Recharger les données
-                      window.location.reload();
-                    }}
-                  />
+                <div className="max-w-2xl mx-auto">
+                  <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                    <div className="text-center mb-8">
+                      <div className="w-20 h-20 rounded-full bg-gray-50 mx-auto flex items-center justify-center text-5xl mb-4 shadow-inner">
+                        {association.emoji || '✍️'}
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900">
+                        Candidater chez {association.name}
+                      </h3>
+                      <p className="text-gray-500 mt-2">
+                        Envoyez votre motivation pour rejoindre l'équipe.
+                      </p>
+                    </div>
+
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const msg = e.target.message.value;
+                        if (!student) return alert("Veuillez vous connecter.");
+
+                        try {
+                          // Simple visual feedback
+                          const btn = e.target.submitBtn;
+                          const originalText = btn.innerText;
+                          btn.innerText = "Envoi en cours...";
+                          btn.disabled = true;
+
+                          await applyToAssociation(association.id, student.email, msg);
+
+                          // Success state
+                          btn.innerText = "Candidature envoyée !";
+                          btn.classList.remove(...btnPrimaryClass.split(' '));
+                          btn.classList.add('bg-green-600', 'text-white');
+
+                          setTimeout(() => {
+                            alert("Félicitations ! Votre candidature a été transmise au bureau de l'association.");
+                            setActiveTab('overview');
+                            e.target.reset();
+                          }, 1500);
+                        } catch (err) {
+                          alert("Erreur: " + err.message);
+                          btn.innerText = originalText;
+                          btn.disabled = false;
+                        }
+                      }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <label className="block text-sm font-bold text-gray-900 mb-2">
+                          Message de motivation <span className="text-gray-400 font-normal">(Optionnel)</span>
+                        </label>
+                        <textarea
+                          name="message"
+                          rows="6"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none font-medium"
+                          placeholder={`Bonjour, je suis très intéressé par ${association.name} car...`}
+                        />
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('overview')}
+                          className="flex-1 px-6 py-4 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors uppercase tracking-wider text-xs"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          name="submitBtn"
+                          type="submit"
+                          className={`flex-1 px-6 py-4 font-bold rounded-xl shadow-lg transition-all transform active:scale-95 uppercase tracking-wider text-xs ${btnPrimaryClass}`}
+                        >
+                          Envoyer ma candidature
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               )}
             </div>

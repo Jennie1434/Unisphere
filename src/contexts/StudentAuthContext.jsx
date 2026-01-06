@@ -118,6 +118,11 @@ export function StudentAuthProvider({ children }) {
         studentData.slug = slug;
         studentData.school = school; // Ajouter l'école
 
+        // MOCK: Accorder les droits d'admin pour Jennie Ansellem
+        if (emailLower === 'jansellem@eugeniaschool.com') {
+          studentData.managedAssociationId = '1';
+        }
+
         setStudent(studentData);
         localStorage.setItem('student_auth', JSON.stringify(studentData));
         return { success: true };

@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
+import { getAllAssociations } from '../../services/associationsApi';
+import { Link } from 'react-router-dom';
 
 export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
     const [step, setStep] = useState(0);
+    const [answers, setAnswers] = useState({});
     const [results, setResults] = useState(null);
+    const [allAssociations, setAllAssociations] = useState([]);
 
     const isEugenia = school === 'eugenia';
     const accentColor = isEugenia ? '#DBA12D' : '#007AFF';
@@ -20,15 +24,17 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
 
     const questions = [
         {
+            id: 'interest',
             question: "Qu'est-ce qui te motive le plus ?",
             options: [
-                { label: "L'impact social", value: 'humanitaire' },
-                { label: "La tech & l'innovation", value: 'tech' },
-                { label: "Le sport & la compétition", value: 'sport' },
-                { label: "L'art & la culture", value: 'art' }
+                { label: "L'impact social & BDE", value: ['Humanitaire', 'BDE', 'Business'] },
+                { label: "La tech & l'innovation", value: ['Tech'] },
+                { label: "Le sport & la compétition", value: ['Sport'] },
+                { label: "L'art & la culture", value: ['Culture'] }
             ]
         },
         {
+            id: 'time',
             question: "Quel temps peux-tu y consacrer ?",
             options: [
                 { label: "Quelques heures par mois", value: 'low' },
@@ -37,6 +43,7 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
             ]
         },
         {
+            id: 'work',
             question: "Tu préfères travailler comment ?",
             options: [
                 { label: "En équipe sur le terrain", value: 'team' },
@@ -46,13 +53,38 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
         }
     ];
 
+    useEffect(() => {
+        getAllAssociations().then(data => {
+            const list = Array.isArray(data) ? data : (data?.associations || []);
+            setAllAssociations(list);
+        });
+    }, []);
+
     const handleOptionClick = (value) => {
+        const currentQuestion = questions[step];
+        const newAnswers = { ...answers, [currentQuestion.id]: value };
+        setAnswers(newAnswers);
+
         if (step < questions.length - 1) {
             setStep(step + 1);
         } else {
-            // Fake logic to show results
-            setResults(true);
+            calculateResults(newAnswers);
         }
+    };
+
+    const calculateResults = (finalAnswers) => {
+        // Simple matching logic based on 'interest' mapping to category
+        const preferredCategories = finalAnswers.interest || [];
+
+        const matched = allAssociations.filter(asso =>
+            preferredCategories.includes(asso.category)
+        );
+
+        // Fallback: if no match, show top 2 associations or random
+        const finalResults = matched.length > 0 ? matched : allAssociations.slice(0, 2);
+
+        // Take top 2
+        setResults(finalResults.slice(0, 2));
     };
 
     return (
@@ -60,7 +92,7 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
             <div className="bg-white rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl relative">
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors z-10"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -98,30 +130,32 @@ export default function FindAssoQuiz({ school = 'eugenia', onClose }) {
                                 <Check className="w-8 h-8" />
                             </div>
                             <h2 className="text-2xl font-bold mb-2">On a trouvé ton match !</h2>
-                            <p className="text-black/60 mb-8">Basé sur tes réponses, voici 2 associations faites pour toi.</p>
+                            <p className="text-black/60 mb-8">Basé sur tes réponses, voici {results.length} association(s) pour toi.</p>
 
-                            <div className="bg-gray-50 rounded-2xl p-4 border border-black/5 text-left mb-8">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-2xl">🌱</div>
-                                    <div>
-                                        <div className="font-bold">Eugenia Green</div>
-                                        <div className="text-xs text-black/40">Engagement • Terrain</div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-2xl">🤖</div>
-                                    <div>
-                                        <div className="font-bold">Tech Club</div>
-                                        <div className="text-xs text-black/40">Tech • Projets</div>
-                                    </div>
-                                </div>
+                            <div className="bg-gray-50 rounded-2xl p-4 border border-black/5 text-left mb-8 space-y-4">
+                                {results.map(asso => (
+                                    <Link
+                                        to={`${school === 'eugenia' ? '/eugenia-school' : '/albert-school'}/associations/${asso.id}`}
+                                        key={asso.id}
+                                        className="flex items-center gap-4 p-3 bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer block"
+                                        onClick={onClose}
+                                    >
+                                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-2xl">
+                                            {asso.emoji || '✨'}
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-gray-900">{asso.name}</div>
+                                            <div className="text-xs text-black/40">{asso.category} • {asso.memberCount || 0} membres</div>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
 
                             <button
                                 onClick={onClose}
                                 className={`w-full py-4 rounded-xl font-bold transition-colors ${buttonClass}`}
                             >
-                                Découvrir ces assos
+                                Voir toutes les associations
                             </button>
                         </div>
                     )}

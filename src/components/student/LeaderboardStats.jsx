@@ -6,8 +6,9 @@ import StreakCounter from './StreakCounter';
 import { api } from '../../services/api';
 import { Trophy, Target, Zap, TrendingUp, AlertCircle, Loader } from 'lucide-react';
 
-export default function LeaderboardStats({ school = 'eugenia' }) {
-  const { student } = useStudentAuth();
+export default function LeaderboardStats({ school = 'eugenia', student: propStudent }) {
+  const { student: authStudent } = useStudentAuth();
+  const student = propStudent || authStudent;
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

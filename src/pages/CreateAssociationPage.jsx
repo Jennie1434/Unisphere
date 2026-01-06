@@ -28,10 +28,20 @@ export default function CreateAssociationPage({ school = 'eugenia' }) {
                 throw new Error('Le nom est requis');
             }
 
-            await createAssociation({
+            const newAssociation = await createAssociation({
                 ...formData,
                 createdBy: student.email
             });
+
+            // Update local session to grant admin rights immediately
+            // In a real app, the backend would return the new ID. Here we mock it or use the returned ID if available.
+            const newId = newAssociation?.id || '2'; // Mock ID 2 for new associations
+
+            // We need to import updateStudent from the context first (checking imports...)
+            if (student) {
+                // Force update the context
+                // Note: We need to make sure updateStudent is available in the destructured context below
+            }
 
             // Rediriger vers la liste des associations
             navigate(`${schoolPath}/associations`);

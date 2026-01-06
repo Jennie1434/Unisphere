@@ -66,8 +66,8 @@ const CreateAssociationPage = lazyLoad(() => import('../pages/CreateAssociationP
 const AssociationDetailPage = lazyLoad(() => import('../pages/AssociationDetailPage'));
 const NotificationsPage = lazyLoad(() => import('../pages/NotificationsPage'));
 const NotFoundPage = lazyLoad(() => import('../pages/NotFoundPage'));
+const AssociationAdminPage = lazyLoad(() => import('../pages/AssociationAdminPage'));
 
-// Portfolio Pages
 const PortfolioHome = lazyLoad(() => import('../pages/portfolio/PortfolioHome'));
 const ProjectDetailsPage = lazyLoad(() => import('../pages/portfolio/ProjectDetailsPage'));
 const SubmitProjectPage = lazyLoad(() => import('../pages/portfolio/SubmitProjectPage'));
@@ -219,6 +219,14 @@ export function createStudentRoutes(school) {
       element: (
         <SchoolAuth school={school}>
           <AssociationManagementPage school={school} />
+        </SchoolAuth>
+      )
+    },
+    {
+      path: `${schoolPath}/associations/manage/:id`,
+      element: (
+        <SchoolAuth school={school}>
+          <AssociationAdminPage school={school} />
         </SchoolAuth>
       )
     }

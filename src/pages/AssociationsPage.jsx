@@ -36,9 +36,10 @@ export default function AssociationsPage({ school = 'eugenia' }) {
         setLoading(true);
         const data = await getAllAssociations();
         const list = Array.isArray(data) ? data : (data?.associations || []);
+        // Fixed: Generate stable isRecruiting based on ID instead of Math.random()
         setAssociations(list.map(a => ({
           ...a,
-          isRecruiting: Math.random() > 0.7,
+          isRecruiting: parseInt(a.id) % 3 === 0, // Stable: every 3rd association is recruiting
         })));
       } catch (err) {
         console.error(err);

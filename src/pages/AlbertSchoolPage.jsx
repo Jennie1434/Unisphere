@@ -10,7 +10,8 @@ import {
   Plus,
   ArrowUpRight,
   Sparkles,
-  Trophy
+  Trophy,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
@@ -23,15 +24,15 @@ export default function AlbertSchoolPage() {
 
   const panels = [
     {
-      id: 'portfolio',
-      title: 'Portfolio',
-      subtitle: 'ANALYTIQUE & IMPACT',
-      desc: 'Centralisez vos projets data, mesurez votre impact et créez votre propre héritage technique.',
-      link: '/albert-school/portfolio?tab=mine',
-      submitLink: '/albert-school/submit?type=project',
-      icon: <Briefcase className="w-10 h-10" />,
+      id: 'ambassadeur',
+      title: 'Ambassadeur',
+      subtitle: 'MÉRITE & EXCELLENCE',
+      desc: 'Devenez le visage de l\'école. Relevez des défis data et boostez votre prestige technique.',
+      link: '/albert-school/ambassadeurs',
+      submitLink: '/albert-school/submit?type=mission',
+      icon: <Medal className="w-10 h-10" />,
       color: '#3461FF',
-      stats: '2 PROJETS'
+      stats: '1 MISSION'
     },
     {
       id: 'associations',
@@ -45,15 +46,15 @@ export default function AlbertSchoolPage() {
       stats: '3 ÉVÉNEMENTS'
     },
     {
-      id: 'ambassadeur',
-      title: 'Ambassadeur',
-      subtitle: 'MÉRITE & EXCELLENCE',
-      desc: 'Devenez le visage de l\'école. Relevez des défis data et boostez votre prestige technique.',
-      link: '/albert-school/ambassadeurs',
-      submitLink: '/albert-school/submit?type=mission',
-      icon: <Medal className="w-10 h-10" />,
+      id: 'signalement',
+      title: 'Signalement',
+      subtitle: 'AMÉLIORATION & RESPONSABILITÉ',
+      desc: 'Signalez un problème ou proposez une amélioration pour le campus.',
+      link: '/albert-school/report',
+      submitLink: '/albert-school/report',
+      icon: <AlertTriangle className="w-10 h-10" />,
       color: '#3461FF',
-      stats: '1 MISSION'
+      stats: 'SUPPORT'
     }
   ];
 
@@ -190,18 +191,23 @@ export default function AlbertSchoolPage() {
 
                 {/* Panel Actions */}
                 <div className="flex flex-col gap-4">
-                  <Link
-                    to={panel.link}
-                    className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#3461FF] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
-                  >
-                    LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    to={panel.submitLink}
-                    className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
-                  >
-                    SOUMETTRE +
-                  </Link>
+                  {panel.id !== 'signalement' && (
+                    <Link
+                      to={panel.link}
+                      className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#3461FF] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
+                    >
+                      LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                  )}
+
+                  {panel.id !== 'associations' && (
+                    <Link
+                      to={panel.submitLink}
+                      className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
+                    >
+                      SOUMETTRE +
+                    </Link>
+                  )}
                 </div>
 
                 {/* Kinetic Glow Effect on Hover */}

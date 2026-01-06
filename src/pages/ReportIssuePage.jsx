@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '../components/shared/PageLayout';
 import { useStudentAuth } from '../contexts/StudentAuthContext';
+import { Wrench, Sparkles, ShieldAlert, MonitorX, FileText, Camera } from 'lucide-react';
 
 export default function ReportIssuePage({ school = 'eugenia' }) {
   const { student } = useStudentAuth();
@@ -18,11 +19,11 @@ export default function ReportIssuePage({ school = 'eugenia' }) {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   const categories = [
-    { value: 'materiel', label: 'Matériel cassé', emoji: '🪑' },
-    { value: 'nettoyage', label: 'Nettoyage nécessaire', emoji: '🧹' },
-    { value: 'securite', label: 'Problème de sécurité', emoji: '🚨' },
-    { value: 'technique', label: 'Problème technique', emoji: '💻' },
-    { value: 'autre', label: 'Autre', emoji: '📋' }
+    { value: 'materiel', label: 'Matériel cassé', icon: Wrench },
+    { value: 'nettoyage', label: 'Nettoyage nécessaire', icon: Sparkles },
+    { value: 'securite', label: 'Problème de sécurité', icon: ShieldAlert },
+    { value: 'technique', label: 'Problème technique', icon: MonitorX },
+    { value: 'autre', label: 'Autre', icon: FileText }
   ];
 
   const handleInputChange = (e) => {
@@ -277,23 +278,26 @@ export default function ReportIssuePage({ school = 'eugenia' }) {
                       01 — Nature du problème
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {categories.map(cat => (
-                        <button
-                          key={cat.value}
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, category: cat.value }))}
-                          className={`group p-6 border-2 transition-all duration-300 relative overflow-hidden flex flex-col items-center gap-3 ${formData.category === cat.value
+                      {categories.map(cat => {
+                        const IconComponent = cat.icon;
+                        return (
+                          <button
+                            key={cat.value}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, category: cat.value }))}
+                            className={`group p-6 border-2 transition-all duration-300 relative overflow-hidden flex flex-col items-center gap-3 ${formData.category === cat.value
                               ? 'border-[#671324] bg-[#671324] text-white'
                               : 'border-black hover:bg-black hover:text-white'
-                            }`}
-                        >
-                          <div className="text-3xl relative z-10">{cat.emoji}</div>
-                          <div className={`text-xs font-black uppercase tracking-widest relative z-10 ${formData.category === cat.value ? 'text-[#DBA12D]' : 'group-hover:text-[#DBA12D]'
-                            }`}>
-                            {cat.label}
-                          </div>
-                        </button>
-                      ))}
+                              }`}
+                          >
+                            <IconComponent className={`w-8 h-8 relative z-10 ${formData.category === cat.value ? 'text-[#DBA12D]' : 'group-hover:text-[#DBA12D]'}`} />
+                            <div className={`text-xs font-black uppercase tracking-widest relative z-10 text-center ${formData.category === cat.value ? 'text-[#DBA12D]' : 'group-hover:text-[#DBA12D]'
+                              }`}>
+                              {cat.label}
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -344,7 +348,7 @@ export default function ReportIssuePage({ school = 'eugenia' }) {
                           <span className="font-bold text-sm uppercase tracking-wide truncate pr-4">
                             {formData.photo ? 'Photo sélectionnée' : 'Ajouter une photo'}
                           </span>
-                          <span className="text-lg">📸</span>
+                          <Camera className="w-5 h-5" />
                         </div>
                       </div>
                       {formData.photoPreview && (

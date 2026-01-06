@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 import { useStudentAuth } from '../../contexts/StudentAuthContext';
 import { getLevelColor, getLevelName, getBadgeInfo } from '../../services/gamificationService';
@@ -66,8 +67,8 @@ export default function Leaderboard({ school = 'eugenia' }) {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-8 py-3 text-xs font-black uppercase tracking-[0.2em] transition-all border-2 border-black ${filter === f
-                    ? 'bg-black text-white'
-                    : 'bg-transparent text-black hover:bg-black hover:text-white'
+                  ? 'bg-black text-white'
+                  : 'bg-transparent text-black hover:bg-black hover:text-white'
                   }`}
               >
                 {f === 'general' ? 'Général' : f === 'monthly' ? 'Mensuel' : 'Par classe'}
@@ -146,7 +147,9 @@ export default function Leaderboard({ school = 'eugenia' }) {
                 {/* Mobile only info */}
                 <div className="md:hidden flex-1">
                   <div className="font-black text-lg uppercase tracking-tight">
-                    {user.firstName} {user.lastName}
+                    <Link to={`/profile/${user.id || user.email}`} className="hover:underline">
+                      {user.firstName} {user.lastName}
+                    </Link>
                   </div>
                   <div className="text-xs font-bold opacity-60 mt-1 uppercase">
                     {user.classe}
@@ -167,7 +170,9 @@ export default function Leaderboard({ school = 'eugenia' }) {
                 </div>
                 <div className="flex-1">
                   <div className="font-black text-lg uppercase tracking-tight flex items-center gap-3">
-                    {user.firstName} {user.lastName}
+                    <Link to={`/profile/${user.id || user.email}`} className="hover:underline decoration-2 underline-offset-4 decoration-[#DBA12D]">
+                      {user.firstName} {user.lastName}
+                    </Link>
                     {isCurrentUser && (
                       <span className="text-[9px] px-2 py-1 bg-black text-white group-hover:bg-white group-hover:text-black font-black uppercase tracking-widest border border-current">Vous</span>
                     )}

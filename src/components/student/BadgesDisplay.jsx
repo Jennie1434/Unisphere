@@ -71,8 +71,8 @@ export default function BadgesDisplay({ studentEmail, school = 'eugenia', studen
             <div
               key={badgeId}
               className={`relative group bg-white rounded-xl p-4 border-2 transition-all duration-300 ${isEarned
-                  ? 'border-black hover:shadow-[8px_8px_0px_#DBA12D] hover:-translate-y-1'
-                  : 'border-gray-100 opacity-60 grayscale hover:opacity-100 hover:grayscale-0'
+                ? 'border-black hover:shadow-[8px_8px_0px_#DBA12D] hover:-translate-y-1'
+                : 'border-gray-100 opacity-60 grayscale hover:opacity-100 hover:grayscale-0'
                 }`}
               title={badge.description}
             >
@@ -123,13 +123,3 @@ export default function BadgesDisplay({ studentEmail, school = 'eugenia', studen
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
