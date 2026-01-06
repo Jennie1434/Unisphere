@@ -47,7 +47,7 @@ export default function SchoolHeader({ school = 'eugenia' }) {
 
   const navItems = [
     { label: 'Accueil', path: schoolPath },
-    { label: 'Portfolio', path: `${schoolPath}/portfolio` },
+    { label: 'Signalement', path: `${schoolPath}/report` },
     { label: 'Associations', path: `${schoolPath}/associations` },
     { label: 'Missions', path: `${schoolPath}/ambassadeurs` },
     { label: 'Classement', path: `${schoolPath}/leaderboard` }

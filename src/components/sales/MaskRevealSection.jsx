@@ -49,7 +49,7 @@ export default function MaskRevealSection() {
                                 <span className="text-white">projets visibles</span>,{' '}
                                 <span className="text-white">assos organisées</span>,{' '}
                                 <span className="text-white">engagement tracé</span>,{' '}
-                                <span className="text-white">portfolio collectif</span>.
+                                <span className="text-white">système de signalement</span>.
                             </p>
                         </div>
                     </motion.div>
@@ -91,7 +91,7 @@ export default function MaskRevealSection() {
                                         Données perdues
                                     </h3>
                                     <p className="text-lg text-white/30">
-                                        Aucun portfolio collectif de l'école
+                                        Aucun système centralisé de signalement
                                     </p>
                                 </div>
                             </div>

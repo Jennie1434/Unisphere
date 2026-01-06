@@ -4,7 +4,7 @@ import Section from '../ui/Section';
 
 const pillars = [
   {
-    title: "UniSphere Portfolio",
+    title: "UniSphere Signalement",
     text: "Fiches projets + profils étudiants + intégration LinkedIn / GitHub.",
   },
   {

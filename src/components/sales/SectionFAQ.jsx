@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "Comment ça marche ?",
-    a: "Chaque université a son espace privé. Les étudiants se connectent via leur école et accèdent aux 3 modules : Portfolio, Associations, Missions."
+    a: "Chaque université a son espace privé. Les étudiants se connectent via leur école et accèdent aux 3 modules : Signalement, Associations, Missions."
   },
   {
     q: "Combien ça coûte ?",

@@ -10,7 +10,8 @@ import {
   Plus,
   ArrowUpRight,
   Sparkles,
-  Trophy
+  Trophy,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
@@ -23,15 +24,15 @@ export default function EugeniaSchoolPage() {
 
   const panels = [
     {
-      id: 'portfolio',
-      title: 'Portfolio',
-      subtitle: 'NARRATIF & IMPACT',
-      desc: 'Centralisez vos projets, mesurez votre impact et créez votre propre héritage académique.',
-      link: '/eugenia-school/portfolio?tab=mine',
-      submitLink: '/eugenia-school/submit?type=project',
-      icon: <Briefcase className="w-10 h-10" />,
+      id: 'ambassadeur',
+      title: 'Ambassadeur',
+      subtitle: 'MÉRITE & VISION',
+      desc: 'Devenez le visage de l\'école. Relevez des défis, gagnez des points et boostez votre prestige.',
+      link: '/eugenia-school/ambassadeurs',
+      submitLink: '/eugenia-school/submit?type=mission',
+      icon: <Medal className="w-10 h-10" />,
       color: '#DBA12D',
-      stats: '2 PROJETS'
+      stats: '1 MISSION'
     },
     {
       id: 'associations',
@@ -45,15 +46,15 @@ export default function EugeniaSchoolPage() {
       stats: '3 ÉVÉNEMENTS'
     },
     {
-      id: 'ambassadeur',
-      title: 'Ambassadeur',
-      subtitle: 'MÉRITE & VISION',
-      desc: 'Devenez le visage de l\'école. Relevez des défis, gagnez des points et boostez votre prestige.',
-      link: '/eugenia-school/ambassadeurs',
-      submitLink: '/eugenia-school/submit?type=mission',
-      icon: <Medal className="w-10 h-10" />,
+      id: 'signalement',
+      title: 'Signalement',
+      subtitle: 'AMÉLIORATION & RESPONSABILITÉ',
+      desc: 'Signalez un problème ou proposez une amélioration pour le campus.',
+      link: '/eugenia-school/report',
+      submitLink: '/eugenia-school/report',
+      icon: <AlertTriangle className="w-10 h-10" />,
       color: '#DBA12D',
-      stats: '1 MISSION'
+      stats: 'SUPPORT'
     }
   ];
 

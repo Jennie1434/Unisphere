@@ -4,8 +4,8 @@ import { Briefcase, Users, Zap, Layers, Tent, Award } from 'lucide-react';
 
 const tabs = [
     {
-        id: 'portfolio',
-        label: 'Portfolio',
+        id: 'signalement',
+        label: 'Signalement',
         title: 'Projets étudiants centralisés',
         description: 'Grille de projets avec photos, descriptions et liens LinkedIn/GitHub'
     },
@@ -24,7 +24,7 @@ const tabs = [
 ];
 
 export default function ProductPreview() {
-    const [activeTab, setActiveTab] = useState('portfolio');
+    const [activeTab, setActiveTab] = useState('signalement');
 
     return (
         <section className="relative w-full py-24 overflow-hidden bg-[#F7F7F5]" style={{ paddingTop: 'var(--premium-spacing)', paddingBottom: 'var(--premium-spacing)' }}>
@@ -140,7 +140,7 @@ export default function ProductPreview() {
                                             className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
                                             style={{ background: 'rgba(20, 241, 149, 0.1)' }}
                                         >
-                                            {activeTab === 'portfolio' && <Layers className="w-10 h-10" style={{ color: 'var(--eugenia-green)' }} />}
+                                            {activeTab === 'signalement' && <Layers className="w-10 h-10" style={{ color: 'var(--eugenia-green)' }} />}
                                             {activeTab === 'associations' && <Tent className="w-10 h-10" style={{ color: 'var(--eugenia-green)' }} />}
                                             {activeTab === 'missions' && <Award className="w-10 h-10" style={{ color: 'var(--eugenia-green)' }} />}
                                         </div>

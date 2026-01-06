@@ -28,7 +28,7 @@ export default function AppMockups() {
                     className="absolute left-0 top-0 w-1/3 aspect-[9/16] bg-zinc-900 rounded-[3rem] border border-white/10 shadow-2xl flex items-center justify-center p-8"
                 >
                     <div className="w-full h-full bg-gradient-to-br from-[#14F195]/20 to-transparent rounded-[2rem] border border-white/5" />
-                    <span className="absolute bottom-10 text-white/40 font-mono text-xs">PORTFOLIO.VIEW</span>
+                    <span className="absolute bottom-10 text-white/40 font-mono text-xs">SIGNALEMENT.VIEW</span>
                 </motion.div>
 
                 <motion.div

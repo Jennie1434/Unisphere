@@ -30,7 +30,7 @@ export default function Header({ school = 'eugenia' }) {
 
     const links = [
         { title: "Accueil", href: schoolPath },
-        { title: "Portfolio", href: `${schoolPath}/portfolio` },
+        { title: "Signalement", href: `${schoolPath}/report` },
         { title: "Associations", href: `${schoolPath}/associations` },
         { title: "Ambassadeur", href: `${schoolPath}/ambassadeurs` },
         { title: "Classement", href: `${schoolPath}/leaderboard` },
