@@ -56,156 +56,143 @@ export default function Leaderboard({ school = 'eugenia' }) {
   const studentData = student ? leaderboard.find(u => u.email === student.email) : null;
 
   return (
-    <div className="w-full">
+    <div className="w-full font-sans">
       {/* Filtres */}
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex gap-2 p-1 bg-gray-50 rounded-xl border border-gray-100 w-fit">
-            <button
-              onClick={() => setFilter('general')}
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${filter === 'general'
-                  ? 'bg-black text-white shadow-md'
-                  : 'text-gray-500 hover:text-black'
-                }`}
-            >
-              Général
-            </button>
-            <button
-              onClick={() => setFilter('monthly')}
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${filter === 'monthly'
-                  ? 'bg-black text-white shadow-md'
-                  : 'text-gray-500 hover:text-black'
-                }`}
-            >
-              Mensuel
-            </button>
-            <button
-              onClick={() => setFilter('class')}
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${filter === 'class'
-                  ? 'bg-black text-white shadow-md'
-                  : 'text-gray-500 hover:text-black'
-                }`}
-            >
-              Par classe
-            </button>
+      <div className="mb-12">
+        <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
+          <div className="flex gap-4">
+            {['general', 'monthly', 'class'].map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-8 py-3 text-xs font-black uppercase tracking-[0.2em] transition-all border-2 border-black ${filter === f
+                    ? 'bg-black text-white'
+                    : 'bg-transparent text-black hover:bg-black hover:text-white'
+                  }`}
+              >
+                {f === 'general' ? 'Général' : f === 'monthly' ? 'Mensuel' : 'Par classe'}
+              </button>
+            ))}
           </div>
 
           {filter === 'class' && (
-            <select
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-4 py-2 border border-black/10 rounded-xl text-sm font-bold outline-none focus:border-black transition-colors bg-white text-black"
-            >
-              <option value="all">Toutes les classes</option>
-              {classes.map(classe => (
-                <option key={classe} value={classe}>{classe}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                className="appearance-none pl-6 pr-12 py-3 bg-white border-2 border-black text-xs font-black uppercase tracking-widest focus:outline-none cursor-pointer hover:bg-black hover:text-white transition-colors"
+              >
+                <option value="all">TOUTES LES CLASSES</option>
+                {classes.map(classe => (
+                  <option key={classe} value={classe}>{classe}</option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-current" />
+              </div>
+            </div>
           )}
         </div>
       </div>
 
       {/* Position de l'étudiant connecté */}
       {studentData && studentRank && (
-        <div className="mb-8 p-6 bg-black rounded-[24px] text-white flex items-center justify-between shadow-xl shadow-black/10">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#10B981] flex items-center justify-center text-black font-black text-lg">
-              #{studentRank}
-            </div>
-            <div>
-              <div className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Votre position</div>
-              <div className="text-2xl font-bold text-white">
-                {studentData.firstName} {studentData.lastName}
+        <div className="mb-12 border-2 border-black">
+          <div className="bg-black text-white p-8 px-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-8">
+              <div className="text-6xl font-black italic text-[#DBA12D]" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                #{studentRank.toString().padStart(2, '0')}
+              </div>
+              <div>
+                <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em] mb-2">VOTRE POSITION</div>
+                <div className="text-3xl font-black uppercase tracking-tight">
+                  {studentData.firstName} {studentData.lastName}
+                </div>
               </div>
             </div>
+            <div className="text-right">
+              <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em] mb-2">TOTAL POINTS</div>
+              <div className="text-5xl font-black text-white">{studentData.totalPoints}</div>
+            </div>
           </div>
-          <div className="text-right">
-            <div className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Total Points</div>
-            <div className="text-3xl font-black text-[#10B981]">{studentData.totalPoints}</div>
-          </div>
+          {/* Decorative strip to match "Leaderboard_Elite." aesthetic if needed, or simple footer for this card */}
         </div>
       )}
 
       {/* Table Header */}
-      <div className="hidden md:flex bg-gray-50/50 border-b border-gray-100 px-6 py-4 rounded-t-2xl">
-        <div className="w-20 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Rang</div>
-        <div className="flex-1 text-xs font-black text-gray-400 uppercase tracking-widest">Étudiant</div>
-        <div className="w-32 text-right text-xs font-black text-gray-400 uppercase tracking-widest">
-          {filter === 'monthly' ? 'Points (mois)' : 'Points'}
-        </div>
+      <div className="hidden md:flex border-y-2 border-black py-6 px-10 bg-white">
+        <div className="w-24 text-[10px] font-black text-black uppercase tracking-[0.3em]">RANK</div>
+        <div className="flex-1 text-[10px] font-black text-black uppercase tracking-[0.3em]">OPERATIVE</div>
+        <div className="w-40 text-[10px] font-black text-black uppercase tracking-[0.3em] text-center">CLASSE</div>
+        <div className="w-40 text-right text-[10px] font-black text-black uppercase tracking-[0.3em]">IMPACT POWER</div>
       </div>
 
-      <div className="divide-y divide-gray-50">
+      <div className="border-b-2 border-black">
         {leaderboard.map((user, index) => {
-          const isTopThree = user.rank <= 3;
           const isCurrentUser = student && user.email === student.email;
 
           return (
             <div
               key={user.email}
-              className={`flex flex-col md:flex-row items-center p-6 hover:bg-gray-50 transition-all group ${isCurrentUser ? 'bg-gray-50/50' : ''
+              className={`flex flex-col md:flex-row items-center px-10 py-6 border-b border-black/10 transition-all hover:bg-black hover:text-white group ${isCurrentUser ? 'bg-black/5' : 'bg-white'
                 }`}
             >
               {/* Rank */}
-              <div className="flex items-center gap-4 w-full md:w-auto mb-4 md:mb-0">
-                <div className="w-20 text-center flex-shrink-0 flex justify-center">
-                  {user.rank === 1 && <Trophy className="w-6 h-6 text-[#10B981]" />}
-                  {user.rank === 2 && <Medal className="w-6 h-6 text-gray-400" />}
-                  {user.rank === 3 && <Medal className="w-6 h-6 text-gray-400" />}
-                  {user.rank > 3 && (
-                    <span className="text-gray-400 text-sm font-bold">#{user.rank}</span>
-                  )}
+              <div className="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
+                <div className="w-24 flex-shrink-0 font-black text-2xl italic group-hover:text-[#DBA12D]" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                  #{user.rank.toString().padStart(2, '0')}
                 </div>
 
                 {/* Mobile only info */}
                 <div className="md:hidden flex-1">
-                  <div className="font-bold text-lg text-black">
+                  <div className="font-black text-lg uppercase tracking-tight">
                     {user.firstName} {user.lastName}
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">
+                  <div className="text-xs font-bold opacity-60 mt-1 uppercase">
                     {user.classe}
                   </div>
                 </div>
 
                 <div className="md:hidden text-right">
-                  <span className="block text-xl font-black text-[#10B981]">
+                  <span className="block text-xl font-black text-[#DBA12D]">
                     {filter === 'monthly' ? user.monthlyPoints || 0 : user.totalPoints}
                   </span>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">pts</span>
                 </div>
               </div>
 
               {/* Desktop info */}
-              <div className="hidden md:flex flex-1 items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-xs flex-shrink-0 group-hover:bg-[#10B981] transition-colors">
+              <div className="hidden md:flex flex-1 items-center gap-6">
+                <div className={`w-12 h-12 border-2 border-black flex items-center justify-center text-sm font-black uppercase group-hover:border-white group-hover:bg-white group-hover:text-black ${isCurrentUser ? 'bg-black text-white' : 'bg-white text-black'}`}>
                   {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                 </div>
                 <div className="flex-1">
-                  <div className="font-bold text-base text-black flex items-center gap-2">
+                  <div className="font-black text-lg uppercase tracking-tight flex items-center gap-3">
                     {user.firstName} {user.lastName}
                     {isCurrentUser && (
-                      <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase tracking-wider">Vous</span>
+                      <span className="text-[9px] px-2 py-1 bg-black text-white group-hover:bg-white group-hover:text-black font-black uppercase tracking-widest border border-current">Vous</span>
                     )}
                   </div>
-                  <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
-                    <span className="bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">{user.classe || 'N/A'}</span>
-                    {user.badges && user.badges.length > 0 && (
-                      <div className="flex gap-1">
-                        {user.badges.slice(0, 3).map((b, i) => (
-                          <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#10B981]" title="Badge gagné" />
-                        ))}
-                      </div>
-                    )}
+                  <div className="text-[10px] font-bold opacity-50 uppercase tracking-wider mt-1">
+                    {user.badges?.length > 0 ? `${user.badges.length} BADGES UNLOCKED` : 'NO BADGES'}
                   </div>
                 </div>
               </div>
 
-              {/* Desktop Points */}
-              <div className="hidden md:block w-32 text-right">
-                <div className="text-2xl font-black text-[#10B981]">
+              {/* Class Column */}
+              <div className="hidden md:block w-40 text-center">
+                <div className="inline-block border-2 border-black px-3 py-1 text-xs font-black uppercase group-hover:border-white">
+                  {user.classe || 'N/A'}
+                </div>
+              </div>
+
+              {/* Points Column */}
+              <div className="hidden md:block w-40 text-right">
+                <div className="text-3xl font-black group-hover:text-[#DBA12D]">
                   {filter === 'monthly' ? user.monthlyPoints || 0 : user.totalPoints}
                 </div>
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">points</div>
+                <div className="text-[9px] font-black opacity-40 uppercase tracking-[0.3em]">
+                  UNITS COLLECTED
+                </div>
               </div>
             </div>
           );
@@ -213,10 +200,10 @@ export default function Leaderboard({ school = 'eugenia' }) {
       </div>
 
       {leaderboard.length === 0 && !loading && (
-        <div className="text-center py-20">
-          <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">
-            Aucun participant pour le moment. Soyez le premier !
+        <div className="py-40 text-center border-b-2 border-black bg-white">
+          <TrendingUp className="w-16 h-16 text-black/20 mx-auto mb-6" />
+          <p className="text-black/40 font-black text-xl uppercase tracking-widest">
+            Aucun participant pour le moment.
           </p>
         </div>
       )}

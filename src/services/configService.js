@@ -38,17 +38,17 @@ export async function loadConfig() {
     // Try API first (D1 Worker or Apps Script)
     if (USE_API) {
       try {
-        const url = USE_D1_API 
+        const url = USE_D1_API
           ? `${API_URL}/config`
           : `${API_URL}?action=getConfig`;
         const response = await fetch(url);
         const text = await response.text();
         const apiConfig = JSON.parse(text);
-        
+
         if (apiConfig && !apiConfig.error && Object.keys(apiConfig).length > 0) {
           // Merge profond avec la config par défaut
           const merged = { ...defaultConfig, ...apiConfig };
-          
+
           // Merge profond pour les tableaux importants
           if (apiConfig.actionTypes && apiConfig.actionTypes.length > 0) {
             merged.actionTypes = apiConfig.actionTypes;
@@ -59,21 +59,21 @@ export async function loadConfig() {
           if (apiConfig.automations && apiConfig.automations.length > 0) {
             merged.automations = apiConfig.automations;
           }
-          
+
           return merged;
         }
       } catch (error) {
         console.warn('API fetch failed, using localStorage fallback:', error);
       }
     }
-    
+
     // Fallback to localStorage
     const storedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
     if (storedConfig) {
       const parsed = JSON.parse(storedConfig);
       // Merge profond avec la config par défaut
       const merged = { ...defaultConfig, ...parsed };
-      
+
       if (parsed.actionTypes && parsed.actionTypes.length > 0) {
         merged.actionTypes = parsed.actionTypes;
       }
@@ -83,13 +83,13 @@ export async function loadConfig() {
       if (parsed.automations && parsed.automations.length > 0) {
         merged.automations = parsed.automations;
       }
-      
+
       return merged;
     }
   } catch (error) {
     console.error('Error loading config:', error);
   }
-  
+
   return defaultConfig;
 }
 
@@ -103,7 +103,7 @@ export async function saveConfig(config) {
       try {
         console.log('📤 Saving config to API:', API_URL);
         console.log('   Config keys:', Object.keys(config || {}));
-        
+
         let url, body;
         if (USE_D1_API) {
           // D1 Worker API
@@ -117,20 +117,20 @@ export async function saveConfig(config) {
             config: config
           });
         }
-        
+
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body
         });
-        
+
         console.log('📥 Response status:', response.status, response.statusText);
         const text = await response.text();
         console.log('📥 Response text:', text.substring(0, 200));
-        
+
         const result = JSON.parse(text);
         console.log('📥 Parsed response:', result);
-        
+
         if (result.success) {
           console.log('✅ Config saved to API successfully');
           return true;
@@ -161,7 +161,7 @@ export async function saveConfig(config) {
     } else {
       console.warn('⚠️ API not configured, using localStorage fallback');
     }
-    
+
     // Fallback to localStorage
     localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
     return true;
@@ -201,12 +201,14 @@ export async function getActionTypes() {
       const text = await response.text();
       const parsed = JSON.parse(text);
       const data = extractApiData(parsed);
-      return Array.isArray(data) ? data : [];
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
     } catch (error) {
       console.warn('API fetch failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   return config.actionTypes || [];
@@ -224,7 +226,7 @@ export async function getActionTypeById(id) {
       console.warn('API fetch failed, using config fallback:', error);
     }
   }
-  
+
   const config = await loadConfig();
   return config.actionTypes.find(type => type.id === id);
 }
@@ -236,7 +238,7 @@ export async function saveActionType(actionType) {
   if (USE_D1_API && USE_API) {
     try {
       const existing = await getActionTypeById(actionType.id);
-      
+
       if (existing) {
         // PUT: Update
         const response = await fetch(`${API_URL}/action-types/${actionType.id}`, {
@@ -256,23 +258,23 @@ export async function saveActionType(actionType) {
         const result = await response.json();
         if (!result.success) throw new Error(result.error);
       }
-      
+
       return actionType;
     } catch (error) {
       console.warn('API save failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   const existingIndex = config.actionTypes.findIndex(t => t.id === actionType.id);
-  
+
   if (existingIndex >= 0) {
     config.actionTypes[existingIndex] = actionType;
   } else {
     config.actionTypes.push(actionType);
   }
-  
+
   await saveConfig(config);
   return config;
 }
@@ -293,7 +295,7 @@ export async function deleteActionType(id) {
       console.warn('API delete failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   config.actionTypes = config.actionTypes.filter(t => t.id !== id);
@@ -334,7 +336,7 @@ export async function getAutomationRules() {
       console.warn('API fetch failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   return config.automations || [];
@@ -360,7 +362,7 @@ export async function saveAutomationRules(automations) {
       console.warn('API save failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   config.automations = automations;
@@ -386,7 +388,7 @@ async function createAutomationRule(automation) {
       console.warn('API create failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback
   const config = await loadConfig();
   config.automations.push(automation);
@@ -401,18 +403,18 @@ export async function saveAutomationRule(automation) {
   if (USE_D1_API && USE_API) {
     try {
       console.log('💾 Saving automation:', automation);
-      
+
       // Check if automation exists in SQL
       // SQL IDs are numbers, frontend-generated IDs are strings (Date.now().toString())
       const existingAutomations = await getAutomationRules();
-      const exists = existingAutomations.some(a => 
+      const exists = existingAutomations.some(a =>
         a.id === automation.id && typeof a.id === 'number' && typeof automation.id === 'number'
       );
-      
+
       // If editingAutomation was passed, it means we're updating (it has a numeric ID from SQL)
       // If no editingAutomation or ID is a string, it's a creation
       const isUpdate = typeof automation.id === 'number' && exists;
-      
+
       if (isUpdate) {
         // PUT: Update existing (ID is a number from SQL)
         console.log('📝 Updating automation ID:', automation.id);
@@ -433,7 +435,7 @@ export async function saveAutomationRule(automation) {
         // Remove the frontend-generated ID, createdAt, updatedAt - let SQL handle it
         const { id, createdAt, updatedAt, ...automationData } = automation;
         console.log('📤 Sending automation data:', automationData);
-        
+
         const response = await fetch(`${API_URL}/automations`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -446,7 +448,7 @@ export async function saveAutomationRule(automation) {
           throw new Error(result.error || 'Failed to create automation');
         }
       }
-      
+
       return automation;
     } catch (error) {
       console.error('❌ API save failed:', error);
@@ -458,17 +460,17 @@ export async function saveAutomationRule(automation) {
       throw error; // Re-throw pour que le composant puisse afficher l'erreur
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   const existingIndex = config.automations.findIndex(a => a.id === automation.id);
-  
+
   if (existingIndex >= 0) {
     config.automations[existingIndex] = automation;
   } else {
     config.automations.push(automation);
   }
-  
+
   await saveConfig(config);
   return config;
 }
@@ -489,7 +491,7 @@ export async function deleteAutomationRule(id) {
       console.warn('API delete failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   config.automations = config.automations.filter(a => a.id !== id);
@@ -523,14 +525,14 @@ export async function getGlobalConfig() {
     try {
       console.log('📡 Fetching landing page config from:', `${API_URL}/landing-page-config`);
       const response = await fetch(`${API_URL}/landing-page-config`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const text = await response.text();
       console.log('📥 Raw response:', text);
-      
+
       if (!text || text.trim() === '') {
         console.warn('⚠️ Empty response, using defaults');
         return {
@@ -539,10 +541,10 @@ export async function getGlobalConfig() {
           landingTexts: {}
         };
       }
-      
+
       const data = JSON.parse(text);
       console.log('📊 Parsed data:', data);
-      
+
       const landingTexts = {};
       // Récupérer tous les keys qui commencent par "landingTexts."
       if (data && typeof data === 'object') {
@@ -553,7 +555,7 @@ export async function getGlobalConfig() {
           }
         });
       }
-      
+
       const result = {
         totalPrizePool: data.totalPrizePool || '+500€',
         deadline: data.deadline || '31 janvier 2026',
@@ -572,7 +574,7 @@ export async function getGlobalConfig() {
       };
     }
   }
-  
+
   // Fallback: utiliser config
   try {
     const config = await loadConfig();
@@ -604,19 +606,19 @@ export async function updateGlobalConfig(globalConfig) {
         totalPrizePool: globalConfig.totalPrizePool || '+500€',
         deadline: globalConfig.deadline || '31 janvier 2026'
       };
-      
+
       // Ajouter chaque clé de landingTexts comme entry séparée (convertir en string)
       if (globalConfig.landingTexts && typeof globalConfig.landingTexts === 'object') {
         Object.entries(globalConfig.landingTexts).forEach(([key, value]) => {
           landingConfig[`landingTexts.${key}`] = String(value || '');
         });
       }
-      
+
       // Ajouter les récompenses comme JSON string
       if (globalConfig.rewards && Array.isArray(globalConfig.rewards)) {
         landingConfig.rewards = JSON.stringify(globalConfig.rewards);
       }
-      
+
       console.log('📤 Sending config to API:', landingConfig);
       const response = await fetch(`${API_URL}/landing-page-config`, {
         method: 'POST',
@@ -633,7 +635,7 @@ export async function updateGlobalConfig(globalConfig) {
       console.warn('API save failed, using config fallback:', error);
     }
   }
-  
+
   // Fallback: utiliser config
   const config = await loadConfig();
   config.totalPrizePool = globalConfig.totalPrizePool || config.totalPrizePool;

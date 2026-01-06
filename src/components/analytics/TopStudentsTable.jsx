@@ -23,32 +23,32 @@ export default function TopStudentsTable({ students }) {
   };
 
   return (
-    <div className="bg-white border-2 border-black p-8 shadow-[10px_10px_0px_black]">
-      <h3 className="text-2xl font-black uppercase tracking-tight mb-8 text-black">
-        🏆 Top 10 Étudiants Actifs
+    <div className="bg-white border-2 border-black p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_#DBA12D] transition-all">
+      <h3 className="text-xl font-black mb-6 flex items-center gap-3 font-serif italic text-black uppercase">
+        <span className="text-2xl not-italic">🏆</span> TOP 10 ÉTUDIANTS
       </h3>
       <div className="overflow-x-auto">
-        <table className="admin-table w-full">
+        <table className="w-full">
           <thead>
-            <tr className="border-b-2 border-black">
-              <th className="px-4 py-4 text-left font-black uppercase tracking-widest text-xs">Position</th>
-              <th className="px-4 py-4 text-left font-black uppercase tracking-widest text-xs">Nom</th>
-              <th className="px-4 py-4 text-left font-black uppercase tracking-widest text-xs">Classe</th>
-              <th className="px-4 py-4 text-right font-black uppercase tracking-widest text-xs">Actions</th>
-              <th className="px-4 py-4 text-right font-black uppercase tracking-widest text-xs">Points</th>
+            <tr className="border-b-4 border-black">
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Rang</th>
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Étudiant</th>
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Classe</th>
+              <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-wider">Actions</th>
+              <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-wider">Points</th>
             </tr>
           </thead>
           <tbody>
             {studentsArray.map((student) => (
-              <tr key={student.rank} className="border-b border-black/5 hover:bg-black hover:text-white transition-all group">
-                <td className="px-4 py-4 font-black">{getRankIcon(student.rank)}</td>
-                <td className="px-4 py-4 font-bold uppercase">
+              <tr key={student.rank} className="border-b border-black/10 hover:bg-black/5 transition-colors">
+                <td className="px-4 py-3 font-black text-lg">{getRankIcon(student.rank)}</td>
+                <td className="px-4 py-3 font-bold uppercase text-sm">
                   {student.firstName} {student.lastName}
                 </td>
-                <td className="px-4 py-4 font-mono text-sm">{student.class}</td>
-                <td className="px-4 py-4 text-right font-mono">{student.actionsCount}</td>
-                <td className="px-4 py-4 text-right font-black group-hover:text-[#DBA12D]">
-                  {student.points} pts
+                <td className="px-4 py-3 font-bold text-xs text-black/60">{student.class}</td>
+                <td className="px-4 py-3 text-right font-mono text-xs">{student.actionsCount}</td>
+                <td className="px-4 py-3 text-right font-black text-[#DBA12D]">
+                  {student.points} PTS
                 </td>
               </tr>
             ))}

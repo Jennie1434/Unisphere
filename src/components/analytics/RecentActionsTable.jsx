@@ -3,7 +3,7 @@ import { formatDateTime } from '../../utils/analyticsHelpers';
 
 export default function RecentActionsTable({ actions, onStatusChange }) {
   const [statusFilter, setStatusFilter] = useState('all');
-  
+
   // S'assurer que actions est un tableau
   const actionsArray = Array.isArray(actions) ? actions : [];
 
@@ -26,16 +26,15 @@ export default function RecentActionsTable({ actions, onStatusChange }) {
     : actionsArray.filter(a => a.status === statusFilter);
 
   return (
-    <div className="admin-card">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-2xl font-bold" style={{ color: 'var(--eugenia-burgundy)' }}>
-          📋 Dernières Actions (24h)
+    <div className="bg-white border-2 border-black p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_#DBA12D] transition-all">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-black flex items-center gap-3 font-serif italic text-black uppercase">
+          <span className="text-2xl not-italic">📋</span> DERNIÈRES ACTIONS (24H)
         </h3>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="form-control"
-          style={{ width: 'auto' }}
+          className="px-4 py-2 border-2 border-black bg-white text-xs font-bold uppercase tracking-widest focus:outline-none focus:bg-black focus:text-white transition-all cursor-pointer"
         >
           <option value="all">Toutes</option>
           <option value="validated">Validées</option>
@@ -43,30 +42,30 @@ export default function RecentActionsTable({ actions, onStatusChange }) {
         </select>
       </div>
       <div className="overflow-x-auto">
-        <table className="admin-table w-full">
+        <table className="w-full">
           <thead>
-            <tr>
-              <th className="px-4 py-3 text-left">Date/Heure</th>
-              <th className="px-4 py-3 text-left">Étudiant</th>
-              <th className="px-4 py-3 text-left">Type</th>
-              <th className="px-4 py-3 text-right">Points</th>
-              <th className="px-4 py-3 text-center">Statut</th>
+            <tr className="border-b-4 border-black">
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Date/Heure</th>
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Étudiant</th>
+              <th className="px-4 py-4 text-left text-xs font-black uppercase tracking-wider">Type</th>
+              <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-wider">Points</th>
+              <th className="px-4 py-4 text-center text-xs font-black uppercase tracking-wider">Statut</th>
             </tr>
           </thead>
           <tbody>
             {filteredActions.map((action) => (
-              <tr key={action.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm">{formatDateTime(action.created_at)}</td>
-                <td className="px-4 py-3">{action.student_name}</td>
-                <td className="px-4 py-3">
+              <tr key={action.id} className="border-b border-black/10 hover:bg-black/5 transition-colors">
+                <td className="px-4 py-3 text-xs font-bold text-black/60 font-mono">{formatDateTime(action.created_at)}</td>
+                <td className="px-4 py-3 text-sm font-bold">{action.student_name}</td>
+                <td className="px-4 py-3 text-xs font-bold uppercase tracking-tight">
                   {action.emoji} {action.action_type}
                 </td>
-                <td className="px-4 py-3 text-right font-bold">{action.points || 0} pts</td>
+                <td className="px-4 py-3 text-right font-black text-[#DBA12D]">{action.points || 0} PTS</td>
                 <td className="px-4 py-3 text-center">
                   {action.status === 'validated' ? (
-                    <span className="text-green-600 text-xl">✅</span>
+                    <span className="inline-block px-2 py-1 bg-black text-[#DBA12D] text-[10px] font-black uppercase tracking-widest">VALIDÉ</span>
                   ) : (
-                    <span className="text-red-600 text-xl">❌</span>
+                    <span className="inline-block px-2 py-1 border-2 border-black text-black text-[10px] font-black uppercase tracking-widest">REFUSÉ</span>
                   )}
                 </td>
               </tr>

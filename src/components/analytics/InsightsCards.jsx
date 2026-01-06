@@ -43,20 +43,19 @@ export default function InsightsCards({ insights }) {
       {insightCards.map((insight, index) => (
         <div
           key={index}
-          className="insight-card admin-card"
-          style={{
-            background: `linear-gradient(135deg, rgba(103, 19, 36, 0.05), rgba(233, 30, 99, 0.05))`,
-            border: '1px solid #ddd',
-            animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
-          }}
+          className="bg-white border-2 border-black p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_#DBA12D] transition-all"
         >
           <div className="flex items-start gap-4">
-            <div className="text-5xl">{insight.icon}</div>
+            <div className="text-4xl border-2 border-black w-16 h-16 flex items-center justify-center bg-black/5">
+              {insight.icon}
+            </div>
             <div className="flex-1">
-              <h4 className="text-lg font-bold mb-2" style={{ color: 'var(--eugenia-burgundy)' }}>
+              <h4 className="text-lg font-black mb-2 font-serif italic text-black uppercase tracking-tight">
                 {insight.title}
               </h4>
-              <p className="text-gray-700">{insight.text}</p>
+              <p className="text-xs font-bold text-black/60 uppercase tracking-wide leading-relaxed">
+                {insight.text}
+              </p>
             </div>
           </div>
         </div>
