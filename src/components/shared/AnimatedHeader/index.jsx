@@ -34,8 +34,7 @@ export default function Header({ school = 'eugenia' }) {
         { title: "Associations", href: `${schoolPath}/associations` },
         { title: "Ambassadeur", href: `${schoolPath}/ambassadeurs` },
         { title: "Classement", href: `${schoolPath}/leaderboard` },
-        { title: "Étudiant", href: `${schoolPath}/student/profile` },
-        { title: "Soumettre", href: `${schoolPath}/submit` }
+        { title: "Étudiant", href: `${schoolPath}/student/profile` }
     ];
 
     if (student) {

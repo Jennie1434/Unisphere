@@ -55,7 +55,10 @@ function parseJSON(str: string | null): any {
 function jsonResponse(data: any, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...corsHeaders()
+    },
   });
 }
 
@@ -3319,6 +3322,21 @@ export default {
       }
 
       // ========== ASSOCIATIONS ROUTES ==========
+
+      // Route: GET /associations/create/members - Fix for "create" ID bug
+      if (url.pathname === '/associations/create/members') {
+        return jsonResponse([], 200);
+      }
+
+      // Route: GET /associations/create/events - Fix for "create" ID bug
+      if (url.pathname === '/associations/create/events') {
+        return jsonResponse([], 200);
+      }
+
+      // Route: GET /associations/create/applications - Fix for "create" ID bug
+      if (url.pathname === '/associations/create/applications') {
+        return jsonResponse([], 200);
+      }
 
       // Route: GET /associations
       if (url.pathname === '/associations' && request.method === 'GET') {
