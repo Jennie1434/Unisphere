@@ -1,289 +1,251 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '../components/shared/PageLayout';
 import { useStudentAuth } from '../contexts/StudentAuthContext';
 import {
-  Layout,
-  Users,
   Briefcase,
-  Trophy,
-  Calendar,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  Globe,
+  Users,
+  Medal,
+  ChevronRight,
   Plus,
-  ExternalLink,
-  MessageSquare,
-  ChevronRight
+  ArrowUpRight,
+  Sparkles,
+  Trophy
 } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 export default function AlbertSchoolPage() {
   const { student } = useStudentAuth();
   const firstName = student?.firstName || 'Étudiant';
+  const containerRef = useRef(null);
 
-  const schoolColor = '#1E40AF'; // Albert Blue
+  const panels = [
+    {
+      id: 'portfolio',
+      title: 'Portfolio',
+      subtitle: 'ANALYTIQUE & IMPACT',
+      desc: 'Centralisez vos projets data, mesurez votre impact et créez votre propre héritage technique.',
+      link: '/albert-school/portfolio?tab=mine',
+      submitLink: '/albert-school/submit?type=project',
+      icon: <Briefcase className="w-10 h-10" />,
+      color: '#3461FF',
+      stats: '2 PROJETS'
+    },
+    {
+      id: 'associations',
+      title: 'Associations',
+      subtitle: 'COLLECTIF & INNOVATION',
+      desc: 'Rejoignez les acteurs du campus. Participez, collaborez et transformez la vie étudiante.',
+      link: '/albert-school/associations',
+      submitLink: '/albert-school/associations/agenda',
+      icon: <Users className="w-10 h-10" />,
+      color: '#3461FF',
+      stats: '3 ÉVÉNEMENTS'
+    },
+    {
+      id: 'ambassadeur',
+      title: 'Ambassadeur',
+      subtitle: 'MÉRITE & EXCELLENCE',
+      desc: 'Devenez le visage de l\'école. Relevez des défis data et boostez votre prestige technique.',
+      link: '/albert-school/ambassadeurs',
+      submitLink: '/albert-school/submit?type=mission',
+      icon: <Medal className="w-10 h-10" />,
+      color: '#3461FF',
+      stats: '1 MISSION'
+    }
+  ];
 
   return (
     <PageLayout school="albert" minimalFooter={true}>
-      <div className="relative min-h-screen pb-20 px-6 lg:px-12 pt-10 overflow-hidden">
-        {/* Subtle Watermark Globe - Now Blue */}
-        <div className="fixed top-20 right-[-10%] opacity-[0.02] pointer-events-none rotate-12">
-          <Globe className="w-[800px] h-[800px] text-[#1E40AF]" />
-        </div>
+      <div ref={containerRef} className="min-h-screen bg-white text-black selection:bg-[#3461FF] selection:text-white overflow-hidden font-sans">
 
-        <div className="relative z-10 max-w-7xl mx-auto">
-          {/* 1. Header Section */}
-          <header className="mb-12">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 bg-[#1E40AF]/5 border border-[#1E40AF]/10 text-[#1E40AF] text-[10px] font-black uppercase tracking-widest rounded-full">
-                Espace officiel — Albert School
-              </span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black text-[#1E40AF] tracking-tight leading-tight">
-              Bienvenue, {firstName}.
-            </h1>
-            <p className="mt-2 text-[#1E40AF]/60 font-medium max-w-xl leading-relaxed">
-              Projets • Associations • Missions — au même endroit.
-            </p>
+        {/* Kinetic Hero Section */}
+        <section className="relative pt-32 pb-20 px-6 lg:px-20 max-w-[1700px] mx-auto overflow-hidden">
+          <header className="flex flex-col lg:flex-row items-end justify-between gap-12">
+
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              className="max-w-4xl"
+            >
+              <div className="flex items-center gap-3 mb-10 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: 40 }}
+                  transition={{ duration: 1, delay: 0.5 }}
+                  className="h-[2px] bg-black"
+                />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">
+                  AL — ECOSYSTEM PRIVATE
+                </span>
+              </div>
+
+              <h1 className="text-7xl md:text-[140px] font-black tracking-tighter leading-[0.85] mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                <span className="block">BIENVENUE,</span>
+                <motion.span
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 1 }}
+                  className="block italic text-[#3461FF]"
+                  style={{ textShadow: '0 0 60px rgba(52,97,255,0.15)' }}
+                >
+                  {firstName.toUpperCase()}.
+                </motion.span>
+              </h1>
+
+              <div className="flex items-center gap-12 mt-16">
+                <div className="flex flex-col">
+                  <span className="text-4xl font-black">{student?.totalPoints || 0}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Points de prestige</span>
+                </div>
+                <div className="w-[2px] h-12 bg-black/10" />
+                <div className="flex flex-col">
+                  <span className="text-4xl font-black">{student?.actionsCount || 0}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Actions validées</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Nouvelle Soumission Button (Floating Action) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, type: "spring" }}
+              className="flex-shrink-0"
+            >
+              <Link
+                to="/albert-school/submit"
+                className="group relative px-10 py-6 bg-black text-white rounded-none font-black text-xs uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#3461FF] hover:scale-105 hover:shadow-[20px_20px_0px_rgba(52,97,255,0.2)] inline-flex items-center gap-5 border-2 border-black"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-white/10"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6 }}
+                />
+                <Plus className="w-5 h-5 group-hover:text-[#3461FF] group-hover:rotate-90 transition-all" />
+                NOUVELLE SOUMISSION
+              </Link>
+            </motion.div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Main Content Area */}
-            <div className="lg:col-span-8 space-y-12">
+          {/* Background Glow Effect */}
+          <div className="absolute bottom-0 right-0 w-[900px] h-[900px] bg-[#3461FF]/5 blur-[200px] -z-10 animate-pulse" />
+        </section>
 
-              {/* 2. Three Main Pillars (Cards) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Pillar 1: Portfolio */}
-                <div className="group bg-white rounded-[32px] p-8 shadow-2xl shadow-[#1E40AF]/[0.02] border border-[#1E40AF]/5 hover:border-[#1E40AF]/30 transition-all duration-500 flex flex-col h-full">
-                  <div className="w-12 h-12 bg-[#1E40AF]/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#1E40AF] transition-colors duration-500">
-                    <Layout className="w-5 h-5 text-[#1E40AF] group-hover:text-white transition-colors duration-500" />
+        {/* Vertical Keywords (Sideline Aesthetic) */}
+        <aside className="fixed left-10 top-1/2 -translate-y-1/2 z-50 hidden 2xl:block">
+          <div className="flex flex-col gap-12 items-center writing-mode-vertical-rl text-[9px] font-black uppercase tracking-[0.5em] text-black/10">
+            {['PORTFOLIO', 'ASSOCIATIONS', 'AMBASSADEUR', 'CLASSEMENT'].map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 + i * 0.1 }}
+                className="hover:text-[#3461FF] hover:tracking-[0.8em] transition-all cursor-default"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </div>
+        </aside>
+
+        {/* MAIN PANELS SECTION */}
+        <section className="max-w-[1700px] mx-auto px-6 lg:px-20 pb-40">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {panels.map((panel, index) => (
+              <motion.div
+                key={panel.id}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15, type: "spring", stiffness: 80 }}
+                className="group bg-white border-2 border-black p-10 relative overflow-hidden hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[20px_20px_0px_#3461FF] transition-all duration-500"
+              >
+                {/* Panel Icon & Stats */}
+                <div className="flex items-start justify-between mb-12">
+                  <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center group-hover:bg-[#3461FF] transition-colors">
+                    <div className="text-white">{panel.icon}</div>
                   </div>
-                  <h3 className="text-lg font-bold text-[#1E40AF] mb-2">Portfolio</h3>
-                  <p className="text-[#1E40AF]/40 text-sm mb-8 leading-relaxed flex-1">
-                    Publie tes projets, montre tes compétences.
-                  </p>
-                  <div className="space-y-2">
-                    <Link to="/albert-school/portfolio" className="block w-full py-3 bg-[#1E40AF] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:shadow-lg hover:shadow-[#1E40AF]/20 transition-all text-center">
-                      Voir le portfolio
-                    </Link>
-                    <Link to="/albert-school/submit?type=project" className="block w-full py-3 border border-[#1E40AF]/10 text-[#1E40AF]/60 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#1E40AF]/5 hover:text-[#1E40AF] transition-all text-center">
-                      + Soumettre un projet
-                    </Link>
-                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-[0.4em] text-black/20 group-hover:text-[#3461FF] transition-colors">
+                    {panel.stats}
+                  </span>
                 </div>
 
-                {/* Pillar 2: Associations */}
-                <div className="group bg-white rounded-[32px] p-8 shadow-2xl shadow-[#1E40AF]/[0.02] border border-[#1E40AF]/5 hover:border-[#1E40AF]/30 transition-all duration-500 flex flex-col h-full">
-                  <div className="w-12 h-12 bg-[#1E40AF]/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#1E40AF] transition-colors duration-500">
-                    <Users className="w-5 h-5 text-[#1E40AF] group-hover:text-white transition-colors duration-500" />
-                  </div>
-                  <h3 className="text-lg font-bold text-[#1E40AF] mb-2">Associations</h3>
-                  <p className="text-[#1E40AF]/40 text-sm mb-8 leading-relaxed flex-1">
-                    Découvre les assos et les événements.
+                {/* Panel Content */}
+                <div className="mb-12">
+                  <span className="block text-[9px] font-black uppercase tracking-[0.3em] text-black/30 mb-3">
+                    {panel.subtitle}
+                  </span>
+                  <h2 className="text-4xl font-black mb-6" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                    {panel.title}.
+                  </h2>
+                  <p className="text-sm text-black/50 leading-relaxed font-medium">
+                    {panel.desc}
                   </p>
-                  <div className="space-y-2">
-                    <Link to="/albert-school/associations" className="block w-full py-3 bg-[#1E40AF] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:shadow-lg hover:shadow-[#1E40AF]/20 transition-all text-center">
-                      Explorer
-                    </Link>
-                    <Link to="/albert-school/associations/agenda" className="block w-full py-3 border border-[#1E40AF]/10 text-[#1E40AF]/60 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#1E40AF]/5 hover:text-[#1E40AF] transition-all text-center">
-                      Voir l'agenda
-                    </Link>
-                  </div>
                 </div>
 
-                {/* Pillar 3: Missions */}
-                <div className="group bg-white rounded-[32px] p-8 shadow-2xl shadow-[#1E40AF]/[0.02] border border-[#1E40AF]/5 hover:border-[#1E40AF]/30 transition-all duration-500 flex flex-col h-full">
-                  <div className="w-12 h-12 bg-[#1E40AF]/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#1E40AF] transition-colors duration-500">
-                    <Briefcase className="w-5 h-5 text-[#1E40AF] group-hover:text-white transition-colors duration-500" />
-                  </div>
-                  <h3 className="text-lg font-bold text-[#1E40AF] mb-2">Missions</h3>
-                  <p className="text-[#1E40AF]/40 text-sm mb-8 leading-relaxed flex-1">
-                    Participe, gagne des points, progresse.
-                  </p>
-                  <div className="space-y-2">
-                    <Link to="/albert-school/ambassadeurs" className="block w-full py-3 bg-[#1E40AF] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:shadow-lg hover:shadow-[#1E40AF]/20 transition-all text-center">
-                      Voir les missions
-                    </Link>
-                    <Link to="/albert-school/submit?type=mission" className="block w-full py-3 border border-[#1E40AF]/10 text-[#1E40AF]/60 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#1E40AF]/5 hover:text-[#1E40AF] transition-all text-center">
-                      Soumettre une preuve
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. à la une */}
-              <section className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xs font-black text-[#1E40AF]/30 uppercase tracking-[0.2em]">À la une</h2>
-                  <Link to="#" className="text-[10px] font-black text-[#1E40AF] uppercase tracking-widest flex items-center gap-2 group">
-                    Actualité complète <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {/* Panel Actions */}
+                <div className="flex flex-col gap-4">
+                  <Link
+                    to={panel.link}
+                    className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#3461FF] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
+                  >
+                    LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to={panel.submitLink}
+                    className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
+                  >
+                    SOUMETTRE +
                   </Link>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Activity Item 1 */}
-                  <div className="bg-white p-6 rounded-[24px] border border-[#1E40AF]/5 hover:border-[#1E40AF]/30 transition-all group">
-                    <div className="aspect-square bg-[#1E40AF]/5 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
-                      <Layout className="w-10 h-10 text-[#1E40AF]/10 group-hover:text-[#1E40AF]/20 group-hover:scale-110 transition-all duration-500" />
-                    </div>
-                    <span className="text-[9px] font-black text-[#1E40AF]/40 uppercase tracking-widest">Portfolio</span>
-                    <h4 className="text-sm font-bold text-[#1E40AF] mt-1 mb-3">Refonte UI UniSphere</h4>
-                    <Link to="#" className="text-[10px] font-black text-[#1E40AF]/30 group-hover:text-[#1E40AF] flex items-center gap-1 transition-colors">
-                      Détails <ChevronRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                  {/* Activity Item 2 */}
-                  <div className="bg-white p-6 rounded-[24px] border border-[#1E40AF]/5 hover:border-[#1E40AF]/30 transition-all group">
-                    <div className="aspect-square bg-[#1E40AF]/5 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
-                      <Users className="w-10 h-10 text-[#1E40AF]/10 group-hover:text-[#1E40AF]/20 group-hover:scale-110 transition-all duration-500" />
-                    </div>
-                    <span className="text-[9px] font-black text-[#1E40AF]/40 uppercase tracking-widest">Association</span>
-                    <h4 className="text-sm font-bold text-[#1E40AF] mt-1 mb-3">Afterwork Campus</h4>
-                    <Link to="#" className="text-[10px] font-black text-[#1E40AF]/30 group-hover:text-[#1E40AF] flex items-center gap-1 transition-colors">
-                      Agenda <ChevronRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                  {/* Activity Item 3: Mini Ranking - Now Blue Gradient */}
-                  <div className="bg-gradient-to-br from-[#1E40AF] to-[#1e3a8a] text-white p-6 rounded-[24px] flex flex-col justify-between shadow-xl shadow-[#1E40AF]/20">
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <Trophy className="w-5 h-5 text-white/40" />
-                        <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Top 3</span>
-                      </div>
-                      <h4 className="text-sm font-bold mb-4">Classement Général</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="font-bold opacity-40">01. Leo R.</span>
-                          <span className="font-bold">450 pts</span>
-                        </div>
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="font-bold text-white">04. Toi</span>
-                          <span className="font-bold text-white">310 pts</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Link to="/albert-school/leaderboard" className="mt-6 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors">
-                      Voir classement
-                    </Link>
-                  </div>
-                </div>
-              </section>
+
+                {/* Kinetic Glow Effect on Hover */}
+                <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#3461FF]/0 group-hover:bg-[#3461FF]/10 blur-3xl transition-all duration-700 -z-10" />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* MARQUEE STRIP (Hypebeast Vibes) */}
+        <section className="bg-black text-white py-8 overflow-hidden border-y-4 border-[#3461FF]">
+          <motion.div
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+            className="flex gap-20 whitespace-nowrap"
+          >
+            {Array(10).fill(['ALBERT SCHOOL', 'DATA DRIVEN', 'EXCELLENCE', 'INNOVATION']).flat().map((text, i) => (
+              <span key={i} className="text-6xl font-black tracking-tighter italic" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                {text} <span className="text-[#3461FF]">•</span>
+              </span>
+            ))}
+          </motion.div>
+        </section>
+
+        {/* HIGH-IMPACT FOOTER */}
+        <footer className="bg-black text-white py-32 px-6 lg:px-20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(52,97,255,0.08),transparent_60%)]" />
+          <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row justify-between items-end gap-12">
+            <div className="space-y-6">
+              <h3 className="text-5xl font-black italic leading-tight" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                Albert School <br /><span className="text-[#3461FF]">Ecosystem.</span>
+              </h3>
+              <p className="text-[10px] font-black tracking-[0.5em] text-white/20 uppercase">
+                THE DATA-DRIVEN ENGINE
+              </p>
             </div>
-
-            {/* Right Column: Widgets Stack */}
-            <div className="lg:col-span-4 space-y-8">
-
-              {/* 3. Progression Widget */}
-              <div className="bg-white rounded-[40px] p-8 shadow-2xl shadow-[#1E40AF]/[0.02] border border-[#1E40AF]/10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#1E40AF]/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
-                <h3 className="text-[10px] font-black text-[#1E40AF]/30 uppercase tracking-[0.2em] mb-8">Ma Progression</h3>
-
-                <div className="flex items-end justify-between mb-10">
-                  <div>
-                    <span className="block text-[10px] font-black text-[#1E40AF]/20 uppercase mb-2">Points</span>
-                    <span className="text-5xl font-black text-[#1E40AF] tracking-tight">{student?.totalPoints || 310}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="block text-[10px] font-black text-[#1E40AF]/20 uppercase mb-2">Rang</span>
-                    <span className="text-3xl font-black text-[#1E40AF]">#04</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-10">
-                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-4 h-4 text-[#1E40AF]/40" />
-                      <span className="text-[#1E40AF]">Niveau: Bronze</span>
-                    </div>
-                    <span className="text-[#1E40AF]/30">Ligue Campus</span>
-                  </div>
-                  <div className="h-1.5 bg-[#1E40AF]/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#1E40AF] rounded-full" style={{ width: '65%' }} />
-                  </div>
-                  <p className="text-[10px] text-[#1E40AF]/40 font-bold text-center italic">
-                    Encore 190 pts pour le niveau suivant
-                  </p>
-                </div>
-
-                <Link to="/albert-school/student/profile" className="w-full py-4 bg-[#1E40AF] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1e3a8a] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#1E40AF]/10">
-                  Ouvrir mon dashboard <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-
-              {/* 4. Bloc "À faire cette semaine" */}
-              <div className="bg-white/50 backdrop-blur-sm rounded-[40px] p-8 border border-[#1E40AF]/5">
-                <h3 className="text-[10px] font-black text-[#1E40AF]/30 uppercase tracking-[0.2em] mb-8">À faire cette semaine</h3>
-                <div className="space-y-8">
-                  {/* Item 1: Mission */}
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-10 h-10 rounded-xl bg-[#1E40AF]/5 flex items-center justify-center shrink-0 group-hover:bg-[#1E40AF] transition-all">
-                      <CheckCircle2 className="w-4 h-4 text-[#1E40AF] group-hover:text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="text-sm font-bold text-[#1E40AF] mb-1">JPO Janvier</h5>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Clock className="w-3 h-3 text-[#1E40AF]/20" />
-                        <span className="text-[9px] font-black text-[#1E40AF]/30 uppercase tracking-widest">Samedi • 09:00</span>
-                      </div>
-                      <Link to="#" className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#1E40AF] hover:opacity-70 transition-colors">
-                        Détails <ChevronRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Item 2: Agenda */}
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-10 h-10 rounded-xl bg-[#1E40AF]/5 flex items-center justify-center shrink-0 group-hover:bg-[#1E40AF] transition-all">
-                      <Calendar className="w-4 h-4 text-[#1E40AF] group-hover:text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="text-sm font-bold text-[#1E40AF] mb-1">Conférence IA</h5>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Clock className="w-3 h-3 text-[#1E40AF]/20" />
-                        <span className="text-[9px] font-black text-[#1E40AF]/30 uppercase tracking-widest">Mardi • 18:00</span>
-                      </div>
-                      <Link to="/albert-school/associations/agenda" className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#1E40AF] hover:opacity-70 transition-colors">
-                        Voir l'agenda <ChevronRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Item 3: Portfolio Reminder */}
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-10 h-10 rounded-xl bg-[#1E40AF]/5 flex items-center justify-center shrink-0 group-hover:bg-[#1E40AF] transition-all">
-                      <Plus className="w-4 h-4 text-[#1E40AF] group-hover:text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="text-sm font-bold text-[#1E40AF] mb-1">Projet BDD</h5>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Clock className="w-3 h-3 text-[#1E40AF]/20" />
-                        <span className="text-[9px] font-black text-[#1E40AF]/30 uppercase tracking-widest">À terminer</span>
-                      </div>
-                      <Link to="/albert-school/submit?type=project" className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#1E40AF] hover:opacity-70 transition-colors">
-                        Publier <ChevronRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+            <div className="text-right">
+              <span className="text-9xl font-black text-white/5 block leading-none">2026</span>
+              <span className="text-[9px] font-black tracking-widest text-[#3461FF] uppercase animate-pulse">
+                Data Excellence — Synergized
+              </span>
             </div>
           </div>
-        </div>
+        </footer>
+
       </div>
-
-      {/* 6. Minimal Footer */}
-      <footer className="max-w-7xl mx-auto px-12 py-12 border-t border-[#1E40AF]/10 mt-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-[#1E40AF]/20">
-            <Link to="#" className="hover:text-[#1E40AF] transition-colors">Mentions Légales</Link>
-            <Link to="#" className="hover:text-[#1E40AF] transition-colors">Confidentialité</Link>
-            <Link to="#" className="hover:text-[#1E40AF] transition-colors">Support</Link>
-          </div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1E40AF]/10 text-center md:text-right">
-            © {new Date().getFullYear()} UniSphere. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
     </PageLayout>
   );
 }

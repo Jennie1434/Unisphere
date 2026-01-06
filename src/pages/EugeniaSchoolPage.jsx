@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '../components/shared/PageLayout';
 import { useStudentAuth } from '../contexts/StudentAuthContext';
@@ -45,8 +45,8 @@ export default function EugeniaSchoolPage() {
     {
       id: 'ambassadeur',
       title: 'Ambassadeur',
-      subtitle: 'MÉRIRE & VISION',
-      desc: 'Devenez le visage de l’école. Relevez des défis, gagnez des points et boostez votre prestige.',
+      subtitle: 'MÉRITE & VISION',
+      desc: 'Devenez le visage de l\'école. Relevez des défis, gagnez des points et boostez votre prestige.',
       link: '/eugenia-school/ambassadeurs',
       submitLink: '/eugenia-school/submit?type=mission',
       icon: <Medal className="w-10 h-10" />,
@@ -99,124 +99,151 @@ export default function EugeniaSchoolPage() {
                   <span className="text-4xl font-black">{student?.totalPoints || 0}</span>
                   <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Points de prestige</span>
                 </div>
-                <div className="w-[1px] h-12 bg-black/5" />
+                <div className="w-[2px] h-12 bg-black/10" />
                 <div className="flex flex-col">
-                  <span className="text-4xl font-black italic">M1</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Promotion</span>
+                  <span className="text-4xl font-black">{student?.actionsCount || 0}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Actions validées</span>
                 </div>
               </div>
             </motion.div>
 
+            {/* Nouvelle Soumission Button (Floating Action) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", delay: 0.6 }}
-              className="relative"
+              transition={{ delay: 0.8, type: "spring" }}
+              className="flex-shrink-0"
             >
               <Link
                 to="/eugenia-school/submit"
-                className="group relative flex flex-col items-center justify-center w-48 h-48 bg-black text-white rounded-full transition-all hover:scale-110 active:scale-95 shadow-[0_30px_60px_rgba(0,0,0,0.1)] hover:bg-[#671324]"
+                className="group relative px-10 py-6 bg-black text-white rounded-none font-black text-xs uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#671324] hover:scale-105 hover:shadow-[20px_20px_0px_rgba(219,161,45,0.3)] inline-flex items-center gap-5 border-2 border-black"
               >
-                <Plus className="w-8 h-8 mb-2 group-hover:rotate-90 transition-transform duration-500 text-[#DBA12D]" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] px-4 text-center">Nouvelle Soumission</span>
-                <div className="absolute inset-2 border border-white/10 rounded-full group-hover:scale-110 transition-transform" />
+                <motion.div
+                  className="absolute inset-0 bg-white/10"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6 }}
+                />
+                <Plus className="w-5 h-5 group-hover:text-[#DBA12D] group-hover:rotate-90 transition-all" />
+                NOUVELLE SOUMISSION
               </Link>
             </motion.div>
           </header>
 
-          {/* Background Accents (Kinetic) */}
-          <motion.div
-            animate={{ y: [0, -20, 0], opacity: [0.1, 0.2, 0.1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-20 right-20 w-[600px] h-[600px] bg-[#671324]/10 blur-[180px] rounded-full -z-10"
-          />
+          {/* Background Glow Effect */}
+          <div className="absolute bottom-0 right-0 w-[900px] h-[900px] bg-[#671324]/5 blur-[200px] -z-10 animate-pulse" />
         </section>
 
-        {/* WOW Interactive Grid */}
-        <section className="border-t border-black flex flex-col lg:flex-row">
-
-          {/* Sidebar Manifest (Pure Contrast) */}
-          <div className="w-full lg:w-32 border-r border-black bg-black text-white flex lg:flex-col items-center justify-center py-20 gap-16 overflow-hidden">
-            {["PROGRESS", "PEOPLE", "PROJECTS"].map((word, i) => (
+        {/* Vertical Keywords (Sideline Aesthetic) */}
+        <aside className="fixed left-10 top-1/2 -translate-y-1/2 z-50 hidden 2xl:block">
+          <div className="flex flex-col gap-12 items-center writing-mode-vertical-rl text-[9px] font-black uppercase tracking-[0.5em] text-black/10">
+            {['PORTFOLIO', 'ASSOCIATIONS', 'AMBASSADEUR', 'CLASSEMENT'].map((word, i) => (
               <motion.span
-                key={i}
-                whileHover={{ color: "#DBA12D", scale: 1.1 }}
-                className="lg:rotate-90 text-[11px] font-black tracking-[0.6em] whitespace-nowrap cursor-default transition-colors"
+                key={word}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 + i * 0.1 }}
+                className="hover:text-[#DBA12D] hover:tracking-[0.8em] transition-all cursor-default"
               >
                 {word}
               </motion.span>
             ))}
           </div>
+        </aside>
 
-          {/* Main Interactive Panels */}
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3">
-            {panels.map((panel, i) => (
+        {/* MAIN PANELS SECTION */}
+        <section className="max-w-[1700px] mx-auto px-6 lg:px-20 pb-40">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {panels.map((panel, index) => (
               <motion.div
                 key={panel.id}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="relative group min-h-[500px] border-r border-b border-black flex flex-col p-16 hover:bg-black transition-all duration-700"
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15, type: "spring", stiffness: 80 }}
+                className="group bg-white border-2 border-black p-10 relative overflow-hidden hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[20px_20px_0px_#DBA12D] transition-all duration-500"
               >
-                {/* Hover Overlay Content */}
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex justify-between items-start">
-                    <motion.div
-                      whileHover={{ rotate: 5, scale: 1.1 }}
-                      className="w-20 h-20 border-2 border-black flex items-center justify-center group-hover:border-[#DBA12D] group-hover:text-[#DBA12D] transition-all bg-white group-hover:bg-transparent"
-                    >
-                      {panel.icon}
-                    </motion.div>
-                    <span className="bg-black text-white px-4 py-2 text-[10px] font-black tracking-widest border border-black group-hover:border-[#DBA12D] group-hover:text-[#DBA12D] transition-all">
-                      {panel.stats}
-                    </span>
+                {/* Panel Icon & Stats */}
+                <div className="flex items-start justify-between mb-12">
+                  <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center group-hover:bg-[#671324] transition-colors">
+                    <div className="text-white">{panel.icon}</div>
                   </div>
-
-                  <div className="flex-1">
-                    <span className="text-[10px] font-black tracking-[0.4em] mb-6 block text-black/20 group-hover:text-[#DBA12D]/40 transition-colors uppercase">
-                      {panel.subtitle}
-                    </span>
-                    <h2 className="text-5xl font-black mb-8 text-black group-hover:text-white transition-colors" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
-                      {panel.title}
-                    </h2>
-                    <p className="text-black/40 group-hover:text-white/60 transition-colors text-sm leading-relaxed max-w-xs font-bold uppercase tracking-tight">
-                      {panel.desc}
-                    </p>
-                  </div>
-
-                  <div className="mt-12 space-y-4">
-                    <Link
-                      to={panel.link}
-                      className="flex items-center justify-between w-full py-6 px-8 bg-black text-white group-hover:bg-[#DBA12D] group-hover:text-black transition-all text-xs font-black uppercase tracking-widest shadow-2xl"
-                    >
-                      <span>Lancer l'Espace</span>
-                      <ArrowUpRight className="w-5 h-5" />
-                    </Link>
-                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-[0.4em] text-black/20 group-hover:text-[#DBA12D] transition-colors">
+                    {panel.stats}
+                  </span>
                 </div>
 
-                {/* Kinetic Glow Effect on hover */}
-                <div className="absolute inset-0 bg-[#DBA12D]/0 group-hover:bg-[#DBA12D]/5 transition-all duration-700 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#DBA12D] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
+                {/* Panel Content */}
+                <div className="mb-12">
+                  <span className="block text-[9px] font-black uppercase tracking-[0.3em] text-black/30 mb-3">
+                    {panel.subtitle}
+                  </span>
+                  <h2 className="text-4xl font-black mb-6" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                    {panel.title}.
+                  </h2>
+                  <p className="text-sm text-black/50 leading-relaxed font-medium">
+                    {panel.desc}
+                  </p>
+                </div>
+
+                {/* Panel Actions */}
+                <div className="flex flex-col gap-4">
+                  <Link
+                    to={panel.link}
+                    className="py-4 px-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-[#671324] transition-all group-hover:translate-x-2 flex items-center justify-center gap-3"
+                  >
+                    LANCER L'ESPACE <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to={panel.submitLink}
+                    className="py-4 px-6 border-2 border-black text-black text-[10px] font-black uppercase tracking-[0.3em] text-center hover:bg-black hover:text-white transition-all"
+                  >
+                    SOUMETTRE +
+                  </Link>
+                </div>
+
+                {/* Kinetic Glow Effect on Hover */}
+                <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#DBA12D]/0 group-hover:bg-[#DBA12D]/10 blur-3xl transition-all duration-700 -z-10" />
               </motion.div>
             ))}
           </div>
         </section>
 
-        {/* High-Impact Footer */}
-        <section className="bg-black text-white py-32 px-6 lg:px-20 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(219,161,45,0.05),transparent_50%)]" />
+        {/* MARQUEE STRIP (Hypebeast Vibes) */}
+        <section className="bg-black text-white py-8 overflow-hidden border-y-4 border-[#DBA12D]">
+          <motion.div
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+            className="flex gap-20 whitespace-nowrap"
+          >
+            {Array(10).fill(['EUGENIA SCHOOL', 'NARRATIF', 'EXCELLENCE', 'VISION']).flat().map((text, i) => (
+              <span key={i} className="text-6xl font-black tracking-tighter italic" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                {text} <span className="text-[#DBA12D]">•</span>
+              </span>
+            ))}
+          </motion.div>
+        </section>
+
+        {/* HIGH-IMPACT FOOTER */}
+        <footer className="bg-black text-white py-32 px-6 lg:px-20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(219,161,45,0.08),transparent_60%)]" />
           <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row justify-between items-end gap-12">
-            <div className="space-y-4">
-              <h3 className="text-4xl font-black italic" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Eugenia Engine.</h3>
-              <p className="text-[10px] font-black tracking-[0.5em] text-white/20">THE NEXT ACADEMIC LEGACY</p>
+            <div className="space-y-6">
+              <h3 className="text-5xl font-black italic leading-tight" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                Eugenia School <br /><span className="text-[#DBA12D]">Ecosystem.</span>
+              </h3>
+              <p className="text-[10px] font-black tracking-[0.5em] text-white/20 uppercase">
+                THE NARRATIVE ENGINE
+              </p>
             </div>
             <div className="text-right">
-              <span className="text-8xl font-black text-white/5 block leading-none">2026</span>
-              <span className="text-[9px] font-black tracking-widest text-[#DBA12D] animate-pulse uppercase">Operational Mode — Synergized</span>
+              <span className="text-9xl font-black text-white/5 block leading-none">2026</span>
+              <span className="text-[9px] font-black tracking-widest text-[#DBA12D] uppercase animate-pulse">
+                Narrative Excellence — Synergized
+              </span>
             </div>
           </div>
-        </section>
+        </footer>
 
       </div>
     </PageLayout>
