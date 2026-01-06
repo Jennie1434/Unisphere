@@ -79,7 +79,7 @@ export default function StudentPublicProfilePage() {
 
   return (
     <PageLayout minimalFooter={true}>
-      <div className="min-h-screen bg-white text-black selection:bg-[#DBA12D] selection:text-black font-sans overflow-hidden">
+      <div className="min-h-screen bg-gray-50 text-black selection:bg-[#DBA12D] selection:text-black font-sans overflow-hidden">
 
         {/* WOW HERO SECTION */}
         <header className="relative pt-20 pb-20 px-6 lg:px-20 max-w-[1800px] mx-auto overflow-hidden">
@@ -148,22 +148,17 @@ export default function StudentPublicProfilePage() {
 
         {/* STATS SECTION */}
         <section className="px-6 lg:px-20 mb-20 max-w-[1800px] mx-auto">
-          <div className="bg-white border-2 border-black p-12 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[22px_22px_0px_#DBA12D] transition-all duration-300">
-            <h2 className="text-4xl font-black mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Performance Metrics.</h2>
-            <LeaderboardStats student={student} />
-          </div>
+          <h2 className="text-4xl font-black mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Performance Metrics.</h2>
+          <LeaderboardStats student={student} />
         </section>
 
         {/* BADGES SECTION */}
         <section className="px-6 lg:px-20 mb-40 max-w-[1800px] mx-auto">
-          <div className="bg-white border-2 border-black p-12 shadow-[20px_20px_0px_rgba(0,0,0,1)]">
-            <h2 className="text-4xl font-black mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Hall of Fame.</h2>
-            <BadgesDisplay studentEmail={student.email} />
-          </div>
+          <h2 className="text-4xl font-black mb-12" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Hall of Fame.</h2>
+          <BadgesDisplay studentEmail={student.email} />
         </section>
 
       </div>
     </PageLayout>
   );
 }
-

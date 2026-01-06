@@ -56,27 +56,27 @@ export default function BadgesDisplay({ studentEmail, school = 'eugenia' }) {
       {badges.map((badge) => (
         <div
           key={badge.id}
-          className="bg-white rounded-none p-4 shadow-[4px_4px_0px_black] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#DBA12D] transition-all border-2 border-black group relative"
+          className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all border-2 border-gray-100 dark:border-gray-700 group relative"
           title={`${badge.name} - ${badge.description || ''}`}
         >
-          <div className={`text-4xl mb-3 text-center`}>
+          <div className={`text-4xl mb-2 text-center bg-gradient-to-br ${getRarityColor(badge.rarity)} bg-clip-text text-transparent`}>
             {badge.emoji || '🏆'}
           </div>
-          <div className="text-xs font-black text-black uppercase tracking-wider text-center line-clamp-2">
+          <div className="text-xs font-bold text-gray-900 dark:text-white text-center line-clamp-2">
             {badge.name}
           </div>
           {badge.rarity !== 'common' && (
-            <div className="absolute top-0 right-0">
-              <span className={`text-[8px] px-1 py-0.5 font-black uppercase text-white border-l-2 border-b-2 border-black ${badge.rarity === 'legendary' ? 'bg-[#DBA12D]' :
-                  badge.rarity === 'epic' ? 'bg-[#671324]' :
-                    'bg-black'
+            <div className="absolute top-1 right-1">
+              <span className={`text-[8px] px-1 py-0.5 rounded ${badge.rarity === 'legendary' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                  badge.rarity === 'epic' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                 }`}>
                 {badge.rarity}
               </span>
             </div>
           )}
           {badge.earned_at && (
-            <div className="text-[9px] font-bold text-black/40 text-center mt-2 uppercase tracking-widest border-t-2 border-black/5 pt-2">
+            <div className="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-1">
               {new Date(badge.earned_at).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}
             </div>
           )}

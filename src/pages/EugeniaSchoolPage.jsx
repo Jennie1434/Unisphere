@@ -137,22 +137,7 @@ export default function EugeniaSchoolPage() {
           <div className="absolute bottom-0 right-0 w-[900px] h-[900px] bg-[#671324]/5 blur-[200px] -z-10 animate-pulse" />
         </section>
 
-        {/* Vertical Keywords (Sideline Aesthetic) */}
-        <aside className="fixed left-10 top-1/2 -translate-y-1/2 z-50 hidden 2xl:block">
-          <div className="flex flex-col gap-12 items-center writing-mode-vertical-rl text-[9px] font-black uppercase tracking-[0.5em] text-black/10">
-            {['PORTFOLIO', 'ASSOCIATIONS', 'AMBASSADEUR', 'CLASSEMENT'].map((word, i) => (
-              <motion.span
-                key={word}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 + i * 0.1 }}
-                className="hover:text-[#DBA12D] hover:tracking-[0.8em] transition-all cursor-default"
-              >
-                {word}
-              </motion.span>
-            ))}
-          </div>
-        </aside>
+
 
         {/* MAIN PANELS SECTION */}
         <section className="max-w-[1700px] mx-auto px-6 lg:px-20 pb-40">
