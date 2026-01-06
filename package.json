@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:worker": "cd worker && npm run deploy",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name=unisphere",
+    "deploy:all": "npm run deploy:worker && npm run deploy:pages",
+    "worker:dev": "cd worker && npm run dev",
+    "worker:tail": "cd worker && npm run tail"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.3",
