@@ -110,9 +110,9 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
 
   const selectedActionType = actionTypes.find(t => t.id === selectedType);
 
-  // Theme Overrides (Black/Green)
-  const accentColor = '#000000';
-  const greenAccent = '#10B981';
+  // Theme colors based on school
+  const accentColor = school === 'eugenia' ? '#DBA12D' : '#3461FF';
+  const successColor = school === 'eugenia' ? '#DBA12D' : '#3461FF';
 
   return (
     <PageLayout school={school} minimalFooter={true}>
@@ -193,10 +193,17 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
 
                   {/* Feedback Message */}
                   {message.text && (
-                    <div className={`p-6 rounded-2xl flex items-center gap-4 border ${message.type === 'success'
-                      ? 'bg-green-50 border-green-100 text-green-800'
-                      : 'bg-red-50 border-red-100 text-red-800'
-                      }`}>
+                    <div
+                      className="p-6 rounded-2xl flex items-center gap-4 border"
+                      style={message.type === 'success' ? {
+                        backgroundColor: school === 'eugenia' ? '#FEF3C7' : '#EFF6FF',
+                        borderColor: school === 'eugenia' ? '#DBA12D' : '#3461FF',
+                        color: school === 'eugenia' ? '#78350F' : '#1E3A8A'
+                      } : {
+                        backgroundColor: '#FEE2E2',
+                        borderColor: '#EF4444',
+                        color: '#991B1B'
+                      }}>
                       {message.type === 'success' ? <CheckCircle2 className="w-6 h-6 shrink-0" /> : <AlertCircle className="w-6 h-6 shrink-0" />}
                       <p className="font-bold text-sm tracking-tight">{message.text}</p>
                     </div>
@@ -227,7 +234,7 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
             <div className="space-y-6">
               <div className="bg-white rounded-[32px] p-8 border border-black/5 shadow-lg shadow-black/5">
                 <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6">
-                  <Sparkles className="w-6 h-6 text-[#10B981]" />
+                  <Sparkles className="w-6 h-6" style={{ color: successColor }} />
                 </div>
                 <h4 className="text-black font-bold mb-3 tracking-tight">Conseils de validation</h4>
                 <ul className="space-y-4">
@@ -238,7 +245,7 @@ export default function SubmitActionPage({ school = 'eugenia' }) {
                     "Les points sont attribués sous 48h"
                   ].map((tip, i) => (
                     <li key={i} className="flex gap-3 text-xs font-bold text-black/60 leading-relaxed">
-                      <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: successColor }} />
                       {tip}
                     </li>
                   ))}

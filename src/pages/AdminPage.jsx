@@ -1,15 +1,18 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, CheckSquare, AlertTriangle, Target, Users, TrendingUp, LogOut } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, AlertTriangle, Target, Users, TrendingUp, LogOut, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function AdminPage({ school = 'eugenia' }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const adminPath = school === 'eugenia' ? '/eugenia-school/admin' : '/albert-school/admin';
   const schoolPath = school === 'eugenia' ? '/eugenia-school' : '/albert-school';
   const schoolName = school === 'eugenia' ? 'Eugenia School' : 'Albert School';
-  const primaryColor = school === 'eugenia' ? '#671324' : '#3461FF';
-  const accentColor = school === 'eugenia' ? '#DBA12D' : '#60A5FA';
+  const primaryColor = school === 'eugenia' ? '#671324' : '#1E40AF';
+  const accentColor = school === 'eugenia' ? '#DBA12D' : '#3461FF';
 
   const handleLogout = () => {
     sessionStorage.removeItem('admin_authenticated');
@@ -36,102 +39,158 @@ export default function AdminPage({ school = 'eugenia' }) {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-black flex font-sans selection:bg-[#DBA12D] selection:text-black">
+    <div className="min-h-screen bg-[#F7F7F5] text-black font-sans">
 
-      {/* SIDEBAR WOW EDITION */}
-      <aside className="w-80 bg-black text-white border-r-4 border-white flex-shrink-0 flex flex-col relative overflow-hidden">
+      {/* MODERN TOP HEADER */}
+      <header className="sticky top-0 z-50 bg-white border-b-2 border-black">
+        <div className="max-w-[2000px] mx-auto px-6 lg:px-20 py-6">
+          <div className="flex items-center justify-between">
 
-        {/* Background Texture */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)'
-        }} />
-
-        {/* Header */}
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="p-8 border-b-2 border-white/20 relative z-10"
-          style={{ background: `linear-gradient(135deg, ${primaryColor}, #000)` }}
-        >
-          <div className="flex items-center gap-4 mb-3">
-            <div className="w-12 h-12 bg-white rounded-none flex items-center justify-center text-2xl shadow-lg">
-              ⚙️
-            </div>
-            <div>
-              <h2 className="text-2xl font-black tracking-tight" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
-                ADMIN.
-              </h2>
-              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">
-                CONTROL PANEL
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-none">
-            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentColor }}>
-              {schoolName}
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-6 space-y-2 relative z-10 overflow-y-auto">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            const active = item.exact
-              ? location.pathname === item.path
-              : isActive(item.path);
-
-            return (
+            {/* Logo & Title */}
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="flex items-center gap-6"
+            >
               <Link
-                key={item.path}
-                to={item.path}
-                className={`
-                  group flex items-center gap-4 px-6 py-4 rounded-none transition-all duration-300 relative overflow-hidden
-                  ${active
-                    ? 'bg-white text-black shadow-[5px_5px_0px_rgba(255,255,255,0.2)]'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
-                  }
-                `}
+                to={schoolPath}
+                className="px-6 py-3 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-[5px_5px_0px_rgba(0,0,0,1)]"
               >
-                {active && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute left-0 top-0 w-1 h-full"
-                    style={{ backgroundColor: accentColor }}
-                  />
-                )}
-                <Icon className={`w-5 h-5 ${active ? 'text-black' : 'group-hover:scale-110 transition-transform'}`} />
-                <span className={`text-sm font-black uppercase tracking-widest ${active ? 'text-black' : ''}`}>
-                  {item.label}
+                <span className="text-sm font-black tracking-tight">
+                  ← RETOUR
                 </span>
               </Link>
-            );
-          })}
-        </nav>
 
-        {/* Logout */}
-        <div className="p-6 border-t-2 border-white/20 relative z-10">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-6 py-4 rounded-none bg-red-600 hover:bg-red-700 text-white transition-all group"
-          >
-            <LogOut className="w-5 h-5 group-hover:translate-x-[-5px] transition-transform" />
-            <span className="text-sm font-black uppercase tracking-widest">Déconnexion</span>
-          </button>
-        </div>
+              <div className="hidden md:block w-[2px] h-12 bg-black/10" />
 
-        {/* Decorative Element */}
-        <div className="absolute bottom-0 right-0 w-40 h-40 rounded-full blur-[100px] opacity-20" style={{ backgroundColor: accentColor }} />
-      </aside>
+              <div>
+                <h1 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
+                  ADMIN<span style={{ color: accentColor }}>.</span>
+                </h1>
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40">
+                  {schoolName} — Control Panel
+                </p>
+              </div>
+            </motion.div>
 
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-auto bg-white">
-          <div className="max-w-[1800px] mx-auto px-10 py-12">
-            <Outlet />
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const active = item.exact
+                  ? location.pathname === item.path
+                  : isActive(item.path);
+
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`
+                      group flex items-center gap-3 px-6 py-3 rounded-none transition-all border-2
+                      ${active
+                        ? 'bg-black text-white border-black shadow-[5px_5px_0px_rgba(0,0,0,0.2)]'
+                        : 'bg-white text-black border-black/10 hover:border-black hover:shadow-[3px_3px_0px_rgba(0,0,0,0.1)]'
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Logout Button (Desktop) */}
+            <div className="hidden lg:flex items-center gap-4">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 px-6 py-3 bg-black text-white hover:bg-red-600 transition-all border-2 border-black group"
+              >
+                <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Déconnexion</span>
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-3 bg-black text-white border-2 border-black"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
-        </main>
-      </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <motion.nav
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              className="lg:hidden mt-6 pb-6 border-t-2 border-black/10 pt-6 space-y-2"
+            >
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const active = item.exact
+                  ? location.pathname === item.path
+                  : isActive(item.path);
+
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`
+                      flex items-center gap-4 px-6 py-4 rounded-none transition-all border-2
+                      ${active
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-black border-black/10 hover:border-black'
+                      }
+                    `}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs font-black uppercase tracking-widest">
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-4 px-6 py-4 bg-red-600 text-white border-2 border-red-600"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="text-xs font-black uppercase tracking-widest">Déconnexion</span>
+              </button>
+            </motion.nav>
+          )}
+        </div>
+      </header>
+
+      {/* MAIN CONTENT AREA */}
+      <main className="min-h-[calc(100vh-120px)]">
+        <div className="max-w-[2000px] mx-auto px-6 lg:px-20 py-12">
+          <Outlet />
+        </div>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="border-t-2 border-black bg-white">
+        <div className="max-w-[2000px] mx-auto px-6 lg:px-20 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20">
+              UniSphere Admin Panel v4.2 — {schoolName}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
+              <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: accentColor }}>
+                SYSTÈME ACTIF
+              </span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

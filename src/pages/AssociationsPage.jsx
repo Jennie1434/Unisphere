@@ -181,7 +181,7 @@ export default function AssociationsPage({ school = 'eugenia' }) {
             <aside className="lg:col-span-4 space-y-16">
 
               {/* Global Agenda Preview */}
-              <div className="bg-white border-2 border-black p-10 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-10px] hover:translate-y-[-10px] hover:shadow-[30px_30px_0px_rgba(20,241,149,1)] transition-all duration-500">
+              <div className="bg-white border-2 border-black p-10 shadow-[20px_20px_0px_rgba(0,0,0,1)] hover:translate-x-[-10px] hover:translate-y-[-10px] hover:shadow-[30px_30px_0px_rgba(219,161,45,1)] transition-all duration-500">
                 <h3 className="text-3xl font-black mb-10 flex items-center gap-4" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>
                   <div className="w-4 h-4 rounded-full bg-[#DBA12D] shadow-[0_0_20px_#DBA12D]" />
                   AGENDA.

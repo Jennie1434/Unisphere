@@ -4,8 +4,8 @@ import { Sparkles, Calendar, Users, ArrowRight } from 'lucide-react';
 export default function AssociationFeatured({ school = 'eugenia' }) {
     const schoolPath = school === 'eugenia' ? '/eugenia-school' : '/albert-school';
 
-    // Strict Green Theme
-    const accentColor = '#10B981';
+    // Theme colors based on school
+    const accentColor = school === 'eugenia' ? '#DBA12D' : '#3461FF';
     const isEugenia = school === 'eugenia';
 
     const cards = [
@@ -68,9 +68,16 @@ export default function AssociationFeatured({ school = 'eugenia' }) {
                         <div className="relative z-10 flex flex-col h-full justify-between">
                             <div>
                                 <div className="flex items-center gap-2 mb-4">
-                                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full flex items-center gap-1 ${card.text === 'text-white' ? 'bg-white/10 text-white' : 'bg-[#10B981]/10 text-[#10B981]'
-                                        }`}>
-                                        {card.type === 'recruiting' && <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[#10B981]" />}
+                                    <span
+                                        className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full flex items-center gap-1"
+                                        style={card.text === 'text-white' ? {
+                                            backgroundColor: 'rgba(255,255,255,0.1)',
+                                            color: 'white'
+                                        } : {
+                                            backgroundColor: school === 'eugenia' ? 'rgba(219,161,45,0.1)' : 'rgba(52,97,255,0.1)',
+                                            color: accentColor
+                                        }}>
+                                        {card.type === 'recruiting' && <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />}
                                         {card.label}
                                     </span>
                                 </div>
@@ -80,10 +87,10 @@ export default function AssociationFeatured({ school = 'eugenia' }) {
                             </div>
 
                             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest group-hover:gap-4 transition-all duration-300">
-                                <span className={card.text === 'text-white' ? 'text-[#10B981]' : 'text-black'}>
+                                <span style={{ color: card.text === 'text-white' ? accentColor : 'black' }}>
                                     {card.action}
                                 </span>
-                                <ArrowRight className={`w-4 h-4 ${card.text === 'text-white' ? 'text-[#10B981]' : 'text-black'}`} />
+                                <ArrowRight className="w-4 h-4" style={{ color: card.text === 'text-white' ? accentColor : 'black' }} />
                             </div>
                         </div>
                     </Link>

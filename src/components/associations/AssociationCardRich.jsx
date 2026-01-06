@@ -4,8 +4,8 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 export default function AssociationCardRich({ association, school = 'eugenia' }) {
     const schoolPath = school === 'eugenia' ? '/eugenia-school' : '/albert-school';
 
-    // Strict Green Theme
-    const accentColor = '#10B981';
+    // Theme colors based on school
+    const accentColor = school === 'eugenia' ? '#DBA12D' : '#3461FF';
     const textHoverClass = 'group-hover:text-black';
 
     // Buttons
@@ -23,8 +23,8 @@ export default function AssociationCardRich({ association, school = 'eugenia' })
             {/* Recruiting Badge */}
             {isRecruiting && (
                 <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-white/90 backdrop-blur-sm shadow-sm rounded-full flex items-center gap-1.5 border border-black/5">
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[#10B981]" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#10B981]">Recrute</span>
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
+                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentColor }}>Recrute</span>
                 </div>
             )}
 
