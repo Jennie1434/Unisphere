@@ -47,8 +47,8 @@ export default function useAnalytics(filters = {}, school = 'eugenia') {
       setData({
         overview,
         timeline: filterBySchool(Array.isArray(timeline) ? timeline : []),
-        popularActions: filterBySchool(Array.isArray(popularActions) ? popularActions : []),
-        byClass: filterBySchool(Array.isArray(byClass) ? byClass : []),
+        popularActions: Array.isArray(popularActions) ? popularActions : [], // Ne pas filtrer les actions populaires (données agrégées)
+        byClass: Array.isArray(byClass) ? byClass : [], // Ne pas filtrer byClass (données agrégées par classe)
         topStudents: filterBySchool(Array.isArray(topStudents) ? topStudents : []),
         recentActions: filterBySchool(Array.isArray(recentActions) ? recentActions : []),
         insights,
