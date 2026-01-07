@@ -150,13 +150,6 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                                             <span className="font-bold">Valider une inscription</span>
                                             <span className="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-black">{pendingApplications.length}</span>
                                         </button>
-                                        <button
-                                            onClick={() => setShowMessageModal(true)}
-                                            className="flex items-center justify-between p-4 bg-white border border-black hover:bg-black hover:text-white transition-all group"
-                                        >
-                                            <span className="font-bold">Envoyer un message aux membres</span>
-                                            <span className="text-lg">✉️</span>
-                                        </button>
                                     </div>
                                 </div>
 
@@ -340,6 +333,59 @@ export default function AssociationAdminPage({ school = 'eugenia' }) {
                                     setShowManageEventModal(false);
                                     setSelectedEvent(null);
                                 }}
+                                className="w-full px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                            >
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Applications Modal */}
+                {showApplicationsModal && (
+                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white border-4 border-black shadow-[16px_16px_0px_black] max-w-2xl w-full p-8 max-h-[80vh] overflow-y-auto">
+                            <h3 className="text-2xl font-black uppercase mb-6">Candidatures en attente ({pendingApplications.length})</h3>
+                            {pendingApplications.length === 0 ? (
+                                <p className="text-center text-gray-500 py-8 font-bold">Aucune candidature en attente</p>
+                            ) : (
+                                <div className="space-y-4 mb-8">
+                                    {pendingApplications.map(application => (
+                                        <div key={application.id} className="border-2 border-black p-6">
+                                            <div className="flex items-start justify-between mb-4">
+                                                <div>
+                                                    <h4 className="text-lg font-black">{application.name}</h4>
+                                                    <p className="text-sm text-gray-600 font-bold">{application.email}</p>
+                                                    <p className="text-xs text-gray-400 mt-1">{application.date}</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm mb-4 italic">"{application.message}"</p>
+                                            <div className="flex gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        setPendingApplications(prev => prev.filter(a => a.id !== application.id));
+                                                        alert(`${application.name} a été accepté(e) !`);
+                                                    }}
+                                                    className="flex-1 px-4 py-2 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
+                                                >
+                                                    ✓ Accepter
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setPendingApplications(prev => prev.filter(a => a.id !== application.id));
+                                                        alert(`${application.name} a été refusé(e).`);
+                                                    }}
+                                                    className="flex-1 px-4 py-2 border-2 border-black hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors font-black uppercase text-xs tracking-widest"
+                                                >
+                                                    ✗ Refuser
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <button
+                                onClick={() => setShowApplicationsModal(false)}
                                 className="w-full px-6 py-3 bg-black text-white hover:bg-[#DBA12D] hover:text-black transition-colors font-black uppercase text-xs tracking-widest"
                             >
                                 Fermer
